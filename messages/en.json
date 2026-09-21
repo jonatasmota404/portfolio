@@ -7,6 +7,13 @@
   "home": {
     "tagline": "backend · frontend · infra",
     "titulo": "An engineer building reliability from code to infrastructure",
-    "descricao": "Fullstack (Node.js/TypeScript, React) focused on infrastructure and reliability. Here I document projects and write about what I learn building real systems."
+    "descricao": "Fullstack (Node.js/TypeScript, React) focused on infrastructure and reliability. Here I document projects and write about what I learn building real systems.",
+    "escritosTitulo": "Latest writing",
+    "verTodos": "see all →"
+  },
+    "about": {
+    "contatoTitulo": "Let's talk",
+    "contato": "Contact",
+    "curriculo": "Download resume"
   }
 }

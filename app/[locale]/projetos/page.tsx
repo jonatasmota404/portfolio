@@ -1,22 +1,21 @@
-import Link from "next/link";
 import { listarRepositorios } from "@/lib/github";
+import { ListaProjetos } from "@/components/codex/ListaProjetos";
 
 export default async function Projetos() {
   const repos = await listarRepositorios();
 
   return (
-    <section className="py-12">
-      <h1 className="font-voice italic text-2xl mb-8">Projetos</h1>
-      <ul className="space-y-6">
-        {repos.map((repo: any) => (
-          <li key={repo.name} className="border-b border-current/20 pb-6">
-            <Link href={`/projetos/${repo.name}`} className="font-voice text-lg">
-              {repo.name}
-            </Link>
-            <p className="text-sm opacity-70 mt-1">{repo.description}</p>
-          </li>
-        ))}
-      </ul>
+    <section className="pt-2 pb-12">
+      <header className="mb-10">
+        <h1 className="font-voice italic text-4xl mb-3">Projetos</h1>
+        <p className="font-serif text-lg opacity-75 max-w-2xl leading-relaxed">
+          Uma seleção de coisas que venho construindo — de ferramentas do dia a dia a experimentos e arquiteturas de infraestrutura.
+        </p>
+        <hr className="border-t border-dashed border-current/20 w-32 mt-8" />
+      </header>
+
+      {/* Delega a renderização e os filtros para o Client Component */}
+      <ListaProjetos repos={repos} />
     </section>
   );
 }

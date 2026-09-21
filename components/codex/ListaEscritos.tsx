@@ -1,58 +1,189 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useMemo } from "react";
+import { Link } from "@/i18n/navigation";
 
 type Post = {
   slug: string;
-  titulo: string;
-  resumo: string;
-  tags?: string[];
+  data: {
+    title?: string;
+    description?: string;
+    date?: string;
+    tags?: string[];
+    tecnologias?: string[];
+    [key: string]: any;
+  };
 };
 
+function formatarNome(texto: string) {
+  if (!texto) return "";
+  return texto
+    .split(/[-_]/)
+    .map((palavra) => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
+    .join(" ");
+}
+
 export function ListaEscritos({ posts }: { posts: Post[] }) {
-  const [tagAtiva, setTagAtiva] = useState<string | null>(null);
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null);
+  const [techAtiva, setTechAtiva] = useState<string | null>(null);
 
-  const todasAsTags = Array.from(new Set(posts.flatMap((p) => p.tags ?? [])));
+  // 1. Estruturar os dados
+  const postsEstruturados = useMemo(() => {
+    return posts.map((post) => {
+      // Usa a primeira tag como Categoria (ou 'geral')
+      const categoria = post.data.tags && post.data.tags.length > 0 ? post.data.tags[0].toLowerCase() : "geral";
+      const tecnologias = post.data.tecnologias || [];
+      return { ...post, categoria, tecnologias };
+    });
+  }, [posts]);
 
-  const postsFiltrados = tagAtiva
-    ? posts.filter((p) => p.tags?.includes(tagAtiva))
-    : posts;
+  // 2. Extrair listas únicas
+  const categorias = useMemo(() => {
+    return Array.from(new Set(postsEstruturados.map((p) => p.categoria))).sort();
+  }, [postsEstruturados]);
+
+  const techsVisiveis = useMemo(() => {
+    const validos = categoriaAtiva 
+      ? postsEstruturados.filter((p) => p.categoria === categoriaAtiva) 
+      : postsEstruturados;
+    
+    const t = new Set<string>();
+    validos.forEach((p) => p.tecnologias.forEach((tech: string) => t.add(tech)));
+    return Array.from(t).sort();
+  }, [postsEstruturados, categoriaAtiva]);
+
+  // 3. Filtrar
+  const postsFiltrados = useMemo(() => {
+    return postsEstruturados.filter((p) => {
+      const matchCat = categoriaAtiva ? p.categoria === categoriaAtiva : true;
+      const matchTech = techAtiva ? p.tecnologias.includes(techAtiva) : true;
+      return matchCat && matchTech;
+    });
+  }, [postsEstruturados, categoriaAtiva, techAtiva]);
+
+  function selecionarCategoria(cat: string | null) {
+    setCategoriaAtiva(cat);
+    setTechAtiva(null);
+  }
 
   return (
-    <div>
-      <div className="flex gap-2 flex-wrap mb-8">
-        <button
-          onClick={() => setTagAtiva(null)}
-          className={`text-xs font-mono rounded-full px-3 py-1 border ${
-            tagAtiva === null ? "border-verdigris text-verdigris" : "border-current/30"
-          }`}
-        >
-          todos
-        </button>
-        {todasAsTags.map((tag) => (
+    <div className="flex flex-col gap-10">
+      
+      {/* PAINEL DE FILTROS (DOIS NÍVEIS) */}
+      <div className="flex flex-col gap-5 mb-4">
+        
+        {/* Nível 1: Categorias */}
+        <div className="flex flex-wrap gap-6 items-baseline border-b border-current/10 pb-5">
+          <span className="text-[11px] font-mono opacity-50 uppercase tracking-widest mr-2">
+            Domínio:
+          </span>
           <button
-            key={tag}
-            onClick={() => setTagAtiva(tag)}
-            className={`text-xs font-mono rounded-full px-3 py-1 border ${
-              tagAtiva === tag ? "border-verdigris text-verdigris" : "border-current/30"
-            }`}
+            onClick={() => selecionarCategoria(null)}
+            className={`font-voice italic text-2xl transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+            style={{ color: categoriaAtiva === null ? "#C1571F" : "inherit" }}
           >
-            {tag}
+            Todos
           </button>
-        ))}
+          {categorias.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => selecionarCategoria(cat)}
+              className={`font-voice italic text-2xl transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+              style={{ color: categoriaAtiva === cat ? "#C1571F" : "inherit" }}
+            >
+              {formatarNome(cat)}
+            </button>
+          ))}
+        </div>
+
+        {/* Nível 2: Tecnologias */}
+        {techsVisiveis.length > 0 && (
+          <div className="flex flex-wrap gap-2.5 items-center">
+            <span className="text-[10px] font-mono opacity-40 uppercase tracking-widest mr-2">
+              Tecnologias:
+            </span>
+            {techsVisiveis.map((tech) => (
+              <button
+                key={tech}
+                onClick={() => setTechAtiva(tech === techAtiva ? null : tech)}
+                className={`text-[10px] font-mono border rounded-full px-3.5 py-1.5 uppercase tracking-wider transition-all ${
+                  techAtiva === tech
+                    ? "bg-[#C1571F] text-[#14161C] border-[#C1571F] font-bold shadow-sm"
+                    : "border-current/20 opacity-60 hover:opacity-100 hover:border-current/40"
+                }`}
+              >
+                {tech}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      <ul className="space-y-6">
-        {postsFiltrados.map((post) => (
-          <li key={post.slug} className="border-b border-current/20 pb-6">
-            <Link href={`/escritos/${post.slug}`} className="font-voice text-lg">
-              {post.titulo}
-            </Link>
-            <p className="text-sm opacity-70 mt-1">{post.resumo}</p>
-          </li>
-        ))}
-      </ul>
+      {/* GRID DE ESCRITOS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        {postsFiltrados.map((post) => {
+          const { title, description, date } = post.data;
+          const dataFormatada = date ? new Date(date).toLocaleDateString("pt-BR", { year: 'numeric', month: 'short', day: 'numeric' }) : "";
+          const tituloExibicao = title || formatarNome(post.slug);
+
+          return (
+            <div key={post.slug} className="mundo-painel border rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:border-current/30 hover:shadow-md hover:-translate-y-1">
+              <Link href={`/escritos/${post.slug}`} className="block shrink-0 focus:outline-none mb-6">
+                <div className="relative w-full aspect-[2/1] border border-dashed border-current/20 rounded-2xl flex flex-col items-center justify-center overflow-hidden bg-current/[0.02] group-hover:bg-current/[0.04] transition-colors">
+                  <svg className="absolute inset-0 w-full h-full opacity-10 text-current pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <polygon points="50,10 90,90 10,90" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    <circle cx="50" cy="63.3" r="26.7" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    <line x1="50" y1="10" x2="50" y2="100" stroke="currentColor" strokeWidth="0.5" />
+                    <line x1="0" y1="63.3" x2="100" y2="63.3" stroke="currentColor" strokeWidth="0.5" />
+                  </svg>
+                  <div className="relative z-10 flex flex-col items-center text-[10px] font-mono opacity-60">
+                    <span className="uppercase tracking-widest">registo de</span>
+                    <span className="uppercase tracking-widest">estudos</span>
+                  </div>
+                </div>
+              </Link>
+
+              <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex flex-col items-start gap-1 mb-1">
+                  <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "#C1571F" }}>
+                    {formatarNome(post.categoria)}
+                  </span>
+                  <Link href={`/escritos/${post.slug}`} className="font-mono font-semibold text-lg hover:opacity-70 transition-opacity">
+                    {tituloExibicao}
+                  </Link>
+                  {dataFormatada && <span className="text-xs font-mono opacity-50">{dataFormatada}</span>}
+                </div>
+
+                <p className="font-serif text-[1rem] leading-relaxed opacity-75 mt-2 mb-8 flex-1">
+                  {description}
+                </p>
+
+                {post.tecnologias.length > 0 ? (
+                  <div className="flex gap-2 flex-wrap mt-auto">
+                    {post.tecnologias.map((tag: string) => (
+                      <span key={tag} className="text-[10px] font-mono border rounded-full px-2.5 py-1 uppercase tracking-wider" style={{ color: "#C1571F", borderColor: "rgba(193, 87, 31, 0.3)", backgroundColor: "rgba(193, 87, 31, 0.04)" }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-auto pt-2 flex justify-end border-t border-dashed border-current/10">
+                    <Link href={`/escritos/${post.slug}`} className="text-[10px] mt-3 font-mono uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "#C1571F" }}>
+                      Ler registo →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {postsFiltrados.length === 0 && (
+        <div className="text-center py-12 opacity-50 font-voice italic text-lg">
+          Nenhum registo encontrado com esta combinação.
+        </div>
+      )}
     </div>
   );
 }

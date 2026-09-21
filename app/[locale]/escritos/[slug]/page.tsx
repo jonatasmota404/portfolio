@@ -1,27 +1,22 @@
-import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { buscarArquivoRaw, listarEscritos } from "@/lib/github";
+import { buscarArtigo } from "@/lib/github";
 import { CodexPlate, CodexTraco, CodexAnnotation } from "@/components/codex/CodexPlate";
 import { CodexEsboco } from "@/components/codex/CodexEsboco";
-import { Mermaid } from "@/components/codex/Mermaid";
+import { componentesProsa } from "@/components/codex/prosa";
 
-export async function generateStaticParams() {
-  const posts = await listarEscritos();
-  return posts.map((post: any) => ({ slug: post.slug }));
-}
+export default async function Artigo({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  const artigo = await buscarArtigo(slug, locale);
 
-export default async function Artigo({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const bruto = await buscarArquivoRaw("escritos", `${slug}.mdx`);
-  const { content, data } = matter(bruto);
+  if (!artigo) return <p className="py-12">Artigo não encontrado.</p>;
 
   return (
     <article className="py-12">
-      <p className="font-mono text-xs opacity-60 mb-2">{data.data}</p>
-      <h1 className="font-voice italic text-3xl mb-8">{data.titulo}</h1>
+      <p className="font-mono text-xs opacity-60 mb-2">{artigo.data.data}</p>
+      <h1 className="font-voice italic text-3xl mb-8">{artigo.data.titulo}</h1>
       <MDXRemote
-        source={content}
-        components={{ CodexPlate, CodexTraco, CodexAnnotation, CodexEsboco, Mermaid }}
+        source={artigo.content}
+        components={{ ...componentesProsa, CodexPlate, CodexTraco, CodexAnnotation, CodexEsboco }}
         options={{ blockJS: false }}
       />
     </article>

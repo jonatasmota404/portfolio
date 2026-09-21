@@ -21,11 +21,26 @@
 html {
   background-color: var(--pagina-bg);
   color: var(--pagina-texto);
+  font-family: var(--font-serif);
 }
 
 html.night {
   --pagina-bg: var(--color-night);
   --pagina-texto: var(--color-ink-light);
+}
+
+.mundo-painel {
+  background-color: transparent;
+  color: #211D16;
+  border-color: rgba(33, 29, 22, 0.25);
+  --pagina-texto: #211D16;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+
+html.night .mundo-painel {
+  color: #D9C9A8;
+  border-color: rgba(217, 201, 168, 0.25);
+  --pagina-texto: #D9C9A8;
 }
 
 .codex-draw {
@@ -35,8 +50,28 @@ html.night {
 .codex-em-vista .codex-draw {
   animation: codex-dash 2s ease-out forwards;
 }
+
+
 @keyframes codex-dash {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: 150ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 150ms cubic-bezier(0, 0, 0.2, 1) 75ms both fade-in;
 }

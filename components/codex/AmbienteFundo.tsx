@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-// ============ MODO NOITE: céu estrelado ============
+import { useEffect, useRef } from "react";
+import { useZona } from "@/context/ZonaContext";
+import { ZONAS, type Zona } from "@/lib/zonas";
 
 function gerarCampoEstrelas(qtd: number, seed: number) {
   const estrelas = [];
@@ -12,156 +12,189 @@ function gerarCampoEstrelas(qtd: number, seed: number) {
     const r1 = s / 233280;
     s = (s * 9301 + 49297) % 233280;
     const r2 = s / 233280;
-    
-    // REDUZIDO: Antes era 0.1 + (i % 5) * 0.1
-    // Agora vai gerar estrelas com metade do tamanho (de 0.05 a 0.25)
-    estrelas.push({ x: r1 * 100, y: r2 * 100, r: 0.05 + (i % 5) * 0.05 });
+    const brilho = i % 11 === 0 ? 0.28 : i % 4 === 0 ? 0.14 : 0.05;
+    estrelas.push({ x: r1 * 100, y: r2 * 100, r: brilho });
   }
   return estrelas;
 }
-const ESTRELAS_FUNDO = gerarCampoEstrelas(140, 42);
+const ESTRELAS_FUNDO = gerarCampoEstrelas(160, 42);
 
-// REDUZIDO: Os valores de 'r' nas constelações também foram diminuídos
-const URSA_MAIOR = [
-  { x: 12, y: 22, r: 0.3 }, { x: 20, y: 16, r: 0.25 }, { x: 29, y: 14, r: 0.2 },
-  { x: 36, y: 18, r: 0.15 }, { x: 34, y: 26, r: 0.25 }, { x: 25, y: 28, r: 0.2 }, { x: 16, y: 30, r: 0.3 },
-];
+const URSA_MAIOR = [[12, 22], [20, 16], [29, 14], [36, 18], [34, 26], [25, 28], [16, 30]];
 const URSA_LIGACOES = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 3]];
 
-const ORION = [
-  { x: 65, y: 8, r: 0.35 }, { x: 78, y: 10, r: 0.25 },
-  { x: 69, y: 20, r: 0.18 }, { x: 72, y: 21, r: 0.2 }, { x: 75, y: 22, r: 0.18 },
-  { x: 66, y: 34, r: 0.3 }, { x: 79, y: 33, r: 0.35 },
-];
+const ORION = [[65, 8], [78, 10], [69, 20], [72, 21], [75, 22], [66, 34], [79, 33]];
 const ORION_LIGACOES = [[0, 2], [1, 4], [2, 3], [3, 4], [2, 5], [4, 6]];
 
-function Constelacao({ estrelas, ligacoes }: { estrelas: { x: number; y: number; r: number }[]; ligacoes: number[][] }) {
-  return (
-    <g>
-      {ligacoes.map(([a, b], i) => (
-        <line key={i} x1={estrelas[a].x} y1={estrelas[a].y} x2={estrelas[b].x} y2={estrelas[b].y}
-          stroke="var(--pagina-texto)" strokeWidth={0.06} opacity={0.3} />
-      ))}
-      {estrelas.map((s, i) => (
-        <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="var(--pagina-texto)" opacity={0.95} />
-      ))}
-    </g>
-  );
-}
+const CRUZEIRO = [[47, 50], [45, 62], [41, 55], [51, 57]];
+const CRUZEIRO_LIGACOES = [[0, 1], [2, 3]];
 
-function CampoDeEstrelas() {
-  return (
-    <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-      <g style={{ transformOrigin: "50% 15%", animation: "girar-ceu 240s linear infinite" }}>
-        {ESTRELAS_FUNDO.map((s, i) => (
-          <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="var(--pagina-texto)"
-            style={{ animation: `piscar ${5 + (i % 6)}s ease-in-out ${i * 0.15}s infinite` }} />
-        ))}
-        <Constelacao estrelas={URSA_MAIOR} ligacoes={URSA_LIGACOES} />
-        <Constelacao estrelas={ORION} ligacoes={ORION_LIGACOES} />
-      </g>
-    </svg>
-  );
-}
+const ORBITAS = [15, 30, 45, 60, 75, 90, 110];
+const ROTACAO_ALVO: Record<string, number> = { infra: 0, backend: 280, frontend: 70 };
+const VELOCIDADE_DERIVA = 0.00045; // radianos por quadro — ~1 volta a cada 4 minutos
 
-function MapaCelestialCodex() {
-  return (
-    <svg 
-      className="w-full h-full" 
-      viewBox="0 0 100 100" 
-      preserveAspectRatio="xMidYMid slice"
-      shapeRendering="geometricPrecision" /* <-- O segredo para acabar com o cerrilhado */
-    >
-      <g style={{ transformOrigin: "50% 15%", animation: "girar-ceu 240s linear infinite" }}>
-        
-        {/* Órbitas celestes - Mais finas e elegantes */}
-        {[15, 30, 45, 60, 75, 90, 110].map((raio, i) => (
-          <circle 
-            key={`orbita-${i}`} 
-            cx="50" cy="15" r={raio} 
-            fill="none" 
-            stroke="var(--pagina-texto)" 
-            strokeWidth="0.06" 
-            opacity="0.18" /* Reduzido para ficar sutil */
-            strokeDasharray={i % 2 === 0 ? "0.5 1" : "none"} 
-          />
-        ))}
-
-        {/* Meridianos */}
-        {Array.from({ length: 24 }).map((_, i) => (
-          <line 
-            key={`meridiano-${i}`} 
-            x1="50" y1="15" x2="50" y2="150" 
-            transform={`rotate(${i * 15} 50 15)`} 
-            stroke="var(--pagina-texto)" 
-            strokeWidth="0.04" 
-            opacity="0.12" 
-          />
-        ))}
-
-        {/* Estrelas de fundo como cruzes de medição */}
-        {ESTRELAS_FUNDO.map((s, i) => (
-          <g key={`estrela-mapa-${i}`} transform={`translate(${s.x}, ${s.y})`} opacity="0.35">
-            <line x1="-0.2" y1="0" x2="0.2" y2="0" stroke="var(--pagina-texto)" strokeWidth="0.05" />
-            <line x1="0" y1="-0.2" x2="0" y2="0.2" stroke="var(--pagina-texto)" strokeWidth="0.05" />
-          </g>
-        ))}
-
-        {/* Ursa Maior */}
-        <g opacity="0.5"> {/* O sweet-spot da opacidade: nem 0.4, nem 0.7 */}
-          {URSA_LIGACOES.map(([a, b], i) => (
-            <line key={`ursa-linha-${i}`} x1={URSA_MAIOR[a].x} y1={URSA_MAIOR[a].y} x2={URSA_MAIOR[b].x} y2={URSA_MAIOR[b].y}
-              stroke="var(--pagina-texto)" strokeWidth={0.08} strokeDasharray="0.5 0.8" />
-          ))}
-          {URSA_MAIOR.map((s, i) => (
-            <circle key={`ursa-ponto-${i}`} cx={s.x} cy={s.y} r={s.r * 1.5} fill="none" stroke="var(--pagina-texto)" strokeWidth="0.07" />
-          ))}
-        </g>
-
-        {/* Orion */}
-        <g opacity="0.5">
-          {ORION_LIGACOES.map(([a, b], i) => (
-            <line key={`orion-linha-${i}`} x1={ORION[a].x} y1={ORION[a].y} x2={ORION[b].x} y2={ORION[b].y}
-              stroke="var(--pagina-texto)" strokeWidth={0.08} strokeDasharray="0.5 0.8" />
-          ))}
-          {ORION.map((s, i) => (
-            <rect 
-              key={`orion-ponto-${i}`} 
-              x={s.x - (s.r*1.2)} y={s.y - (s.r*1.2)} 
-              width={s.r * 2.4} height={s.r * 2.4} 
-              fill="none" 
-              stroke="var(--pagina-texto)" 
-              strokeWidth="0.07" 
-              transform={`rotate(45 ${s.x} ${s.y})`} 
-            />
-          ))}
-        </g>
-      </g>
-    </svg>
-  );
-}
-// ============ Componente principal ============
+// Variáveis de estado global fora do componente para manter a deriva das estrelas
+// contínua mesmo se o layout sofrer re-renderizações de rota.
+let anguloAlinhamentoGlobal = 0;
+let derivaContinuaGlobal = 0;
 
 export function AmbienteFundo() {
-  const [noite, setNoite] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { zona } = useZona();
+  const zonaRef = useRef<Zona>(zona);
 
   useEffect(() => {
-    setNoite(document.documentElement.classList.contains("night"));
-    const observer = new MutationObserver(() => {
-      setNoite(document.documentElement.classList.contains("night"));
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
+    zonaRef.current = zona;
+  }, [zona]);
 
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-      {noite ? <CampoDeEstrelas /> : <MapaCelestialCodex />}
-      <style>{`
-        @keyframes piscar { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.95; } }
-        @keyframes girar-ceu { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-      `}</style>
-    </div>
-  );
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+
+    let frameId: number;
+
+    function ajustarTamanho() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas!.width = window.innerWidth * dpr;
+      canvas!.height = window.innerHeight * dpr;
+      canvas!.style.width = window.innerWidth + "px";
+      canvas!.style.height = window.innerHeight + "px";
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    ajustarTamanho();
+    window.addEventListener("resize", ajustarTamanho);
+
+    function corDoTema() {
+      return getComputedStyle(document.documentElement).getPropertyValue("--pagina-texto").trim() || "#211D16";
+    }
+
+    function corDoFundo() {
+      return getComputedStyle(document.documentElement).getPropertyValue("--pagina-bg").trim() || "#E4DCC8";
+    }
+
+    function hexParaRgb(hex: string): [number, number, number] {
+      const limpo = hex.replace("#", "");
+      const r = parseInt(limpo.substring(0, 2), 16);
+      const g = parseInt(limpo.substring(2, 4), 16);
+      const b = parseInt(limpo.substring(4, 6), 16);
+      return [r, g, b];
+    }
+
+    function misturarComFundo(corHex: string, fundoHex: string, fator: number): string {
+      const [r1, g1, b1] = hexParaRgb(corHex);
+      const [r2, g2, b2] = hexParaRgb(fundoHex);
+      const r = Math.round(r1 + (r2 - r1) * fator);
+      const g = Math.round(g1 + (g2 - g1) * fator);
+      const b = Math.round(b1 + (b2 - b1) * fator);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function desenharPonto(x: number, y: number, r: number, cor: string, alfa: number) {
+      ctx!.fillStyle = cor;
+      ctx!.globalAlpha = alfa;
+      ctx!.beginPath();
+      ctx!.arc(x - 50, y - 15, r, 0, Math.PI * 2);
+      ctx!.fill();
+    }
+
+    function desenharConstelacao(pontos: number[][], ligacoes: number[][], ativa: boolean, cor: string, base: string) {
+      const corAtual = ativa ? cor : base;
+      ligacoes.forEach(([a, b]) => {
+        ctx!.strokeStyle = corAtual;
+        ctx!.globalAlpha = ativa ? 0.7 : 0.28;
+        ctx!.lineWidth = ativa ? 0.16 : 0.07;
+        ctx!.beginPath();
+        ctx!.moveTo(pontos[a][0] - 50, pontos[a][1] - 15);
+        ctx!.lineTo(pontos[b][0] - 50, pontos[b][1] - 15);
+        ctx!.stroke();
+      });
+      pontos.forEach(([x, y]) => {
+        desenharPonto(x, y, ativa ? 0.45 : 0.22, corAtual, ativa ? 1 : 0.65);
+      });
+    }
+
+    function quadro(tempoMs: number) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const escala = Math.max(w, h) / 100;
+      const noite = document.documentElement.classList.contains("night");
+      const zonaAtual = zonaRef.current;
+      const infraAtiva = zonaAtual === "infra";
+      
+      const configZona = ZONAS[zonaAtual as keyof typeof ZONAS] || Object.values(ZONAS)[0];
+      const corZona = configZona?.cor || "#C1571F";
+      
+      const base = corDoTema();
+      const fundo = corDoFundo();
+      const corBase = infraAtiva ? corZona : base;
+
+      const gradePalida = misturarComFundo(corBase, fundo, 0.55);
+      const zonaPalida = misturarComFundo(corZona, fundo, 0.2);
+      const estrelaPalida = misturarComFundo(base, fundo, 0.5);
+
+      const alvo = ROTACAO_ALVO[zonaAtual] ?? 0;
+      anguloAlinhamentoGlobal += (alvo - anguloAlinhamentoGlobal) * 0.04;
+      derivaContinuaGlobal += VELOCIDADE_DERIVA;
+
+      ctx!.clearRect(0, 0, w, h);
+      ctx!.save();
+      ctx!.translate(w / 2, h / 2 - 35 * escala);
+      ctx!.rotate((anguloAlinhamentoGlobal * Math.PI) / 180);
+      ctx!.scale(escala, escala);
+
+      // Grade do instrumento
+      ORBITAS.forEach((raio, i) => {
+        ctx!.beginPath();
+        ctx!.strokeStyle = gradePalida;
+        ctx!.globalAlpha = infraAtiva ? 0.75 : 0.55;
+        ctx!.lineWidth = 0.06;
+        ctx!.setLineDash(i % 2 === 0 ? [0.5, 0.9] : []);
+        ctx!.arc(0, 0, raio, 0, Math.PI * 2);
+        ctx!.stroke();
+      });
+      ctx!.setLineDash([]);
+
+      for (let i = 0; i < 24; i++) {
+        ctx!.save();
+        ctx!.rotate((i * 15 * Math.PI) / 180);
+        ctx!.strokeStyle = gradePalida;
+        ctx!.globalAlpha = infraAtiva ? 0.6 : 0.4;
+        ctx!.lineWidth = 0.04;
+        ctx!.beginPath();
+        ctx!.moveTo(0, 0);
+        ctx!.lineTo(0, 135);
+        ctx!.stroke();
+        ctx!.restore();
+      }
+
+      // O céu de verdade (constelações + estrelas)
+      ctx!.save();
+      ctx!.rotate(derivaContinuaGlobal);
+
+      desenharConstelacao(URSA_MAIOR, URSA_LIGACOES, zonaAtual === "backend", zonaPalida, estrelaPalida);
+      desenharConstelacao(ORION, ORION_LIGACOES, zonaAtual === "frontend", zonaPalida, estrelaPalida);
+      desenharConstelacao(CRUZEIRO, CRUZEIRO_LIGACOES, false, zonaPalida, estrelaPalida);
+
+      ESTRELAS_FUNDO.forEach((estrela, i) => {
+        let alfa = 0.45;
+        if (noite) {
+          alfa = 0.12 + Math.abs(Math.sin(tempoMs / 1000 / (2.5 + (i % 5)) + i)) * 0.75;
+        }
+        desenharPonto(estrela.x, estrela.y, estrela.r, estrelaPalida, alfa);
+      });
+
+      ctx!.restore();
+      ctx!.restore();
+      ctx!.globalAlpha = 1;
+      frameId = requestAnimationFrame(quadro);
+    }
+
+    frameId = requestAnimationFrame(quadro);
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", ajustarTamanho);
+    };
+  }, []); // Mantido vazio para que o loop do canvas persista continuamente sem reiniciar ao mudar de zona/idioma
+
+  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-none" aria-hidden="true" />;
 }

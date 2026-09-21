@@ -15,13 +15,11 @@ function pontos(topo: number, meio: number, base: number) {
 }
 
 function FolhaVirando({ onFimAnimacao }: { onFimAnimacao: () => void }) {
-    // 4 momentos da animação: nasce como beliscão no canto inferior direito,
-    // vira onda de altura total, e varre até sumir à esquerda
     const quadros = [
-        pontos(100, 100, 90), // repouso: só um beliscão nascendo embaixo à direita
-        pontos(100, 88, 52),  // a onda cresce, ainda liderada por baixo
-        pontos(58, 42, 22),   // onda em altura total, varrendo pra esquerda
-        pontos(0, 0, 0),      // some por completo, revela a página nova
+        pontos(100, 100, 90),
+        pontos(100, 88, 52),
+        pontos(58, 42, 22),
+        pontos(0, 0, 0),
     ];
 
     return (
@@ -33,7 +31,6 @@ function FolhaVirando({ onFimAnimacao }: { onFimAnimacao: () => void }) {
                 transition={{ duration: 1.1, times: [0, 0.22, 0.6, 1], ease: [0.65, 0, 0.35, 1] }}
                 onAnimationComplete={onFimAnimacao}
             />
-            {/* faixa de brilho acompanhando a borda da dobra */}
             <motion.div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -64,13 +61,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
+    // A CAIXA MESTRA UNIVERSAL (Usada tanto na versão pronta quanto na animação)
+    const ConteudoPadrao = (
+        <div className="w-full max-w-[1280px] mx-auto px-6 md:px-10">
+            <Cabecalho />
+            <main className="w-full pb-10">{children}</main>
+        </div>
+    );
+
     if (fase === "pronto") {
-        return (
-            <>
-                <Cabecalho />
-                <main className="max-w-3xl mx-auto px-4">{children}</main>
-            </>
-        );
+        return <>{ConteudoPadrao}</>;
     }
 
     const mini = fase === "fechado" || fase === "aberto";
@@ -78,14 +78,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink overflow-hidden">
             <div
-                className="bg-parchment shadow-2xl relative overflow-hidden"
+                className="bg-parchment shadow-2xl relative overflow-y-auto overflow-x-hidden"
                 style={{
                     width: mini ? `min(${MINI.width}px, 82vw)` : "100vw",
                     height: mini ? `min(${MINI.height}px, 82vw / 0.738)` : "100vh",
                     backgroundColor: "var(--pagina-bg)",
                     color: "var(--pagina-texto)",
                     transition: "width 0.8s cubic-bezier(0.65,0,0.35,1), height 0.8s cubic-bezier(0.65,0,0.35,1), background-color 0.3s, color 0.3s",
-                    // this branch is only rendered when fase !== "pronto", so always disable pointer events
                     pointerEvents: "none",
                     perspective: 1800,
                 }}
@@ -93,8 +92,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
                     if (fase === "zoom") setFase("pronto");
                 }}
             >
-                <Cabecalho />
-                <main className="max-w-3xl mx-auto px-4">{children}</main>
+                {/* O mesmo ConteudoPadrao renderizado dentro da animação */}
+                {ConteudoPadrao}
 
                 {fase === "virando" && (
                     <FolhaVirando onFimAnimacao={() => setFase("pronto")} />
@@ -120,24 +119,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
                         }
                     }}
                 >
-                    {/* FRENTE — a textura de couro que você já aprovou */}
                     <div
                         className="absolute inset-0"
                         style={{
                             backfaceVisibility: "hidden",
                             borderRadius: "2px 6px 6px 2px",
                             background: `
-        radial-gradient(ellipse at 25% 15%, rgba(255,255,255,0.10), transparent 55%),
-        repeating-linear-gradient(115deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 4px),
-        repeating-linear-gradient(25deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E"),
-        linear-gradient(160deg, #8B5A2B, #6B4226)
-      `,
-                            boxShadow: `
-        inset 0 1px 1px rgba(255,241,214,0.3),
-        inset 0 -2px 3px rgba(0,0,0,0.45),
-        6px 10px 30px rgba(0,0,0,0.5)
-      `,
+                                radial-gradient(ellipse at 25% 15%, rgba(255,255,255,0.10), transparent 55%),
+                                repeating-linear-gradient(115deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 4px),
+                                repeating-linear-gradient(25deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px),
+                                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E"),
+                                linear-gradient(160deg, #8B5A2B, #6B4226)
+                            `,
+                            boxShadow: "inset 0 1px 1px rgba(255,241,214,0.3), inset 0 -2px 3px rgba(0,0,0,0.45), 6px 10px 30px rgba(0,0,0,0.5)",
                         }}
                     >
                         <div className="absolute" style={{ right: -3, top: 4, bottom: 4, width: 3, background: "#D9C7A8", borderRadius: "0 2px 2px 0" }} />
@@ -150,7 +144,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
                         </div>
                     </div>
 
-                    {/* VERSO — a "guarda" interna, revelada só depois de passar 90° */}
                     <div
                         className="absolute inset-0"
                         style={{

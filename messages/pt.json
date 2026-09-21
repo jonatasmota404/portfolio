@@ -7,6 +7,13 @@
   "home": {
     "tagline": "backend · frontend · infra",
     "titulo": "Um engenheiro construindo confiabilidade do código à infraestrutura",
-    "descricao": "Fullstack (Node.js/TypeScript, React) com foco em infraestrutura e confiabilidade. Aqui documento projetos e escrevo sobre o que aprendo construindo sistemas de verdade."
+    "descricao": "Fullstack (Node.js/TypeScript, React) com foco em infraestrutura e confiabilidade. Aqui documento projetos e escrevo sobre o que aprendo construindo sistemas de verdade.",
+    "escritosTitulo": "Últimos escritos",
+    "verTodos": "ver todos →"
+  },
+    "sobre": {
+    "contatoTitulo": "Vamos conversar",
+    "contato": "Contato",
+    "curriculo": "Baixar currículo"
   }
 }

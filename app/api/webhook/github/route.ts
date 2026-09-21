@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import crypto from "crypto";
 
 function assinaturaValida(corpo: string, assinaturaRecebida: string | null): boolean {
@@ -22,8 +22,22 @@ export async function POST(req: NextRequest) {
     const nomeRepo = payload.repository?.name;
 
     if (nomeRepo) {
+        // Invalida o cache do repositório específico
         revalidateTag(`repo:${nomeRepo}`, { expire: 0 });
-        if (nomeRepo !== "escritos") revalidateTag("repo:lista", { expire: 0 });
+
+        if (nomeRepo === "escritos") {
+            // Invalida a lista de artigos
+            revalidateTag("repo:escritos", { expire: 0 });
+        } else {
+            // Se for outro repositório, invalida a lista de repos
+            revalidateTag("repo:lista", { expire: 0 });
+        }
+
+        // Invalida a árvore e as páginas onde as habilidades e projetos aparecem
+        revalidateTag("calendario-contribuicoes", { expire: 0 });
+        revalidatePath("/[locale]/sobre", "page");
+        revalidatePath("/[locale]", "page");
     }
+
     return NextResponse.json({ recebido: true });
 }
