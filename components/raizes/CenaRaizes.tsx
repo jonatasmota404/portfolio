@@ -170,7 +170,14 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       const pa = nodes[A].p, pb = nodes[B].p, d = pa.distanceTo(pb);
       const off = () => new THREE.Vector3(rr() - 0.5, rr() - 0.5, rr() - 0.5).multiplyScalar(d * 0.55);
       const curve = new THREE.CubicBezierCurve3(pa, pa.clone().lerp(pb, 0.33).add(off()), pa.clone().lerp(pb, 0.66).add(off()), pb);
-      edges.push({ a, b, A, B, curve, len: curve.getLength(), strong, day0: nodes[A].birth, day1: Math.min(400, nodes[B].birth + 22), dyn: 1, hl: 0, hv: 0, o: 0, n: 0 });
+      // Nós secundários (repoIndex < 0) só recebem um ponto fraco (secP), sem
+      // núcleo brilhante (core/shell/halo). Uma aresta entre dois secundários
+      // nasceria sem nenhum ponto aceso visível em nenhuma ponta — atrasamos
+      // essas arestas para que sempre apareçam depois de algum nó real (com
+      // núcleo) já estar aceso por perto.
+      const ambosSecundarios = nodes[A].repoIndex < 0 && nodes[B].repoIndex < 0;
+      const atraso = ambosSecundarios ? 20 : 0;
+      edges.push({ a, b, A, B, curve, len: curve.getLength(), strong, day0: nodes[A].birth + atraso, day1: Math.min(400, nodes[B].birth + 22 + atraso), dyn: 1, hl: 0, hv: 0, o: 0, n: 0 });
       nodes[a].edges.push(edges.length - 1); nodes[b].edges.push(edges.length - 1);
     }
 
@@ -292,6 +299,22 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     let hoverRepo = -1;
     const raycaster = new THREE.Raycaster();
 
+    // Controle de depuração da abertura: "P" pausa/despausa o avanço do tempo
+    // de abertura; com pausado, "←"/"→" avançam manualmente em passos de 0.05.
+    // Fica atrás de ?debug na URL para não interferir com o uso normal do site.
+    const debugAtivo = window.location.search.includes("debug");
+    let aberturaPausada = false;
+    function handleDebugKey(e: KeyboardEvent) {
+      if (e.key === "p" || e.key === "P") { aberturaPausada = !aberturaPausada; return; }
+      if (!aberturaPausada) return;
+      if (e.key === "ArrowRight") { tempoAberturaRef.current += 0.05; }
+      else if (e.key === "ArrowLeft") { tempoAberturaRef.current = Math.max(0, tempoAberturaRef.current - 0.05); }
+      else return;
+      const uTDebug = Math.min(400, (tempoAberturaRef.current / 8) * 400);
+      console.log(`[raizes] tempoAbertura=${tempoAberturaRef.current.toFixed(3)} uT=${uTDebug.toFixed(1)}`);
+    }
+    if (debugAtivo) window.addEventListener("keydown", handleDebugKey);
+
     function pickRepo(clientX: number, clientY: number): number {
       const rect = canvas!.getBoundingClientRect();
       const mx = ((clientX - rect.left) / rect.width) * 2 - 1;
@@ -380,7 +403,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       const dt = Math.min(0.05, (now - last) / 1000); last = now;
       const paleta = PALETAS[temaRef.current].scene;
 
-      tempoAberturaRef.current += dt;
+      if (!aberturaPausada) tempoAberturaRef.current += dt;
       const uT = reduce ? 400 : Math.min(400, (tempoAberturaRef.current / 8) * 400);
       lineMat.uniforms.uT.value = uT; lineMat.uniforms.uTime.value = now / 1000;
 
@@ -487,6 +510,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       cancelAnimationFrame(frameId);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("click", handleClick);
+      if (debugAtivo) window.removeEventListener("keydown", handleDebugKey);
       document.body.style.cursor = "";
       if (hoverRepo >= 0) {
         window.dispatchEvent(new CustomEvent("raizes:hover-node", { detail: { hovering: false } }));
