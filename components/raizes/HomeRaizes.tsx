@@ -19,6 +19,27 @@ interface Props {
   ligacoes: Array<{ a: string; b: string; forte: boolean }>;
   posts: any[];
   totalRepos: number;
+  githubUser: string;
+  formacao: string;
+  disponibilidade: string;
+  contribuicoes: number | null;
+}
+
+// Bullet real do README: "Formado em Ciência da Computação (IFMA — Instituto Federal do Maranhão)."
+// -> ["Ciência da Computação", "IFMA"]. Sem match, cai pra sentença inteira sem sub-linha.
+function partirFormacao(bullet: string): [string, string] {
+  const m = bullet.match(/em (.+?)\s*\(([^—)]+)/);
+  if (m) return [m[1].trim(), m[2].trim()];
+  return [bullet.replace(/\.$/, ""), ""];
+}
+
+// Bullet real do README: "Baseado no Brasil, aberto a oportunidades remotas."
+// -> ["Aberto a oportunidades remotas", "Baseado no Brasil"] (mesmas duas frases, ordem invertida
+// pra dar destaque à disponibilidade, com o rótulo de base abaixo).
+function partirDisponibilidade(bullet: string): [string, string] {
+  const [base, aberto] = bullet.replace(/\.$/, "").split(", ");
+  if (base && aberto) return [aberto.charAt(0).toUpperCase() + aberto.slice(1), base];
+  return [bullet.replace(/\.$/, ""), ""];
 }
 
 // Tags mais frequentes entre os nós — alimenta os chips do bento.
@@ -31,7 +52,16 @@ function tagsMaisComuns(nos: NoRepo[], limite: number): string[] {
     .map(([tag]) => tag);
 }
 
-export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
+export function HomeRaizes({
+  nos,
+  ligacoes,
+  posts,
+  totalRepos,
+  githubUser,
+  formacao,
+  disponibilidade,
+  contribuicoes,
+}: Props) {
   const t = useTranslations("home");
   const cameraRef = useRef<{
     position: { x: number; y: number; z: number };
@@ -87,6 +117,8 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
 
   const destaques = nos.filter((n) => n.destaque);
   const tecnologias = tagsMaisComuns(nos, 8);
+  const [formacaoTitulo, formacaoSub] = partirFormacao(formacao);
+  const [dispoTitulo, dispoSub] = partirDisponibilidade(disponibilidade);
 
   return (
     <>
@@ -138,29 +170,42 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" className="py-20 px-4" data-cam="-12.8,6,7.4|0,2,0">
+        <section id="bio" aria-label="Quem sou" className="py-20 px-4" data-cam="-12.8,6,7.4|0,2,0">
           <div className="max-w-4xl mx-auto">
-            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
-              Quem sou
-            </h2>
             <div className="raizes-bento">
               <div className="box big">
-                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                  Engenheiro de software com foco em infraestrutura e confiabilidade. Construo sistemas que precisam
-                  escalar, falhar graciosamente e se recuperar. Experiência full-stack: Node.js/TypeScript, React,
-                  Kubernetes, observabilidade.
-                </p>
+                <div>
+                  <h2 className="heading-3 mb-3" style={{ fontSize: "clamp(20px, 2.4vw, 28px)" }}>
+                    {t("quemSouTitulo")}
+                  </h2>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                    {t("descricao")}
+                  </p>
+                </div>
+                <a
+                  href={`https://github.com/${githubUser}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lbl"
+                  style={{ textDecoration: "none" }}
+                >
+                  {githubUser} · GitHub
+                </a>
               </div>
               <div className="box">
                 <div className="num">{totalRepos}</div>
-                <div className="lbl">Repositórios</div>
+                <div className="lbl">repositórios ({destaques.length} destaques)</div>
               </div>
               <div className="box">
                 <div className="num">{posts.length}</div>
-                <div className="lbl">Artigos</div>
+                <div className="lbl">artigos escritos</div>
               </div>
               <div className="box wide">
-                <div className="lbl mb-3">Tecnologias</div>
+                <div className="num">{contribuicoes ?? "—"}</div>
+                <div className="lbl">contribuições no período mostrado</div>
+              </div>
+              <div className="box wide">
+                <div className="lbl mb-3">stack do dia a dia</div>
                 <div className="flex flex-wrap gap-2">
                   {tecnologias.map((tag) => (
                     <span key={tag} className="raizes-chip">
@@ -168,6 +213,22 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                     </span>
                   ))}
                 </div>
+              </div>
+              <div className="box">
+                <div style={{ fontFamily: "var(--font-tight), sans-serif", fontWeight: 800, fontSize: 15, color: "var(--ink)" }}>
+                  {formacaoTitulo}
+                </div>
+                <div className="lbl">{formacaoSub}</div>
+              </div>
+              <div className="box">
+                <div
+                  className="flex items-center"
+                  style={{ fontFamily: "var(--font-tight), sans-serif", fontWeight: 800, fontSize: 15, color: "var(--ink)" }}
+                >
+                  <span className="dotp" aria-hidden="true" />
+                  {dispoTitulo}
+                </div>
+                <div className="lbl">{dispoSub}</div>
               </div>
             </div>
           </div>

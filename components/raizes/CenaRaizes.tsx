@@ -125,6 +125,16 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     if (!canvas) return;
     const isMob = window.matchMedia("(max-width: 768px)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    // Deslocamento sutil da câmera acompanhando o cursor — atualizado no listener
+    // global de pointermove abaixo, lido no loop de animação antes do lerp final.
+    const mouse = { x: 0, y: 0 };
+    function handleMouseDrift(e: PointerEvent) {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
+    }
+    window.addEventListener("pointermove", handleMouseDrift);
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMob, alpha: true });
@@ -503,8 +513,12 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
 
       const alvo = camAlvo.current;
       if (alvo) {
-        camPos.x += (alvo.position.x - camPos.x) * 0.05; camPos.y += (alvo.position.y - camPos.y) * 0.05; camPos.z += (alvo.position.z - camPos.z) * 0.05;
-        camLook.x += (alvo.target.x - camLook.x) * 0.05; camLook.y += (alvo.target.y - camLook.y) * 0.05; camLook.z += (alvo.target.z - camLook.z) * 0.05;
+        const tp = { x: alvo.position.x, y: alvo.position.y, z: alvo.position.z };
+        const tl = { x: alvo.target.x, y: alvo.target.y, z: alvo.target.z };
+        if (!reduce) { tp.x += Math.sin(now / 4200) * 0.7; tp.y += Math.sin(now / 5300) * 0.3; }
+        if (fine) { tp.x += mouse.x * 1.4; tp.y += -mouse.y * 0.7; }
+        camPos.x += (tp.x - camPos.x) * 0.05; camPos.y += (tp.y - camPos.y) * 0.05; camPos.z += (tp.z - camPos.z) * 0.05;
+        camLook.x += (tl.x - camLook.x) * 0.05; camLook.y += (tl.y - camLook.y) * 0.05; camLook.z += (tl.z - camLook.z) * 0.05;
         camera.position.copy(camPos); camera.lookAt(camLook);
       }
       renderer.render(scene, camera);
@@ -532,6 +546,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointermove", handleMouseDrift);
       window.removeEventListener("click", handleClick);
       if (debugAtivo) window.removeEventListener("keydown", handleDebugKey);
       document.body.style.cursor = "";
