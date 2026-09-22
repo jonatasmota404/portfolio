@@ -20,7 +20,7 @@ export type NoRepo = {
 };
 
 // Hash simples determinístico para gerar hue a partir do nome
-function gerarHue(nome: string): number {
+export function gerarHue(nome: string): number {
   let hash = 0;
   const prime = 31;
   for (let i = 0; i < nome.length; i++) {

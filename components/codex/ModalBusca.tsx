@@ -54,12 +54,12 @@ export function ModalBusca({ aberto, onFechar }: Props) {
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4">
       {/* Fundo escuro com desfoque */}
       <div 
-        className="absolute inset-0 bg-[var(--color-ink)]/40 backdrop-blur-sm transition-opacity" 
+        className="absolute inset-0 bg-[var(--bg)]/60 backdrop-blur-sm transition-opacity"
         onClick={onFechar} 
       />
 
       {/* Caixa do Modal */}
-      <div className="mundo-painel border rounded-3xl shadow-2xl w-full max-w-2xl relative z-10 flex flex-col overflow-hidden bg-[var(--pagina-bg)]">
+      <div className="mundo-painel border rounded-3xl shadow-2xl w-full max-w-2xl relative z-10 flex flex-col overflow-hidden bg-[var(--glass)] backdrop-blur-xl">
         
         {/* Barra de Pesquisa */}
         <div className="flex items-center gap-4 p-5 border-b border-current/10">
@@ -98,7 +98,7 @@ export function ModalBusca({ aberto, onFechar }: Props) {
                   className="flex items-center gap-4 p-4 rounded-2xl hover:bg-current/[0.04] transition-colors group"
                 >
                   {/* Ícone dependendo do tipo */}
-                  <div className="w-10 h-10 shrink-0 rounded-full border border-current/10 flex items-center justify-center opacity-60 group-hover:opacity-100 group-hover:border-[#C1571F] group-hover:text-[#C1571F] transition-all">
+                  <div className="w-10 h-10 shrink-0 rounded-full border border-current/10 flex items-center justify-center opacity-60 group-hover:opacity-100 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] transition-all">
                     {item.tipo === "projeto" ? <CodeXml size={18} /> : <BookOpen size={18} />}
                   </div>
                   
@@ -107,7 +107,7 @@ export function ModalBusca({ aberto, onFechar }: Props) {
                       <span className="text-[9px] font-mono uppercase tracking-widest border border-current/20 rounded-full px-2 py-0.5 opacity-60">
                         {item.categoria}
                       </span>
-                      <span className="font-voice italic text-lg truncate group-hover:text-[#C1571F] transition-colors">
+                      <span className="font-voice italic text-lg truncate group-hover:text-[var(--accent)] transition-colors">
                         {item.titulo}
                       </span>
                     </div>

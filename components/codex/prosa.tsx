@@ -15,7 +15,7 @@ export const componentesProsa = {
           margin-right: 0.15rem;
           font-family: var(--font-voice), Georgia, serif;
           font-style: italic;
-          color: #C1571F;
+          color: var(--accent);
           text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
         }
       `}</style>
@@ -25,7 +25,7 @@ export const componentesProsa = {
 
   // Títulos com estilo de capítulo de livro
   h1: (props: ComponentProps<"h1">) => (
-    <h1 className="font-voice italic text-3xl md:text-4xl mt-12 mb-6" style={{ color: "#C1571F" }} {...props} />
+    <h1 className="font-voice italic text-3xl md:text-4xl mt-12 mb-6" style={{ color: "var(--accent)" }} {...props} />
   ),
   h2: (props: ComponentProps<"h2">) => (
     <h2 className="font-voice italic text-2xl md:text-3xl mt-10 mb-4 border-b border-current/10 pb-2" {...props} />
@@ -41,7 +41,7 @@ export const componentesProsa = {
   
   // Links ganham um tom cursivo e a cor de destaque
   a: (props: ComponentProps<"a">) => (
-    <a className="font-serif italic underline decoration-current/30 hover:decoration-current underline-offset-4 transition-colors" style={{ color: "#C1571F" }} {...props} />
+    <a className="font-serif italic underline decoration-current/30 hover:decoration-current underline-offset-4 transition-colors" style={{ color: "var(--accent)" }} {...props} />
   ),
   
   strong: (props: ComponentProps<"strong">) => <strong className="font-bold opacity-100" {...props} />,
@@ -54,23 +54,23 @@ export const componentesProsa = {
     <li className="font-serif text-[1.05rem] leading-relaxed opacity-85 mb-2" {...props} />
   ),
   ul: (props: ComponentProps<"ul">) => (
-    <ul className="list-disc pl-6 mb-6 space-y-2 marker:text-[#C1571F]" {...props} />
+    <ul className="list-disc pl-6 mb-6 space-y-2 marker:text-[var(--accent)]" {...props} />
   ),
   ol: (props: ComponentProps<"ol">) => (
-    <ol className="list-decimal pl-6 mb-6 space-y-2 marker:text-[#C1571F]" {...props} />
+    <ol className="list-decimal pl-6 mb-6 space-y-2 marker:text-[var(--accent)]" {...props} />
   ),
   
   // Blockquote imitando uma anotação/citação importante nas margens
   blockquote: (props: ComponentProps<"blockquote">) => (
-    <blockquote className="border-l-4 pl-5 italic my-8 py-2 pr-4 rounded-r-lg bg-current/[0.02]" style={{ borderColor: "#C1571F" }} {...props} />
+    <blockquote className="border-l-4 pl-5 italic my-8 py-2 pr-4 rounded-r-lg bg-current/[0.02]" style={{ borderColor: "var(--accent)" }} {...props} />
   ),
   
   code: (props: ComponentProps<"code">) => (
-    <code className="font-mono text-[0.85em] px-1.5 py-0.5 rounded border border-current/10" style={{ backgroundColor: "color-mix(in srgb, var(--pagina-texto) 4%, transparent)" }} {...props} />
+    <code className="font-mono text-[0.85em] px-1.5 py-0.5 rounded border border-current/10" style={{ backgroundColor: "color-mix(in srgb, var(--ink) 4%, transparent)" }} {...props} />
   ),
   
   pre: (props: ComponentProps<"pre">) => (
-    <pre className="font-mono text-sm p-6 rounded-xl overflow-x-auto mb-6 border border-current/10 shadow-sm" style={{ backgroundColor: "color-mix(in srgb, var(--pagina-texto) 3%, transparent)" }} {...props} />
+    <pre className="font-mono text-sm p-6 rounded-xl overflow-x-auto mb-6 border border-current/10 shadow-sm" style={{ backgroundColor: "color-mix(in srgb, var(--ink) 3%, transparent)" }} {...props} />
   ),
   
   img: (props: ComponentProps<"img">) => (

@@ -1,9 +1,9 @@
 export type Zona = "infra" | "frontend" | "backend";
 
 export const ZONAS: Record<Zona, { titulo: string; cor: string; chipsPadrao: string[]; caso: string }> = {
-  infra: { titulo: "Infra & confiabilidade", cor: "#C1571F", chipsPadrao: ["Docker", "CI/CD"], caso: "Prova ao vivo: uptime e horário de deploy deste site." },
-  frontend: { titulo: "Frontend", cor: "#4C7A9E", chipsPadrao: ["React", "Next.js", "Tailwind"], caso: "Projetos práticos em construção." },
-  backend: { titulo: "Backend", cor: "#8A6E4B", chipsPadrao: ["Node.js", "TypeScript", "Nest.js"], caso: "Caso real: Sistema Retífica Exacta, em produção desde 2023." },
+  infra: { titulo: "Infra & confiabilidade", cor: "var(--accent)", chipsPadrao: ["Docker", "CI/CD"], caso: "Prova ao vivo: uptime e horário de deploy deste site." },
+  frontend: { titulo: "Frontend", cor: "var(--accent2)", chipsPadrao: ["React", "Next.js", "Tailwind"], caso: "Projetos práticos em construção." },
+  backend: { titulo: "Backend", cor: "color-mix(in srgb, var(--accent) 60%, var(--bg))", chipsPadrao: ["Node.js", "TypeScript", "Nest.js"], caso: "Caso real: Sistema Retífica Exacta, em produção desde 2023." },
 };
 
 // mapeia zona do instrumento → tag usada nos artigos (frontend ainda não tem equivalente)

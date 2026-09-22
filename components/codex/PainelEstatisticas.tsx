@@ -35,9 +35,9 @@ export function PainelEstatisticas({ stats, calendario, linguagens }: Props) {
             onClick={() => setAba(a.id)}
             className="text-xs font-mono px-3.5 py-1.5 rounded-full border transition-colors"
             style={{ 
-              borderColor: aba === a.id ? "#C1571F" : "var(--pagina-texto)", 
-              opacity: aba === a.id ? 1 : 0.25, 
-              color: aba === a.id ? "#C1571F" : "inherit" 
+              borderColor: aba === a.id ? "var(--accent)" : "var(--ink)",
+              opacity: aba === a.id ? 1 : 0.25,
+              color: aba === a.id ? "var(--accent)" : "inherit"
             }}
           >
             {a.rotulo}

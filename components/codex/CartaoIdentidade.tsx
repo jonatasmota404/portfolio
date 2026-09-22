@@ -24,7 +24,7 @@ export function CartaoIdentidade({ nome, cargo, detalhes, avatarUrl, rotuloConta
                 <a
                     href="mailto:jonatasjr.019@gmail.com"
                     className="font-mono text-xs px-5 py-2.5 rounded-full font-semibold transition-opacity hover:opacity-90"
-                    style={{ background: "#C1571F", color: "#1c1712" }}
+                    style={{ background: "var(--accent)", color: "var(--on-accent)" }}
                 >
                     {rotuloContato}
                 </a>
@@ -34,8 +34,8 @@ export function CartaoIdentidade({ nome, cargo, detalhes, avatarUrl, rotuloConta
                     download
                     className="font-mono text-xs px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
                     style={{
-                        backgroundColor: "color-mix(in srgb, var(--pagina-texto) 8%, transparent)",
-                        color: "var(--pagina-texto)",
+                        backgroundColor: "color-mix(in srgb, var(--ink) 8%, transparent)",
+                        color: "var(--ink)",
                     }}
                 >
                     currículo

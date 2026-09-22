@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
+import { MiniaturaRepo } from "./MiniaturaRepo";
+import { gerarHue } from "@/lib/raizes";
 
 type Post = {
   slug: string;
@@ -80,7 +82,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
           <button
             onClick={() => selecionarCategoria(null)}
             className={`font-voice italic text-2xl transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
-            style={{ color: categoriaAtiva === null ? "#C1571F" : "inherit" }}
+            style={{ color: categoriaAtiva === null ? "var(--accent)" : "inherit" }}
           >
             Todos
           </button>
@@ -89,7 +91,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
               key={cat}
               onClick={() => selecionarCategoria(cat)}
               className={`font-voice italic text-2xl transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
-              style={{ color: categoriaAtiva === cat ? "#C1571F" : "inherit" }}
+              style={{ color: categoriaAtiva === cat ? "var(--accent)" : "inherit" }}
             >
               {formatarNome(cat)}
             </button>
@@ -108,9 +110,14 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
                 onClick={() => setTechAtiva(tech === techAtiva ? null : tech)}
                 className={`text-[10px] font-mono border rounded-full px-3.5 py-1.5 uppercase tracking-wider transition-all ${
                   techAtiva === tech
-                    ? "bg-[#C1571F] text-[#14161C] border-[#C1571F] font-bold shadow-sm"
+                    ? "font-bold shadow-sm"
                     : "border-current/20 opacity-60 hover:opacity-100 hover:border-current/40"
                 }`}
+                style={
+                  techAtiva === tech
+                    ? { background: "var(--accent)", color: "var(--on-accent)", borderColor: "var(--accent)" }
+                    : undefined
+                }
               >
                 {tech}
               </button>
@@ -129,23 +136,12 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
           return (
             <div key={post.slug} className="mundo-painel border rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:border-current/30 hover:shadow-md hover:-translate-y-1">
               <Link href={`/escritos/${post.slug}`} className="block shrink-0 focus:outline-none mb-6">
-                <div className="relative w-full aspect-[2/1] border border-dashed border-current/20 rounded-2xl flex flex-col items-center justify-center overflow-hidden bg-current/[0.02] group-hover:bg-current/[0.04] transition-colors">
-                  <svg className="absolute inset-0 w-full h-full opacity-10 text-current pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <polygon points="50,10 90,90 10,90" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                    <circle cx="50" cy="63.3" r="26.7" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                    <line x1="50" y1="10" x2="50" y2="100" stroke="currentColor" strokeWidth="0.5" />
-                    <line x1="0" y1="63.3" x2="100" y2="63.3" stroke="currentColor" strokeWidth="0.5" />
-                  </svg>
-                  <div className="relative z-10 flex flex-col items-center text-[10px] font-mono opacity-60">
-                    <span className="uppercase tracking-widest">registo de</span>
-                    <span className="uppercase tracking-widest">estudos</span>
-                  </div>
-                </div>
+                <MiniaturaRepo hue={gerarHue(post.slug)} variante="escrito" />
               </Link>
 
               <div className="flex flex-col flex-1 min-w-0">
                 <div className="flex flex-col items-start gap-1 mb-1">
-                  <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "#C1571F" }}>
+                  <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
                     {formatarNome(post.categoria)}
                   </span>
                   <Link href={`/escritos/${post.slug}`} className="font-mono font-semibold text-lg hover:opacity-70 transition-opacity">
@@ -161,14 +157,14 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
                 {post.tecnologias.length > 0 ? (
                   <div className="flex gap-2 flex-wrap mt-auto">
                     {post.tecnologias.map((tag: string) => (
-                      <span key={tag} className="text-[10px] font-mono border rounded-full px-2.5 py-1 uppercase tracking-wider" style={{ color: "#C1571F", borderColor: "rgba(193, 87, 31, 0.3)", backgroundColor: "rgba(193, 87, 31, 0.04)" }}>
+                      <span key={tag} className="text-[10px] font-mono border rounded-full px-2.5 py-1 uppercase tracking-wider" style={{ color: "var(--accent)", borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)", backgroundColor: "color-mix(in srgb, var(--accent) 6%, transparent)" }}>
                         {tag}
                       </span>
                     ))}
                   </div>
                 ) : (
                   <div className="mt-auto pt-2 flex justify-end border-t border-dashed border-current/10">
-                    <Link href={`/escritos/${post.slug}`} className="text-[10px] mt-3 font-mono uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "#C1571F" }}>
+                    <Link href={`/escritos/${post.slug}`} className="text-[10px] mt-3 font-mono uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "var(--accent)" }}>
                       Ler registo →
                     </Link>
                   </div>

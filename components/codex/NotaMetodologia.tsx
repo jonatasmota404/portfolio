@@ -14,7 +14,7 @@ export function NotaMetodologia() {
         <span>como isso é contado</span>
         <span
           className="inline-block border-l-4 border-r-4 border-transparent transition-transform"
-          style={{ borderTop: "4px solid #C1571F", transform: aberto ? "rotate(180deg)" : "rotate(0deg)" }}
+          style={{ borderTop: "4px solid var(--accent)", transform: aberto ? "rotate(180deg)" : "rotate(0deg)" }}
         />
       </button>
       {aberto && (

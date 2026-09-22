@@ -24,7 +24,7 @@ export function CodexTraco({ as: Tag, ...props }: CodexTracoProps) {
   return (
     <Tag
       fill="none"
-      stroke="var(--pagina-texto)"
+      stroke="var(--ink)"
       strokeWidth={1}
       className="codex-draw"
       {...props}
@@ -72,11 +72,11 @@ export function CodexAnnotation({ x, y, texto, ancoraX, ancoraY }: CodexAnnotati
   y2={y - 12}
   strokeWidth={0.5}
   strokeDasharray="2 3"
-  stroke="var(--pagina-texto)"
+  stroke="var(--ink)"
   opacity={0.6}
 />
       )}
-      <text x={x} y={y} fontSize={12} fill="var(--pagina-texto)" fontFamily="var(--font-serif)">
+      <text x={x} y={y} fontSize={12} fill="var(--ink)" fontFamily="var(--font-serif)">
         {texto}
       </text>
     </g>

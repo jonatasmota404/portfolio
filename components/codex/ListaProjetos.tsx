@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
+import { MiniaturaRepo } from "./MiniaturaRepo";
+import { gerarHue } from "@/lib/raizes";
 
 function formatarNome(texto: string) {
   if (!texto) return "";
@@ -74,7 +76,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
           <button
             onClick={() => selecionarCategoria(null)}
             className={`font-voice italic text-2xl transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
-            style={{ color: categoriaAtiva === null ? "#C1571F" : "inherit" }}
+            style={{ color: categoriaAtiva === null ? "var(--accent)" : "inherit" }}
           >
             Todos
           </button>
@@ -83,7 +85,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
               key={cat}
               onClick={() => selecionarCategoria(cat)}
               className={`font-voice italic text-2xl transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
-              style={{ color: categoriaAtiva === cat ? "#C1571F" : "inherit" }}
+              style={{ color: categoriaAtiva === cat ? "var(--accent)" : "inherit" }}
             >
               {formatarNome(cat)}
             </button>
@@ -102,9 +104,14 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                 onClick={() => setTechAtiva(tech === techAtiva ? null : tech)}
                 className={`text-[10px] font-mono border rounded-full px-3.5 py-1.5 uppercase tracking-wider transition-all ${
                   techAtiva === tech
-                    ? "bg-[#C1571F] text-[#14161C] border-[#C1571F] font-bold shadow-sm"
+                    ? "font-bold shadow-sm"
                     : "border-current/20 opacity-60 hover:opacity-100 hover:border-current/40"
                 }`}
+                style={
+                  techAtiva === tech
+                    ? { background: "var(--accent)", color: "var(--on-accent)", borderColor: "var(--accent)" }
+                    : undefined
+                }
               >
                 {tech}
               </button>
@@ -122,25 +129,14 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
           return (
             <div key={repo.name} className="mundo-painel border rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:border-current/30 hover:shadow-md hover:-translate-y-1">
               <Link href={`/projetos/${repo.name}`} className="block shrink-0 focus:outline-none mb-6">
-                <div className="relative w-full aspect-video border border-dashed border-current/20 rounded-2xl flex flex-col items-center justify-center overflow-hidden bg-current/[0.02] group-hover:bg-current/[0.04] transition-colors">
-                  <svg className="absolute inset-0 w-full h-full opacity-10 text-current pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.5" />
-                    <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.5" />
-                    <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                    <rect x="20" y="20" width="60" height="60" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                  </svg>
-                  <div className="relative z-10 flex flex-col items-center text-[10px] font-mono opacity-60">
-                    <span className="uppercase tracking-widest">esboço do</span>
-                    <span className="uppercase tracking-widest">artefato</span>
-                  </div>
-                </div>
+                <MiniaturaRepo hue={gerarHue(repo.name)} variante="projeto" />
               </Link>
 
               <div className="flex flex-col flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3 mb-1">
                   <div className="flex flex-col">
                     {/* Categoria exibida subtilmente acima do título */}
-                    <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "#C1571F" }}>
+                    <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
                       {formatarNome(repo.categoria)}
                     </span>
                     <Link href={`/projetos/${repo.name}`} className="font-mono font-semibold text-lg hover:opacity-70 transition-opacity">
@@ -159,7 +155,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                 
                 <div className="flex gap-2 flex-wrap mt-auto">
                   {repo.tecnologias.map((tec: string) => (
-                    <span key={tec} className="text-[10px] font-mono border rounded-full px-2.5 py-1 uppercase tracking-wider" style={{ color: "#C1571F", borderColor: "rgba(193, 87, 31, 0.3)", backgroundColor: "rgba(193, 87, 31, 0.04)" }}>
+                    <span key={tec} className="text-[10px] font-mono border rounded-full px-2.5 py-1 uppercase tracking-wider" style={{ color: "var(--accent)", borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)", backgroundColor: "color-mix(in srgb, var(--accent) 6%, transparent)" }}>
                       {tec}
                     </span>
                   ))}

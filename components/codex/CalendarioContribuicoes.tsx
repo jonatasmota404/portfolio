@@ -16,25 +16,17 @@ export function CalendarioContribuicoes({ semanas }: { semanas: Semana[] | null 
   return (
     <div className="w-full flex flex-col calendario-cores">
       
-      {/* 
-        A MÁGICA ACONTECE AQUI: 
-        Variáveis CSS processam as cores instantaneamente junto com o carregamento da página, 
-        acabando com o "delay" do React e a piscada branca.
+      {/*
+        Os cinco níveis são derivados de --accent, então o calendário
+        acompanha a paleta ativa sem nenhum JavaScript de tema.
       */}
       <style>{`
         .calendario-cores {
-          --cal-0: #D8CFB8;
-          --cal-1: #C3CDB9;
-          --cal-2: #96AC98;
-          --cal-3: #6E9580;
-          --cal-4: #5B8770;
-        }
-        html.night .calendario-cores {
-          --cal-0: #1C1F27;
-          --cal-1: #243830;
-          --cal-2: #345247;
-          --cal-3: #456B5B;
-          --cal-4: #5B8770;
+          --cal-0: var(--glass);
+          --cal-1: color-mix(in srgb, var(--accent) 25%, var(--bg));
+          --cal-2: color-mix(in srgb, var(--accent) 50%, var(--bg));
+          --cal-3: color-mix(in srgb, var(--accent) 75%, var(--bg));
+          --cal-4: var(--accent);
         }
       `}</style>
 

@@ -1,24 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-
-const PALETA_DIA = ["#4C7A9E", "#5B8770", "#8A6E4B", "#C1571F"];
-const PALETA_NOITE = ["#6FA0C4", "#7CA895", "#B0906A", "#E08A4A"];
-
-function useTemaNoturno() {
-  const [noite, setNoite] = useState(false);
-  useEffect(() => {
-    setNoite(document.documentElement.classList.contains("night"));
-    const obs = new MutationObserver(() => setNoite(document.documentElement.classList.contains("night")));
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
-  return noite;
-}
+import { PALETA_UI as PALETA } from "@/lib/paletaUi";
 
 export function DistribuicaoLinguagens({ dados }: { dados: { nome: string; pct: number }[] }) {
-  const noite = useTemaNoturno();
-  const PALETA = noite ? PALETA_NOITE : PALETA_DIA;
-
   if (dados.length === 0) return <p className="text-sm opacity-60">Sem dado de linguagem suficiente ainda.</p>;
 
   return (

@@ -82,7 +82,7 @@ export function Cabecalho() {
               <button
                 onClick={alternarIdioma}
                 disabled={isPending}
-                className="flex items-center gap-1.5 opacity-70 hover:opacity-100 hover:text-[#C1571F] transition-all focus:outline-none disabled:opacity-30"
+                className="flex items-center gap-1.5 opacity-70 hover:opacity-100 hover:text-[var(--accent)] transition-all focus:outline-none disabled:opacity-30"
                 aria-label="Alternar Idioma"
               >
                 <Globe size={15} className={isPending ? "animate-spin" : ""} />
@@ -118,7 +118,7 @@ export function Cabecalho() {
         {aberto && (
           <div
             className="sm:hidden mt-4 flex flex-col gap-4 border rounded-3xl p-6 shadow-2xl absolute w-full left-0 z-[100]"
-            style={{ backgroundColor: "var(--pagina-bg)", borderColor: "var(--pagina-texto)", opacity: 0.98 }}
+            style={{ backgroundColor: "var(--bg)", borderColor: "var(--line)", opacity: 0.98 }}
           >
             <nav className="flex flex-col gap-4 text-sm font-voice italic text-lg">
               <Link href="/projetos" onClick={() => setAberto(false)}>{t("projetos")}</Link>

@@ -30,17 +30,10 @@ html.night {
 }
 
 .mundo-painel {
-  background-color: transparent;
-  color: #211D16;
-  border-color: rgba(33, 29, 22, 0.25);
-  --pagina-texto: #211D16;
-  transition: color 0.4s ease, border-color 0.4s ease;
-}
-
-html.night .mundo-painel {
-  color: #D9C9A8;
-  border-color: rgba(217, 201, 168, 0.25);
-  --pagina-texto: #D9C9A8;
+  background-color: var(--glass);
+  color: var(--ink);
+  border-color: var(--line);
+  transition: color 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
 }
 
 .codex-draw {

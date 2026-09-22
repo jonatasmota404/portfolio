@@ -23,7 +23,7 @@ export function RetratoAvatar({ urlFoto }: { urlFoto: string }) {
       // Adicionado max-w-full e aspect-square para nunca deformar ou estourar o container pai
       className="w-32 h-32 md:w-40 md:h-40 mx-auto md:mx-0 rounded-full overflow-hidden border-2 shrink-0 aspect-square"
       style={{
-        borderColor: "var(--pagina-texto)",
+        borderColor: "var(--accent)",
         transform: `perspective(600px) rotateX(${inclinacao.x}deg) rotateY(${inclinacao.y}deg)`,
         transition: "transform 0.15s ease-out",
       }}

@@ -79,7 +79,7 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
             <div className="flex flex-col gap-3">
               {atributos.map((a) => (
                 <div key={a.label} className="grid grid-cols-[75px_1fr] gap-3 items-baseline">
-                  <span className="text-xs font-mono" style={{ color: "#C1571F" }}>{a.label}</span>
+                  <span className="text-xs font-mono" style={{ color: "var(--accent)" }}>{a.label}</span>
                   <span className="font-voice text-sm leading-relaxed opacity-90">{a.value}</span>
                 </div>
               ))}

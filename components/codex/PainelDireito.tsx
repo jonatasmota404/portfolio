@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import type { NoHabilidade } from "@/lib/habilidades";
 import { PainelEstatisticas } from "./PainelEstatisticas";
+import { PALETA_UI as PALETA_DINAMICA } from "@/lib/paletaUi";
 
 type Stat = { valor: string; rotulo: string };
 type Semana = { label: string; dias: { contagem: number }[] };
@@ -14,8 +15,6 @@ type Props = {
   calendario: Semana[] | null;
   linguagens: Linguagem[];
 };
-
-const PALETA_DINAMICA = ["#C1571F", "#5B8770", "#D9C7A8", "#8B5A2B", "#456B5B", "#96AC98"];
 
 function formatarNome(texto: string) {
   if (!texto) return "";
@@ -56,7 +55,7 @@ export function PainelDireito({ habilidades, stats, calendario, linguagens }: Pr
 
   // 2. Motor do Radar: Calcula os eixos baseado no que o usuário clicou
   const maxXP = Math.max(...Object.values(xpPorZona), 1);
-  const corAtiva = zonaAtiva ? PALETA_DINAMICA[zonasUnicas.indexOf(zonaAtiva) % PALETA_DINAMICA.length] : "#C1571F";
+  const corAtiva = zonaAtiva ? PALETA_DINAMICA[zonasUnicas.indexOf(zonaAtiva) % PALETA_DINAMICA.length] : "var(--accent)";
 
   const eixosRadar = useMemo(() => {
     if (!zonaAtiva) {
@@ -106,7 +105,7 @@ export function PainelDireito({ habilidades, stats, calendario, linguagens }: Pr
               })}
               
               {/* Polígono de Dados */}
-              <polygon points={calcularPontosRadar(eixosRadar.map(a => Math.max(a.valor, 0.1)), 85, 120, eixosRadar.length)} fill="var(--pagina-texto)" opacity="0.08" className="transition-all duration-500" />
+              <polygon points={calcularPontosRadar(eixosRadar.map(a => Math.max(a.valor, 0.1)), 85, 120, eixosRadar.length)} fill="var(--ink)" opacity="0.08" className="transition-all duration-500" />
               <polygon points={calcularPontosRadar(eixosRadar.map(a => Math.max(a.valor, 0.1)), 85, 120, eixosRadar.length)} fill="none" stroke={corAtiva} strokeWidth="2" className="transition-all duration-500" />
               
               {/* Vértices */}
