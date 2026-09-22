@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import type { NoRepo } from "@/lib/raizes";
 import { NomeCinetico } from "./NomeCinetico";
+import { CursorCustom } from "./CursorCustom";
+import { BotoesMagneticos } from "./BotoesMagneticos";
 
 const CenaRaizes = dynamic(() => import("./CenaRaizes").then((m) => ({ default: m.CenaRaizes })), {
   ssr: false,
@@ -82,6 +84,8 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
   return (
     <>
       <CenaRaizes nos={nos} ligacoes={ligacoes} camAlvo={cameraRef} />
+      <CursorCustom />
+      <BotoesMagneticos />
 
       <div className="relative z-10">
         {/* Hero */}
@@ -101,10 +105,10 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
               </div>
             </div>
             <div className="flex flex-wrap gap-4">
-              <a href="#projetos" className="raizes-btn raizes-btn-pri">
+              <a href="#projetos" className="raizes-btn raizes-btn-pri mag">
                 Ver projetos
               </a>
-              <a href="#escritos" className="raizes-btn">
+              <a href="#escritos" className="raizes-btn mag">
                 Ler escritos
               </a>
             </div>
@@ -168,7 +172,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
               ))}
             </div>
             <div className="mt-8">
-              <Link href="/projetos" className="raizes-btn">
+              <Link href="/projetos" className="raizes-btn mag">
                 Ver todos →
               </Link>
             </div>
@@ -229,7 +233,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                   ))}
                 </div>
                 <div className="text-center">
-                  <Link href="/escritos" className="raizes-btn">
+                  <Link href="/escritos" className="raizes-btn mag">
                     {t("verTodos")}
                   </Link>
                 </div>
@@ -252,14 +256,14 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
               sobre sistemas resilientes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="mailto:jonatasjr.019@gmail.com" className="raizes-btn raizes-btn-pri">
+              <a href="mailto:jonatasjr.019@gmail.com" className="raizes-btn raizes-btn-pri mag">
                 E-mail
               </a>
               <a
                 href="https://github.com/jonatasmota404"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="raizes-btn"
+                className="raizes-btn mag"
               >
                 GitHub
               </a>
@@ -267,7 +271,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                 href="https://www.linkedin.com/in/jonatas-jr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="raizes-btn"
+                className="raizes-btn mag"
               >
                 LinkedIn
               </a>

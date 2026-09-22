@@ -178,7 +178,9 @@ html[data-tema] {
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   border-radius: 99px; padding: 12px 22px;
   font-family: var(--font-tight), sans-serif; font-weight: 700; font-size: 15px;
-  text-decoration: none; color: var(--ink); transition: border-color 0.2s;
+  text-decoration: none; color: var(--ink);
+  transition: border-color 0.2s, transform 0.15s ease-out;
+  will-change: transform;
 }
 .raizes-btn:hover { border-color: var(--accent); }
 .raizes-btn-pri {
@@ -231,8 +233,8 @@ html[data-tema] {
 }
 .raizes-nome span {
   display: inline-block;
-  font-weight: 300;
-  font-variation-settings: "wght" 300;
+  font-weight: 200;
+  font-variation-settings: "wght" 200;
   transition: font-weight 0.08s linear;
 }
 .raizes-hero-tag {
@@ -269,3 +271,17 @@ html[data-tema] {
 }
 .raizes-pc small { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--muted); }
 .raizes-pc .go { float: right; color: var(--accent); font-weight: 700; }
+
+/* Cursor customizado (só na Home 3D, apenas hover+pointer fino) */
+#cursor-custom {
+  position: fixed; left: 0; top: 0; width: 16px; height: 16px;
+  margin: -8px 0 0 -8px; border-radius: 50%; background: #fff;
+  mix-blend-mode: difference; pointer-events: none; z-index: 120;
+  transition: width .2s, height .2s, margin .2s; display: none;
+}
+body.cursor-custom-on #cursor-custom { display: block; }
+#cursor-custom.big { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-custom-on, body.cursor-custom-on * { cursor: none !important; }
+  body.cursor-custom-on input { cursor: text !important; }
+}
