@@ -9,7 +9,7 @@ import { TemaProvider } from "@/context/TemaContext";
 const corpo = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
 const titulos = Cormorant({ subsets: ["latin"], style: "italic", variable: "--font-voice" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
-const tight = Inter_Tight({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--font-tight" });
+const tight = Inter_Tight({ subsets: ["latin"], variable: "--font-tight" });
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));

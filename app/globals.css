@@ -219,3 +219,51 @@ html[data-tema] {
   .raizes-bento { grid-template-columns: repeat(2, 1fr); }
   .raizes-bento .box.big { grid-column: span 2; grid-row: auto; }
 }
+
+/* Hero: nome em tipografia cinética + apoio */
+.raizes-nome {
+  font-family: var(--font-tight), sans-serif;
+  font-size: clamp(44px, 9vw, 112px);
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  color: var(--ink);
+}
+.raizes-nome span {
+  display: inline-block;
+  font-weight: 300;
+  font-variation-settings: "wght" 300;
+  transition: font-weight 0.08s linear;
+}
+.raizes-hero-tag {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.raizes-scrollhint {
+  margin-top: 34px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  animation: raizes-flutua 2.4s ease-in-out infinite;
+}
+@keyframes raizes-flutua {
+  0%, 100% { transform: translateY(0); opacity: 0.65; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+
+/* Projetos em destaque: lista em linha dentro de um painel único */
+.raizes-pcs { display: grid; gap: 10px; margin-top: 14px; }
+.raizes-pc {
+  display: block; text-decoration: none; border: 1px solid var(--line);
+  border-radius: 14px; padding: 13px 15px; background: rgba(255,255,255,.04);
+  transition: border-color .2s, background .2s;
+}
+.raizes-pc:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.raizes-pc b {
+  display: block; font-family: var(--font-tight), sans-serif; font-weight: 700;
+  font-size: 18px; letter-spacing: -0.01em; color: var(--ink);
+}
+.raizes-pc small { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--muted); }
+.raizes-pc .go { float: right; color: var(--accent); font-weight: 700; }

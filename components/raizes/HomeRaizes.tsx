@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import type { NoRepo } from "@/lib/raizes";
+import { NomeCinetico } from "./NomeCinetico";
 
 const CenaRaizes = dynamic(() => import("./CenaRaizes").then((m) => ({ default: m.CenaRaizes })), {
   ssr: false,
@@ -85,32 +86,29 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
       <div className="relative z-10">
         {/* Hero */}
         <section
+          id="hero"
           className="min-h-screen flex flex-col items-center justify-center text-center px-4"
           data-cam="0,3,19.8|0,0,0"
         >
-          <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-2xl">
-            <p className="raizes-tag mb-4">{t("tagline")}</p>
-            <h1 className="raizes-h1 mb-6" style={{ fontSize: "clamp(40px, 7vw, 84px)" }}>
-              {t("titulo")}
-            </h1>
-            <p className="text-sm mb-8 max-w-lg mx-auto" style={{ color: "var(--muted)" }}>
-              {t("descricao")}
-            </p>
-            <div className="mb-10">
+          <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
+            <NomeCinetico texto="Jônatas Mota" />
+            <p className="raizes-hero-tag mt-5 mb-7">{t("titulo")}</p>
+            <div className="mb-9">
               <div className="raizes-live">
                 <i />
                 <span>cada nó é um repositório meu</span>
               </div>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/projetos" className="raizes-btn raizes-btn-pri">
+              <a href="#projetos" className="raizes-btn raizes-btn-pri">
                 Ver projetos
-              </Link>
-              <a href="#bio" className="raizes-btn">
-                Saiba mais
+              </a>
+              <a href="#escritos" className="raizes-btn">
+                Ler escritos
               </a>
             </div>
           </div>
+          <div className="raizes-scrollhint">role para explorar ↓</div>
         </section>
 
         {/* Bio + Stats */}
@@ -150,31 +148,25 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Destaques */}
-        <section className="py-20 px-4" data-cam="10.8,-4,18.7|-4,0,0">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
+        <section id="projetos" className="py-20 px-4" data-cam="10.8,-4,18.7|-4,0,0">
+          <div className="max-w-3xl mx-auto raizes-panel p-8 md:p-10">
+            <h2 className="raizes-h2" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Projetos em destaque
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
+            <p className="text-sm mt-4 leading-relaxed" style={{ color: "var(--muted)" }}>
+              Os destaques são os nós grandes. Os outros repositórios ficam espalhados pela rede: passe o mouse (ou
+              toque) para ver as conexões e os últimos commits.
+            </p>
+            <div className="raizes-pcs">
               {destaques.map((no) => (
-                <Link
-                  key={no.id}
-                  href={`/projetos/${no.id}`}
-                  className="mundo-painel p-6 rounded-lg border hover:border-current/50 transition-all group"
-                  style={{ borderColor: `hsl(${no.hue}, 60%, 50%)` }}
-                >
-                  <h3 className="font-voice italic text-lg mb-2 group-hover:translate-x-1 transition-transform">
-                    {no.nome}
-                  </h3>
-                  <p className="text-sm opacity-70 mb-4">{no.descricao}</p>
-                  <div className="flex justify-between text-xs opacity-50">
-                    <span>{no.commits} commits</span>
-                    {no.tags.length > 0 && <span>{no.tags.join(", ")}</span>}
-                  </div>
+                <Link key={no.id} href={`/projetos/${no.id}`} className="raizes-pc">
+                  <span className="go">→</span>
+                  <b>{no.nome}</b>
+                  <small>{no.tags.join(" · ")}</small>
                 </Link>
               ))}
             </div>
-            <div className="mt-8 text-center">
+            <div className="mt-8">
               <Link href="/projetos" className="raizes-btn">
                 Ver todos →
               </Link>
@@ -213,7 +205,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Escritos */}
-        <section className="py-20 px-4" data-cam="-9,-6,15.6|2,2,0">
+        <section id="escritos" className="py-20 px-4" data-cam="-9,-6,15.6|2,2,0">
           <div className="max-w-4xl mx-auto">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               {t("escritosTitulo")}
