@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import type { NoRepo } from "@/lib/raizes";
+import { rolarSuaveAte, rolarSuaveAteComEspera } from "@/lib/scroll";
 import { NomeCinetico } from "./NomeCinetico";
 import { CursorCustom } from "./CursorCustom";
 import { BotoesMagneticos } from "./BotoesMagneticos";
@@ -78,6 +79,12 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Chegou na Home com uma âncora na URL (ex.: navegação vinda de outra página via "/#contato") — rola até a seção assim que ela existir.
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash) rolarSuaveAteComEspera(hash);
+  }, []);
+
   const destaques = nos.filter((n) => n.destaque);
   const tecnologias = tagsMaisComuns(nos, 8);
 
@@ -105,10 +112,24 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
               </div>
             </div>
             <div className="flex flex-wrap gap-4">
-              <a href="#projetos" className="raizes-btn raizes-btn-pri mag">
+              <a
+                href="#projetos"
+                className="raizes-btn raizes-btn-pri mag"
+                onClick={(e) => {
+                  e.preventDefault();
+                  rolarSuaveAte("projetos");
+                }}
+              >
                 Ver projetos
               </a>
-              <a href="#escritos" className="raizes-btn mag">
+              <a
+                href="#escritos"
+                className="raizes-btn mag"
+                onClick={(e) => {
+                  e.preventDefault();
+                  rolarSuaveAte("escritos");
+                }}
+              >
                 Ler escritos
               </a>
             </div>
@@ -180,7 +201,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Como trabalho */}
-        <section className="py-20 px-4" data-cam="4.3,7,-11.9|0,1,0">
+        <section id="como-trabalho" className="py-20 px-4" data-cam="4.3,7,-11.9|0,1,0">
           <div className="max-w-2xl mx-auto raizes-panel p-8 md:p-10">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Como trabalho
@@ -246,6 +267,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
 
         {/* Contato */}
         <section
+          id="contato"
           className="min-h-screen flex flex-col items-center justify-center px-4 text-center"
           data-cam="19.4,10,7.1|0,3,0"
         >

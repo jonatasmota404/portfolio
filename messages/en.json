@@ -2,7 +2,8 @@
   "nav": {
     "projetos": "projects",
     "escritos": "writing",
-    "sobre": "about"
+    "sobre": "about",
+    "contato": "contact"
   },
   "home": {
     "tagline": "backend · frontend · infra",

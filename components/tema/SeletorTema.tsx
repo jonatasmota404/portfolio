@@ -5,6 +5,26 @@ import { Check } from "lucide-react";
 import { useTema } from "@/context/TemaContext";
 import { PALETAS, type TemaId } from "@/lib/paletas";
 
+function SwatchTema({ bg, accent, tamanho }: { bg: string; accent: string; tamanho: number }) {
+  return (
+    <span
+      style={{
+        position: "relative",
+        display: "block",
+        width: tamanho,
+        height: tamanho,
+        borderRadius: "50%",
+        overflow: "hidden",
+        boxShadow: "inset 0 0 0 1px rgba(255,255,255,.35)",
+        flexShrink: 0,
+      }}
+    >
+      <span style={{ position: "absolute", inset: 0, background: bg }} />
+      <span style={{ position: "absolute", inset: "0 0 0 50%", background: accent }} />
+    </span>
+  );
+}
+
 export function SeletorTema() {
   const { tema, setTema } = useTema();
   const [aberto, setAberto] = useState(false);
@@ -39,10 +59,9 @@ export function SeletorTema() {
         aria-expanded={aberto}
         aria-haspopup="menu"
         className="tema-gatilho foco-anel"
-        style={{
-          background: `linear-gradient(90deg, ${paletaAtiva.ui.bg} 50%, ${paletaAtiva.ui.accent} 50%)`,
-        }}
-      />
+      >
+        <SwatchTema bg={paletaAtiva.ui.bg} accent={paletaAtiva.ui.accent} tamanho={24} />
+      </button>
 
       {aberto && (
         <div className="tema-menu" role="menu">
@@ -67,10 +86,7 @@ export function SeletorTema() {
                     : undefined
                 }
               >
-                <span
-                  className="tema-swatch"
-                  style={{ background: `linear-gradient(90deg, ${p.ui.bg} 50%, ${p.ui.accent} 50%)` }}
-                />
+                <SwatchTema bg={p.ui.bg} accent={p.ui.accent} tamanho={19} />
                 {p.nome}
                 <Check size={14} className="tema-check" strokeWidth={3} />
               </button>

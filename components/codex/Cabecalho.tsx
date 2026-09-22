@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { Mail, Menu, X, Search, Globe } from "lucide-react";
+import { Menu, X, Search, Globe } from "lucide-react";
 import { SeletorTema } from "@/components/tema/SeletorTema";
+import { rolarSuaveAte } from "@/lib/scroll";
 import { ModalBusca } from "./ModalBusca";
 
 function IconeGitHub() {
@@ -14,43 +15,18 @@ function IconeGitHub() {
     </svg>
   );
 }
-function IconeLinkedIn() {
-  return (
-    <svg viewBox="0 0 24 24" width={16} height={16} fill="currentColor">
-      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-    </svg>
-  );
-}
 
-function LinksDeContato() {
+function LinkGitHub() {
   return (
-    <>
-      <a
-        href="https://github.com/jonatasmota404"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="GitHub"
-        className="site-icone foco-anel"
-      >
-        <IconeGitHub />
-      </a>
-      <a
-        href="https://www.linkedin.com/in/jonatas-jr/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="LinkedIn"
-        className="site-icone foco-anel"
-      >
-        <IconeLinkedIn />
-      </a>
-      <a
-        href="mailto:jonatasjr.019@gmail.com"
-        aria-label="E-mail"
-        className="site-icone foco-anel"
-      >
-        <Mail size={16} />
-      </a>
-    </>
+    <a
+      href="https://github.com/jonatasmota404"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="GitHub"
+      className="site-icone foco-anel"
+    >
+      <IconeGitHub />
+    </a>
   );
 }
 
@@ -80,6 +56,16 @@ export function Cabecalho() {
     window.location.href = `/${proximoIdioma}${semLocale === "/" ? "" : semLocale}`;
   };
 
+  // Na Home, rola até a seção; em qualquer outra página, deixa o Link navegar para "/#contato"
+  // (o hash é pego pela Home ao montar, com retry até a seção existir no DOM).
+  const aoClicarContato = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setAberto(false);
+    if (pathname === "/") {
+      e.preventDefault();
+      rolarSuaveAte("contato");
+    }
+  };
+
   return (
     <>
       <div className="site-header-wrap">
@@ -90,15 +76,14 @@ export function Cabecalho() {
             </Link>
 
             {/* Desktop */}
-            <div className="hidden sm:flex items-center gap-5">
+            <div className="hidden sm:flex items-center gap-4">
               <button
                 onClick={() => setBuscaAberta(true)}
-                className="site-badge foco-anel"
+                className="site-busca foco-anel"
                 aria-label="Abrir busca"
               >
-                <Search size={13} />
-                <span>índice</span>
-                <kbd>⌘K</kbd>
+                <Search size={15} />
+                <kbd className="hidden lg:inline">⌘K</kbd>
               </button>
 
               <nav className="flex items-center gap-1">
@@ -111,13 +96,12 @@ export function Cabecalho() {
                 <Link href="/sobre" className="site-link foco-anel">
                   {t("sobre")}
                 </Link>
+                <Link href="/#contato" scroll={false} onClick={aoClicarContato} className="site-link foco-anel">
+                  {t("contato")}
+                </Link>
               </nav>
 
-              <div className="h-4 w-px" style={{ background: "var(--line)" }} />
-
-              <div className="flex items-center gap-1">
-                <LinksDeContato />
-              </div>
+              <LinkGitHub />
 
               <button
                 onClick={alternarIdioma}
@@ -173,12 +157,12 @@ export function Cabecalho() {
               <Link href="/sobre" onClick={() => setAberto(false)}>
                 {t("sobre")}
               </Link>
+              <Link href="/#contato" scroll={false} onClick={aoClicarContato}>
+                {t("contato")}
+              </Link>
             </nav>
-            <hr style={{ borderColor: "var(--line)" }} />
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <LinksDeContato />
-              </div>
+              <LinkGitHub />
               <SeletorTema />
             </div>
           </div>
