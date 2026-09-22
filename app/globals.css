@@ -223,10 +223,11 @@ html[data-tema] {
 /* Hero: nome em tipografia cinética + apoio */
 .raizes-nome {
   font-family: var(--font-tight), sans-serif;
-  font-size: clamp(44px, 9vw, 112px);
+  font-size: clamp(56px, 13.5vw, 190px);
   letter-spacing: -0.04em;
-  line-height: 0.98;
+  line-height: 0.92;
   color: var(--ink);
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 .raizes-nome span {
   display: inline-block;
@@ -239,6 +240,7 @@ html[data-tema] {
   font-size: 13px;
   line-height: 1.6;
   color: var(--muted);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
 }
 .raizes-scrollhint {
   margin-top: 34px;

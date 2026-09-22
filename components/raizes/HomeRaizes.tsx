@@ -87,19 +87,20 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         {/* Hero */}
         <section
           id="hero"
-          className="min-h-screen flex flex-col items-center justify-center text-center px-4"
+          className="min-h-screen flex flex-col items-start justify-end px-6 md:px-16"
+          style={{ paddingTop: "40px", paddingBottom: "100px" }}
           data-cam="0,3,19.8|0,0,0"
         >
-          <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
+          <div className="w-full">
             <NomeCinetico texto="Jônatas Mota" />
-            <p className="raizes-hero-tag mt-5 mb-7">{t("titulo")}</p>
+            <p className="raizes-hero-tag mt-5 mb-7">{t("heroTagline")}</p>
             <div className="mb-9">
               <div className="raizes-live">
                 <i />
                 <span>cada nó é um repositório meu</span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap gap-4">
               <a href="#projetos" className="raizes-btn raizes-btn-pri">
                 Ver projetos
               </a>
