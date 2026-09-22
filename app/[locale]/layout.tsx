@@ -1,7 +1,7 @@
 import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { EB_Garamond, Cormorant, JetBrains_Mono } from "next/font/google";
+import { EB_Garamond, Cormorant, JetBrains_Mono, Inter_Tight } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { TemaProvider } from "@/context/TemaContext";
@@ -9,6 +9,7 @@ import { TemaProvider } from "@/context/TemaContext";
 const corpo = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
 const titulos = Cormorant({ subsets: ["latin"], style: "italic", variable: "--font-voice" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const tight = Inter_Tight({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--font-tight" });
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -35,7 +36,7 @@ export default async function LocaleLayout({
                     }}
                 />
             </head>
-            <body className={`${corpo.variable} ${titulos.variable} ${mono.variable} antialiased`}>
+            <body className={`${corpo.variable} ${titulos.variable} ${mono.variable} ${tight.variable} antialiased`}>
                 <NextIntlClientProvider messages={messages}>
                     <TemaProvider>
                         {children}

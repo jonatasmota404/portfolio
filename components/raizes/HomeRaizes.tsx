@@ -17,6 +17,16 @@ interface Props {
   totalRepos: number;
 }
 
+// Tags mais frequentes entre os nós — alimenta os chips do bento.
+function tagsMaisComuns(nos: NoRepo[], limite: number): string[] {
+  const contagem = new Map<string, number>();
+  nos.flatMap((n) => n.tags).forEach((t) => contagem.set(t, (contagem.get(t) ?? 0) + 1));
+  return [...contagem.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limite)
+    .map(([tag]) => tag);
+}
+
 export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
   const t = useTranslations("home");
   const cameraRef = useRef<{
@@ -66,6 +76,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
   }, []);
 
   const destaques = nos.filter((n) => n.destaque);
+  const tecnologias = tagsMaisComuns(nos, 8);
 
   return (
     <>
@@ -75,17 +86,27 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         {/* Hero */}
         <section
           className="min-h-screen flex flex-col items-center justify-center text-center px-4"
-          data-cam="0,4,26|0,0,0"
+          data-cam="0,3,19.8|0,0,0"
         >
-          <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
-            <p className="font-mono text-xs mb-4 opacity-70">{t("tagline")}</p>
-            <h1 className="font-voice italic text-4xl md:text-5xl mb-6">{t("titulo")}</h1>
-            <p className="text-sm opacity-70 max-w-lg mx-auto mb-12">{t("descricao")}</p>
-            <div className="flex gap-4 justify-center">
-              <Link href="/projetos" className="px-6 py-2 rounded-full border transition-all hover:bg-current/10">
+          <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-2xl">
+            <p className="raizes-tag mb-4">{t("tagline")}</p>
+            <h1 className="raizes-h1 mb-6" style={{ fontSize: "clamp(40px, 7vw, 84px)" }}>
+              {t("titulo")}
+            </h1>
+            <p className="text-sm mb-8 max-w-lg mx-auto" style={{ color: "var(--muted)" }}>
+              {t("descricao")}
+            </p>
+            <div className="mb-10">
+              <div className="raizes-live">
+                <i />
+                <span>cada nó é um repositório meu</span>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link href="/projetos" className="raizes-btn raizes-btn-pri">
                 Ver projetos
               </Link>
-              <a href="#bio" className="px-6 py-2 rounded-full bg-current/10">
+              <a href="#bio" className="raizes-btn">
                 Saiba mais
               </a>
             </div>
@@ -93,35 +114,47 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" className="py-20 px-4" data-cam="-12,10,18|0,4,0">
-          <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
-            <h2 className="font-voice italic text-2xl mb-6">Quem sou</h2>
-            <p className="opacity-75 mb-6 text-sm leading-relaxed">
-              Engenheiro de software com foco em infraestrutura e confiabilidade. Construo sistemas que precisam escalar,
-              falhar graciosamente e se recuperar. Experiência full-stack: Node.js/TypeScript, React, Kubernetes,
-              observabilidade.
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              <div>
-                <div className="font-mono text-2xl font-bold text-accent">{totalRepos}</div>
-                <div className="text-xs opacity-60 uppercase tracking-wider">Repositórios</div>
+        <section id="bio" className="py-20 px-4" data-cam="-12.8,6,7.4|0,2,0">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
+              Quem sou
+            </h2>
+            <div className="raizes-bento">
+              <div className="box big">
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                  Engenheiro de software com foco em infraestrutura e confiabilidade. Construo sistemas que precisam
+                  escalar, falhar graciosamente e se recuperar. Experiência full-stack: Node.js/TypeScript, React,
+                  Kubernetes, observabilidade.
+                </p>
               </div>
-              <div>
-                <div className="font-mono text-2xl font-bold text-accent">{posts.length}</div>
-                <div className="text-xs opacity-60 uppercase tracking-wider">Artigos</div>
+              <div className="box">
+                <div className="num">{totalRepos}</div>
+                <div className="lbl">Repositórios</div>
               </div>
-              <div>
-                <div className="font-mono text-2xl font-bold text-accent">7+</div>
-                <div className="text-xs opacity-60 uppercase tracking-wider">Anos na área</div>
+              <div className="box">
+                <div className="num">{posts.length}</div>
+                <div className="lbl">Artigos</div>
+              </div>
+              <div className="box wide">
+                <div className="lbl mb-3">Tecnologias</div>
+                <div className="flex flex-wrap gap-2">
+                  {tecnologias.map((tag) => (
+                    <span key={tag} className="raizes-chip">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Destaques */}
-        <section className="py-20 px-4" data-cam="16,8,16|-6,2,0">
+        <section className="py-20 px-4" data-cam="10.8,-4,18.7|-4,0,0">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-voice italic text-2xl mb-8">Projetos em destaque</h2>
+            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
+              Projetos em destaque
+            </h2>
             <div className="grid md:grid-cols-2 gap-6">
               {destaques.map((no) => (
                 <Link
@@ -142,7 +175,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <Link href="/projetos" className="inline-block px-6 py-2 rounded-full border hover:bg-current/10 transition-all">
+              <Link href="/projetos" className="raizes-btn">
                 Ver todos →
               </Link>
             </div>
@@ -150,39 +183,41 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Como trabalho */}
-        <section className="py-20 px-4" data-cam="-14,6,14|0,0,4">
-          <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
-            <h2 className="font-voice italic text-2xl mb-8">Como trabalho</h2>
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-mono text-sm font-bold uppercase mb-2">Observabilidade primeiro</h3>
-                <p className="text-sm opacity-70">
-                  Se não consigo medir, não consigo entender. Logs, métricas e traces são o alicerce de qualquer
-                  sistema que eu construo.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-mono text-sm font-bold uppercase mb-2">Resiliência por design</h3>
-                <p className="text-sm opacity-70">
-                  Falhas são inevitáveis. Componentes isolados, circuit breakers, retry policies e timeouts
-                  inteligentes não são opcionais.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-mono text-sm font-bold uppercase mb-2">Automatização obsessiva</h3>
-                <p className="text-sm opacity-70">
-                  Testes, deploys, backups, alertas — qualquer processo manual que se repete é um bug esperando
-                  acontecer.
-                </p>
-              </div>
+        <section className="py-20 px-4" data-cam="4.3,7,-11.9|0,1,0">
+          <div className="max-w-2xl mx-auto raizes-panel p-8 md:p-10">
+            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
+              Como trabalho
+            </h2>
+            <div className="raizes-hab">
+              <b>Observabilidade primeiro</b>
+              <span className="text-sm" style={{ opacity: 0.85 }}>
+                Se não consigo medir, não consigo entender. Logs, métricas e traces são o alicerce de qualquer sistema
+                que eu construo.
+              </span>
+            </div>
+            <div className="raizes-hab">
+              <b>Resiliência por design</b>
+              <span className="text-sm" style={{ opacity: 0.85 }}>
+                Falhas são inevitáveis. Componentes isolados, circuit breakers, retry policies e timeouts inteligentes
+                não são opcionais.
+              </span>
+            </div>
+            <div className="raizes-hab" style={{ marginBottom: 0 }}>
+              <b>Automatização obsessiva</b>
+              <span className="text-sm" style={{ opacity: 0.85 }}>
+                Testes, deploys, backups, alertas — qualquer processo manual que se repete é um bug esperando
+                acontecer.
+              </span>
             </div>
           </div>
         </section>
 
         {/* Escritos */}
-        <section className="py-20 px-4" data-cam="12,7,17|0,2,2">
+        <section className="py-20 px-4" data-cam="-9,-6,15.6|2,2,0">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-voice italic text-2xl mb-8">Últimos escritos</h2>
+            <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
+              {t("escritosTitulo")}
+            </h2>
             {posts.length > 0 ? (
               <>
                 <div className="space-y-6 mb-8">
@@ -201,8 +236,8 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                   ))}
                 </div>
                 <div className="text-center">
-                  <Link href="/escritos" className="inline-block px-6 py-2 rounded-full border hover:bg-current/10 transition-all">
-                    Ver todos os artigos →
+                  <Link href="/escritos" className="raizes-btn">
+                    {t("verTodos")}
                   </Link>
                 </div>
               </>
@@ -213,25 +248,25 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Contato */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center" data-cam="0,10,24|0,4,0">
-          <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
-            <h2 className="font-voice italic text-3xl mb-6">Vamos conversar</h2>
-            <p className="text-sm opacity-70 max-w-lg mx-auto mb-8">
+        <section
+          className="min-h-screen flex flex-col items-center justify-center px-4 text-center"
+          data-cam="19.4,10,7.1|0,3,0"
+        >
+          <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
+            <h2 className="raizes-contato-h2 mb-6">Vamos conversar</h2>
+            <p className="text-sm max-w-lg mx-auto mb-8" style={{ color: "var(--muted)" }}>
               Tenho interesse em projetos de infraestrutura, arquitetura e troubleshooting. Sempre aberto a conversar
               sobre sistemas resilientes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="mailto:jonatasjr.019@gmail.com"
-                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
-              >
+              <a href="mailto:jonatasjr.019@gmail.com" className="raizes-btn raizes-btn-pri">
                 E-mail
               </a>
               <a
                 href="https://github.com/jonatasmota404"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
+                className="raizes-btn"
               >
                 GitHub
               </a>
@@ -239,7 +274,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                 href="https://www.linkedin.com/in/jonatas-jr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
+                className="raizes-btn"
               >
                 LinkedIn
               </a>
