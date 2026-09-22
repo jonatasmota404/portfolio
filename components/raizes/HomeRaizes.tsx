@@ -34,12 +34,12 @@ function partirFormacao(bullet: string): [string, string] {
 }
 
 // Bullet real do README: "Baseado no Brasil, aberto a oportunidades remotas."
-// -> ["Aberto a oportunidades remotas", "Baseado no Brasil"] (mesmas duas frases, ordem invertida
-// pra dar destaque à disponibilidade, com o rótulo de base abaixo).
-function partirDisponibilidade(bullet: string): [string, string] {
-  const [base, aberto] = bullet.replace(/\.$/, "").split(", ");
-  if (base && aberto) return [aberto.charAt(0).toUpperCase() + aberto.slice(1), base];
-  return [bullet.replace(/\.$/, ""), ""];
+// O título do bloco ("Aberto a vagas remotas") é fixo/traduzido — só a base
+// (localização) vem do texto real, com a inicial em minúscula (frase corrida).
+function extrairBase(bullet: string): string {
+  const [base] = bullet.replace(/\.$/, "").split(", ");
+  if (!base) return bullet.replace(/\.$/, "");
+  return base.charAt(0).toLowerCase() + base.slice(1);
 }
 
 // Tags mais frequentes entre os nós — alimenta os chips do bento.
@@ -118,7 +118,7 @@ export function HomeRaizes({
   const destaques = nos.filter((n) => n.destaque);
   const tecnologias = tagsMaisComuns(nos, 8);
   const [formacaoTitulo, formacaoSub] = partirFormacao(formacao);
-  const [dispoTitulo, dispoSub] = partirDisponibilidade(disponibilidade);
+  const dispoSub = extrairBase(disponibilidade);
 
   return (
     <>
@@ -226,9 +226,20 @@ export function HomeRaizes({
                   style={{ fontFamily: "var(--font-tight), sans-serif", fontWeight: 800, fontSize: 15, color: "var(--ink)" }}
                 >
                   <span className="dotp" aria-hidden="true" />
-                  {dispoTitulo}
+                  {t("abertoVagas")}
                 </div>
-                <div className="lbl">{dispoSub}</div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: 12,
+                    color: "var(--muted)",
+                    letterSpacing: "0.06em",
+                    textTransform: "none",
+                    fontWeight: 400,
+                  }}
+                >
+                  {dispoSub}
+                </div>
               </div>
             </div>
           </div>
