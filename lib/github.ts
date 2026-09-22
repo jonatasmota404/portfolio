@@ -224,3 +224,26 @@ export async function buscarDadosUsuario() {
   const user = await githubFetch(`https://api.github.com/users/${GITHUB_USER}`);
   return user; // Retorna created_at, public_repos, followers, etc.
 }
+
+export async function buscarContagemCommits(repo: string): Promise<number> {
+  try {
+    const resposta = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${repo}/commits?per_page=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          Accept: "application/vnd.github+json",
+        },
+        next: { revalidate: revalidateTime, tags: [`repo:${repo}`] },
+        cache: process.env.NODE_ENV === "development" ? "no-store" : "default",
+      }
+    );
+    if (!resposta.ok) return 0;
+    const link = resposta.headers.get("link");
+    if (!link) return 1;
+    const match = link.match(/page=(\d+)>; rel="last"/);
+    return match ? parseInt(match[1], 10) : 1;
+  } catch {
+    return 0;
+  }
+}
