@@ -75,7 +75,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         {/* Hero */}
         <section
           className="min-h-screen flex flex-col items-center justify-center text-center px-4"
-          data-cam="0,30,50|0,0,0"
+          data-cam="0,4,26|0,0,0"
         >
           <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
             <p className="font-mono text-xs mb-4 opacity-70">{t("tagline")}</p>
@@ -93,7 +93,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" className="py-20 px-4" data-cam="-20,25,40|0,10,0">
+        <section id="bio" className="py-20 px-4" data-cam="-12,10,18|0,4,0">
           <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
             <h2 className="font-voice italic text-2xl mb-6">Quem sou</h2>
             <p className="opacity-75 mb-6 text-sm leading-relaxed">
@@ -119,7 +119,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Destaques */}
-        <section className="py-20 px-4" data-cam="25,20,35|-10,5,0">
+        <section className="py-20 px-4" data-cam="16,8,16|-6,2,0">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-voice italic text-2xl mb-8">Projetos em destaque</h2>
             <div className="grid md:grid-cols-2 gap-6">
@@ -150,7 +150,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Como trabalho */}
-        <section className="py-20 px-4" data-cam="-30,25,30|0,0,10">
+        <section className="py-20 px-4" data-cam="-14,6,14|0,0,4">
           <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
             <h2 className="font-voice italic text-2xl mb-8">Como trabalho</h2>
             <div className="space-y-6">
@@ -180,7 +180,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Escritos */}
-        <section className="py-20 px-4" data-cam="20,20,40|0,5,5">
+        <section className="py-20 px-4" data-cam="12,7,17|0,2,2">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-voice italic text-2xl mb-8">Últimos escritos</h2>
             {posts.length > 0 ? (
@@ -213,7 +213,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         </section>
 
         {/* Contato */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center" data-cam="0,40,50|0,20,0">
+        <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center" data-cam="0,10,24|0,4,0">
           <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
             <h2 className="font-voice italic text-3xl mb-6">Vamos conversar</h2>
             <p className="text-sm opacity-70 max-w-lg mx-auto mb-8">
