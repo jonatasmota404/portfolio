@@ -130,11 +130,17 @@ html[data-tema] {
   color: var(--ink);
   transition: background-color .3s ease, color .3s ease;
 }
+/* ---- Cabeçalho global: sobrevive à cena 3D da Home e às páginas de fundo sólido ---- */
+.site-header {
+  background: var(--glass);
+  backdrop-filter: blur(14px) saturate(130%);
+  border-bottom: 1px solid var(--line);
+}
+
 /* ---- Home 3D: blocos de conteúdo ---- */
 .raizes-panel {
   background: var(--glass);
   backdrop-filter: blur(16px) saturate(130%);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
   border: 1px solid var(--line);
   border-radius: 22px;
 }
@@ -175,7 +181,7 @@ html[data-tema] {
 .raizes-btn {
   display: inline-block; border: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 55%, transparent);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   border-radius: 99px; padding: 12px 22px;
   font-family: var(--font-tight), sans-serif; font-weight: 700; font-size: 15px;
   text-decoration: none; color: var(--ink);

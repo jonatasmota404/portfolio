@@ -44,8 +44,8 @@ export function Cabecalho() {
 
   return (
     <>
-      <header className="w-full py-6 relative z-20">
-        <div className="flex items-center justify-between">
+      <header className="site-header w-full py-4 sticky top-0 z-40">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-10 flex items-center justify-between">
           <Link href="/" className="group flex items-baseline gap-3 focus:outline-none">
             <span className="font-voice italic text-2xl font-bold tracking-wide opacity-80 group-hover:opacity-100 transition-opacity">
               Jônatas Mota

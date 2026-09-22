@@ -5,6 +5,7 @@ import { EB_Garamond, Cormorant, JetBrains_Mono, Inter_Tight } from "next/font/g
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { TemaProvider } from "@/context/TemaContext";
+import { Cabecalho } from "@/components/codex/Cabecalho";
 
 const corpo = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
 const titulos = Cormorant({ subsets: ["latin"], style: "italic", variable: "--font-voice" });
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
             <body className={`${corpo.variable} ${titulos.variable} ${mono.variable} ${tight.variable} antialiased`}>
                 <NextIntlClientProvider messages={messages}>
                     <TemaProvider>
+                        <Cabecalho />
                         {children}
                     </TemaProvider>
                 </NextIntlClientProvider>

@@ -339,6 +339,9 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
 
     function handlePointerMove(e: PointerEvent) {
       const i = sobreConteudo(e.target) ? -1 : pickRepo(e.clientX, e.clientY);
+      if ((i >= 0) !== (hoverRepo >= 0)) {
+        window.dispatchEvent(new CustomEvent("raizes:hover-node", { detail: { hovering: i >= 0 } }));
+      }
       hoverRepo = i;
       document.body.style.cursor = i >= 0 ? "pointer" : "";
       if (i >= 0 && nodes[i].repoIndex >= 0) {
@@ -473,6 +476,9 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("click", handleClick);
       document.body.style.cursor = "";
+      if (hoverRepo >= 0) {
+        window.dispatchEvent(new CustomEvent("raizes:hover-node", { detail: { hovering: false } }));
+      }
       ro.disconnect();
       renderer.dispose();
     };
