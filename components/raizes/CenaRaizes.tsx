@@ -191,6 +191,18 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       for (let k = 0; k < (n.repoIndex >= 0 ? 3 : 2); k++) if (ds[k]) addEdge(i, ds[k][0], false);
     });
 
+    // Ponto de partida forçado e explícito da animação de abertura: em vez de
+    // tentar sincronizar o timing de todas as arestas com o nascimento de
+    // todos os nós (superfície de bugs grande demais), escolhemos UM nó real
+    // (o de nascimento mais antigo) e UMA aresta dele para garantir, por
+    // override direto, que sempre há um núcleo aceso com um filamento
+    // crescendo a partir dele já no primeiro frame.
+    let noOrigemIdx = -1, noOrigemBirth = Infinity;
+    for (let i = 0; i < nos.length; i++) {
+      if (nodes[i].repoIndex >= 0 && nodes[i].birth < noOrigemBirth) { noOrigemBirth = nodes[i].birth; noOrigemIdx = i; }
+    }
+    const arestaOrigemIdx = noOrigemIdx >= 0 && nodes[noOrigemIdx].edges.length > 0 ? nodes[noOrigemIdx].edges[0] : -1;
+
     const S = 18;
     const P: number[] = [], DAY: number[] = [], TAP: number[] = [], BR: number[] = [], PH: number[] = [];
     const seg = (p: THREE.Vector3, q: THREE.Vector3, d0: number, d1: number, t0: number, t1: number, br: number, ph: number) => {
@@ -208,11 +220,18 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       const tp2 = (u: number) => Math.pow(1 - u, 1.2) * (depth ? 0.55 : 0.8);
       for (let k = 0; k < N; k++) { const u0 = k / N, u1 = (k + 1) / N; seg(pts[k], pts[k + 1], d0 + u0 * 9, d0 + u1 * 9, tp2(u0), tp2(u1), 0.45, ph); }
     }
-    edges.forEach((e) => {
+    edges.forEach((e, ei) => {
       e.o = DAY.length;
       const pts = e.curve.getPoints(S); const ph = rr();
       const tap = (u: number) => 0.55 + 0.45 * Math.abs(Math.cos(Math.PI * u));
       for (let k = 0; k < S; k++) { const u0 = k / S, u1 = (k + 1) / S; seg(pts[k], pts[k + 1], e.day0 + (e.day1 - e.day0) * u0, e.day0 + (e.day1 - e.day0) * u1, tap(u0), tap(u1), e.strong ? 0.95 : 0.5, ph); }
+      if (ei === arestaOrigemIdx) {
+        // Segmento inicial da aresta de origem: ignora o day0/day1 calculado
+        // pela fórmula geral e força aDay=0 nos vértices próximos ao nó de
+        // origem, para que smoothstep(aDay, aDay+10, uT) já dê opacidade
+        // visível nos primeiros frames, sem depender de nenhum timing geral.
+        DAY[e.o] = 0; DAY[e.o + 1] = 0;
+      }
       e.n = S * 2;
       const nb = e.strong ? (isMob ? 4 : 8) : (isMob ? 1 : 3);
       for (let b = 0; b < nb; b++) {
@@ -410,7 +429,11 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       rn.forEach((r, i) => {
         const n = nodes[i]; const no = nos[i];
         n.born = uT >= n.birth;
-        const visivel = n.born;
+        // Override incondicional: o nó de origem escolhido acima precisa
+        // estar sempre visível, com pulse normal, desde o frame 0 — nunca
+        // dependente do cálculo geral de born/uT (garante que nunca exista
+        // um filamento crescendo sem nenhum núcleo aceso na origem dele).
+        const visivel = i === noOrigemIdx ? true : n.born;
         r.core.visible = r.shell.visible = r.halo.visible = visivel;
         r.rings.forEach((rg) => (rg.visible = visivel));
         if (!visivel) return;
