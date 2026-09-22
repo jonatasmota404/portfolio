@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, Search, Globe } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { SeletorTema } from "@/components/tema/SeletorTema";
 import { rolarSuaveAte } from "@/lib/scroll";
 import { ModalBusca } from "./ModalBusca";
+import { NoLogo } from "./NoLogo";
 
 function IconeGitHub() {
   return (
@@ -16,19 +17,25 @@ function IconeGitHub() {
   );
 }
 
-function LinkGitHub() {
+function LinkGitHub({ className }: { className?: string }) {
   return (
     <a
       href="https://github.com/jonatasmota404"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="GitHub"
-      className="site-icone foco-anel"
+      className={className}
     >
       <IconeGitHub />
     </a>
   );
 }
+
+const ITENS_NAV = [
+  { href: "/projetos", chave: "projetos" },
+  { href: "/escritos", chave: "escritos" },
+  { href: "/sobre", chave: "sobre" },
+] as const;
 
 export function Cabecalho() {
   const t = useTranslations("nav");
@@ -66,103 +73,104 @@ export function Cabecalho() {
     }
   };
 
+  const estaAtivo = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+  const abrirBusca = () => {
+    setAberto(false);
+    setBuscaAberta(true);
+  };
+
   return (
     <>
       <div className="site-header-wrap">
-        <header className="site-header w-full py-3.5">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-10 flex items-center justify-between gap-6">
-            <Link href="/" className="site-marca foco-anel rounded-md">
-              Jônatas Mota
+        <header className="site-header">
+          {/* Cápsula 1: logo */}
+          <Link href="/" className="capsula capsula-marca foco-anel">
+            <NoLogo />
+            <span className="capsula-marca-nome">Jônatas Mota</span>
+          </Link>
+
+          {/* Cápsula 2: navegação (desktop) */}
+          <nav className="capsula capsula-nav hidden sm:flex">
+            {ITENS_NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-ativo={estaAtivo(item.href)}
+                className="capsula-nav-link foco-anel"
+              >
+                {t(item.chave)}
+              </Link>
+            ))}
+            <Link
+              href="/#contato"
+              scroll={false}
+              onClick={aoClicarContato}
+              className="capsula-nav-link foco-anel"
+            >
+              {t("contato")}
             </Link>
 
-            {/* Desktop */}
-            <div className="hidden sm:flex items-center gap-4">
-              <button
-                onClick={() => setBuscaAberta(true)}
-                className="site-busca foco-anel"
-                aria-label="Abrir busca"
-              >
-                <Search size={15} />
-                <kbd className="hidden lg:inline">⌘K</kbd>
-              </button>
+            <span className="capsula-separador" />
 
-              <nav className="flex items-center gap-1">
-                <Link href="/projetos" className="site-link foco-anel">
-                  {t("projetos")}
-                </Link>
-                <Link href="/escritos" className="site-link foco-anel">
-                  {t("escritos")}
-                </Link>
-                <Link href="/sobre" className="site-link foco-anel">
-                  {t("sobre")}
-                </Link>
-                <Link href="/#contato" scroll={false} onClick={aoClicarContato} className="site-link foco-anel">
-                  {t("contato")}
-                </Link>
-              </nav>
+            <button onClick={() => setBuscaAberta(true)} className="capsula-busca foco-anel" aria-label="Abrir busca">
+              <Search size={14} />
+              <kbd className="hidden lg:inline">⌘K</kbd>
+            </button>
+          </nav>
 
-              <LinkGitHub />
+          {/* Cápsula 3: ações */}
+          <div className="capsula capsula-acoes">
+            <LinkGitHub className="capsula-icone foco-anel" />
 
-              <button
-                onClick={alternarIdioma}
-                className="site-idioma foco-anel"
-                aria-label="Alternar idioma"
-              >
-                <Globe size={14} />
-                {locale}
-              </button>
+            <span className="capsula-separador" />
 
+            <button onClick={alternarIdioma} className="capsula-idioma foco-anel" aria-label="Alternar idioma">
+              <span style={{ color: locale === "pt" ? "var(--ink)" : "var(--muted)" }}>PT</span>
+              <span style={{ color: "var(--muted)" }}>/</span>
+              <span style={{ color: locale === "en" ? "var(--ink)" : "var(--muted)" }}>EN</span>
+            </button>
+
+            <div className="capsula-tema">
               <SeletorTema />
             </div>
 
-            {/* Mobile */}
-            <div className="sm:hidden flex items-center gap-2">
-              <button
-                onClick={() => setBuscaAberta(true)}
-                className="site-icone foco-anel"
-                aria-label="Abrir busca"
-              >
-                <Search size={17} />
-              </button>
-              <button
-                onClick={alternarIdioma}
-                className="site-idioma foco-anel"
-                aria-label="Alternar idioma"
-              >
-                <Globe size={13} />
-                {locale}
-              </button>
-              <button
-                className="site-icone foco-anel"
-                onClick={() => setAberto(!aberto)}
-                aria-label="Abrir menu"
-                aria-expanded={aberto}
-              >
-                {aberto ? <X size={20} /> : <Menu size={20} />}
-              </button>
-            </div>
+            {/* Menu mobile: só aparece abaixo do breakpoint sm, onde a cápsula de navegação some */}
+            <button
+              className="capsula-icone foco-anel sm:hidden"
+              onClick={() => setAberto((v) => !v)}
+              aria-label="Abrir menu"
+              aria-expanded={aberto}
+            >
+              {aberto ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </header>
 
-        {/* Menu mobile: irmão do <header> para não cair dentro do backdrop root dele */}
+        {/* Menu mobile: irmão do <header> para não cair dentro do backdrop root de nenhuma cápsula */}
         {aberto && (
           <div className="site-menu sm:hidden flex flex-col gap-5 rounded-3xl p-6 shadow-2xl">
             <nav className="flex flex-col gap-4">
-              <Link href="/projetos" onClick={() => setAberto(false)}>
-                {t("projetos")}
-              </Link>
-              <Link href="/escritos" onClick={() => setAberto(false)}>
-                {t("escritos")}
-              </Link>
-              <Link href="/sobre" onClick={() => setAberto(false)}>
-                {t("sobre")}
-              </Link>
+              {ITENS_NAV.map((item) => (
+                <Link key={item.href} href={item.href} onClick={() => setAberto(false)}>
+                  {t(item.chave)}
+                </Link>
+              ))}
               <Link href="/#contato" scroll={false} onClick={aoClicarContato}>
                 {t("contato")}
               </Link>
+              <button onClick={abrirBusca} className="site-menu-busca">
+                <Search size={18} />
+                Buscar
+              </button>
             </nav>
             <div className="flex items-center justify-between">
-              <LinkGitHub />
+              <LinkGitHub className="capsula-icone foco-anel" />
+              <button onClick={alternarIdioma} className="site-menu-idioma foco-anel" aria-label="Alternar idioma">
+                <span style={{ color: locale === "pt" ? "var(--ink)" : "var(--muted)" }}>PT</span>
+                {" / "}
+                <span style={{ color: locale === "en" ? "var(--ink)" : "var(--muted)" }}>EN</span>
+              </button>
               <SeletorTema />
             </div>
           </div>

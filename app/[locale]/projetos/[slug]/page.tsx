@@ -7,10 +7,10 @@ export default async function Projeto({ params }: { params: Promise<{ locale: st
   const { locale, slug } = await params;
   const readme = await buscarReadmeLocalizado(slug, locale);
 
-  if (!readme) return <p className="conteudo py-12">Este projeto não tem README.</p>;
+  if (!readme) return <p className="conteudo pt-[84px] pb-12">Este projeto não tem README.</p>;
 
   return (
-    <article className="conteudo py-12 max-w-[820px]">
+    <article className="conteudo pt-[84px] pb-12 max-w-[820px]">
       <p className="rotulo mb-3">projeto</p>
       <h1 className="heading-1 mb-10">{slug}</h1>
       <MDXRemote

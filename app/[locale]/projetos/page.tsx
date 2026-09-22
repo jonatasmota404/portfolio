@@ -5,7 +5,7 @@ export default async function Projetos() {
   const repos = await listarRepositorios();
 
   return (
-    <section className="conteudo pt-10 pb-16">
+    <section className="conteudo pt-[84px] pb-16">
       <header className="mb-10">
         <p className="rotulo mb-3">repositórios</p>
         <h1 className="heading-1 mb-4">Projetos</h1>

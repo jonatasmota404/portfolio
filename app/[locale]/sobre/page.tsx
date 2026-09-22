@@ -61,7 +61,7 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   ];
 
   return (
-    <article className="conteudo w-full flex flex-col gap-8 pt-10 pb-16">
+    <article className="conteudo w-full flex flex-col gap-8 pt-[84px] pb-16">
       <header>
         <p className="rotulo mb-3">perfil</p>
         <h1 className="heading-1">Sobre</h1>

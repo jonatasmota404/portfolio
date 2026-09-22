@@ -99,7 +99,7 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
         <section
           id="hero"
           className="min-h-screen flex flex-col items-start justify-end px-6 md:px-16"
-          style={{ paddingTop: "40px", paddingBottom: "100px" }}
+          style={{ paddingTop: "84px", paddingBottom: "100px" }}
           data-cam="0,3,19.8|0,0,0"
         >
           <div className="w-full">

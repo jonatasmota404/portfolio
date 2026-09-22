@@ -6,7 +6,7 @@ export default async function Escritos({ params }: { params: Promise<{ locale: s
   const posts = await listarEscritos(locale);
 
   return (
-    <section className="conteudo pt-10 pb-16">
+    <section className="conteudo pt-[84px] pb-16">
       <header className="mb-10">
         <p className="rotulo mb-3">notas</p>
         <h1 className="heading-1 mb-4">Escritos</h1>
