@@ -4,8 +4,7 @@ import { getMessages } from "next-intl/server";
 import { EB_Garamond, Cormorant, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import { AmbienteFundo } from "@/components/codex/AmbienteFundo";
-import { ZonaProvider } from "@/context/ZonaContext";
+import { TemaProvider } from "@/context/TemaContext";
 
 const corpo = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
 const titulos = Cormorant({ subsets: ["latin"], style: "italic", variable: "--font-voice" });
@@ -29,12 +28,18 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale}>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `(function(){try{var t=localStorage.getItem('portfolio-tema');var validos=['ouro','gelo','menta','mar','brasa'];document.documentElement.setAttribute('data-tema',(t&&validos.indexOf(t)>-1)?t:'ouro');}catch(e){}})();`,
+                    }}
+                />
+            </head>
             <body className={`${corpo.variable} ${titulos.variable} ${mono.variable} antialiased`}>
                 <NextIntlClientProvider messages={messages}>
-                    <ZonaProvider>
-                        <AmbienteFundo />
+                    <TemaProvider>
                         {children}
-                    </ZonaProvider>
+                    </TemaProvider>
                 </NextIntlClientProvider>
             </body>
         </html>

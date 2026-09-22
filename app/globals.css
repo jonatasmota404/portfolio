@@ -75,3 +75,65 @@ html.night .mundo-painel {
 ::view-transition-new(root) {
   animation: 150ms cubic-bezier(0, 0, 0.2, 1) 75ms both fade-in;
 }
+
+:root,
+html[data-tema="ouro"] {
+  --bg: #040807;
+  --ink: #efe9d6;
+  --muted: #9fb0a4;
+  --accent: #ffcf66;
+  --accent2: #e8e4d4;
+  --glass: rgba(4,12,9,.66);
+  --line: rgba(232,228,212,.18);
+  --on-accent: #0b1a12;
+}
+
+html[data-tema="gelo"] {
+  --bg: #07090c;
+  --ink: #eef2f6;
+  --muted: #9aa6b2;
+  --accent: #ff4d3a;
+  --accent2: #dfe6ec;
+  --glass: rgba(8,11,15,.68);
+  --line: rgba(223,230,236,.18);
+  --on-accent: #10070a;
+}
+
+html[data-tema="menta"] {
+  --bg: #050a0c;
+  --ink: #e8f6f0;
+  --muted: #9bb8b0;
+  --accent: #7dffb8;
+  --accent2: #a68bff;
+  --glass: rgba(4,12,14,.68);
+  --line: rgba(191,232,216,.2);
+  --on-accent: #04150f;
+}
+
+html[data-tema="mar"] {
+  --bg: #020814;
+  --ink: #e8f0ff;
+  --muted: #93a8c8;
+  --accent: #ffd166;
+  --accent2: #9fc4ff;
+  --glass: rgba(3,10,24,.68);
+  --line: rgba(159,196,255,.2);
+  --on-accent: #0a0f1c;
+}
+
+html[data-tema="brasa"] {
+  --bg: #0a0604;
+  --ink: #f4e6d8;
+  --muted: #b39a86;
+  --accent: #ffb347;
+  --accent2: #d99a6c;
+  --glass: rgba(14,8,5,.68);
+  --line: rgba(217,154,108,.22);
+  --on-accent: #140a05;
+}
+
+html[data-tema] {
+  background-color: var(--bg);
+  color: var(--ink);
+  transition: background-color .3s ease, color .3s ease;
+}
