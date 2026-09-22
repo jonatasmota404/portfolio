@@ -284,7 +284,11 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     }
     pulses.forEach((p) => { spawnPulse(p); p.t = Math.random(); });
 
-    const tempoAberturaRef = { current: 0 };
+    // Começa em ~6 "dias" (não 0) para que o filamento do primeiro nó já tenha
+    // opacidade visível (smoothstep > 0) no exato frame em que o canvas é revelado
+    // (ver primeiroFrame/canvas.style.opacity abaixo, que resolve o resto do atraso:
+    // tempo de montagem do componente via next/dynamic e de inicialização do WebGL).
+    const tempoAberturaRef = { current: 0.12 };
     let hoverRepo = -1;
     const raycaster = new THREE.Raycaster();
 
@@ -370,6 +374,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
 
     let last = performance.now();
     let frameId: number;
+    let primeiroFrame = true;
     function tick(now: number) {
       frameId = requestAnimationFrame(tick);
       const dt = Math.min(0.05, (now - last) / 1000); last = now;
@@ -457,6 +462,13 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
         camera.position.copy(camPos); camera.lookAt(camLook);
       }
       renderer.render(scene, camera);
+      if (primeiroFrame) {
+        primeiroFrame = false;
+        // O carregamento dinâmico (ssr:false) e a inicialização do WebGL deixam
+        // um instante sem nenhum frame desenhado; escondemos o canvas até aqui
+        // e só então revelamos, para nunca mostrar tela vazia.
+        canvas!.style.opacity = "1";
+      }
     }
     frameId = requestAnimationFrame(tick);
 
@@ -487,7 +499,10 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
   return (
     <>
       <div ref={wrapRef} className="fixed inset-0 -z-10">
-        <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+        <canvas
+          ref={canvasRef}
+          style={{ display: "block", width: "100%", height: "100%", opacity: 0, transition: "opacity 0.3s ease" }}
+        />
       </div>
       {tooltip && (
         <div
