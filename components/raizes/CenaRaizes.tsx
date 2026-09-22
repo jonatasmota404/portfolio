@@ -6,10 +6,16 @@ import { useTema } from "@/context/TemaContext";
 import { PALETAS } from "@/lib/paletas";
 import type { NoRepo } from "@/lib/raizes";
 
+type CameraAlvo = {
+  position: { x: number; y: number; z: number };
+  target: { x: number; y: number; z: number };
+};
+
 interface Props {
   nos: NoRepo[];
   ligacoes: Array<{ a: string; b: string; forte: boolean }>;
   calendario: number[];
+  camAlvo: React.RefObject<CameraAlvo>;
 }
 
 type CircuitBreaker = {
@@ -18,7 +24,7 @@ type CircuitBreaker = {
   tempo: number;
 };
 
-export function CenaRaizes({ nos, ligacoes, calendario }: Props) {
+export function CenaRaizes({ nos, ligacoes, calendario, camAlvo }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { tema } = useTema();
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -45,7 +51,8 @@ export function CenaRaizes({ nos, ligacoes, calendario }: Props) {
 
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
     camera.position.set(0, 30, 50);
-    camera.lookAt(0, 0, 0);
+    const lookAtAtual = new THREE.Vector3(0, 0, 0);
+    camera.lookAt(lookAtAtual);
 
     sceneRef.current = scene;
     rendererRef.current = renderer;
@@ -65,7 +72,7 @@ export function CenaRaizes({ nos, ligacoes, calendario }: Props) {
       const angleV = Math.sin((no.hue / 360) * Math.PI * 2) * 0.3;
       const r = 20 + (no.commits / Math.max(...nos.map((n) => n.commits))) * 20;
       const x = Math.cos(angleH) * r * Math.cos(angleV);
-      const y = Math.sin(angleV) * r * 10;
+      const y = Math.sin(angleV) * r;
       const z = Math.sin(angleH) * r * Math.cos(angleV);
 
       grupo.position.set(x, y, z);
@@ -164,8 +171,8 @@ export function CenaRaizes({ nos, ligacoes, calendario }: Props) {
 
     // Calendário (juncos de fundo)
     const calendarioGroup = new THREE.Group();
-    const diasPorLinha = Math.ceil(Math.sqrt(calendario.length));
-    const espacamento = 1;
+    const diasPorLinha = 40;
+    const espacamento = 1.5;
     for (let i = 0; i < calendario.length; i++) {
       const x = (i % diasPorLinha) * espacamento - (diasPorLinha * espacamento) / 2;
       const z = Math.floor(i / diasPorLinha) * espacamento - 30;
@@ -276,7 +283,18 @@ export function CenaRaizes({ nos, ligacoes, calendario }: Props) {
         }
       }
 
-      // Câmera controlada por scroll (será settada pelo pai)
+      // Câmera controlada por scroll: interpola suavemente até o alvo atual
+      const alvo = camAlvo.current;
+      if (alvo) {
+        camera.position.x += (alvo.position.x - camera.position.x) * 0.05;
+        camera.position.y += (alvo.position.y - camera.position.y) * 0.05;
+        camera.position.z += (alvo.position.z - camera.position.z) * 0.05;
+        lookAtAtual.x += (alvo.target.x - lookAtAtual.x) * 0.05;
+        lookAtAtual.y += (alvo.target.y - lookAtAtual.y) * 0.05;
+        lookAtAtual.z += (alvo.target.z - lookAtAtual.z) * 0.05;
+        camera.lookAt(lookAtAtual);
+      }
+
       renderer.render(scene, camera);
     };
     animate();

@@ -61,7 +61,8 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -69,7 +70,7 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
 
   return (
     <>
-      <CenaRaizes nos={nos} ligacoes={ligacoes} calendario={calendario} />
+      <CenaRaizes nos={nos} ligacoes={ligacoes} calendario={calendario} camAlvo={cameraRef} />
 
       <div className="relative z-10">
         {/* Hero */}
@@ -77,22 +78,24 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
           className="min-h-screen flex flex-col items-center justify-center text-center px-4"
           data-cam="0,30,50|0,0,0"
         >
-          <p className="font-mono text-xs mb-4 opacity-70">{t("tagline")}</p>
-          <h1 className="font-voice italic text-4xl md:text-5xl mb-6 max-w-2xl">{t("titulo")}</h1>
-          <p className="text-sm opacity-70 max-w-lg mb-12">{t("descricao")}</p>
-          <div className="flex gap-4">
-            <Link href="/projetos" className="px-6 py-2 rounded-full border transition-all hover:bg-current/10">
-              Ver projetos
-            </Link>
-            <a href="#bio" className="px-6 py-2 rounded-full bg-current/10">
-              Saiba mais
-            </a>
+          <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
+            <p className="font-mono text-xs mb-4 opacity-70">{t("tagline")}</p>
+            <h1 className="font-voice italic text-4xl md:text-5xl mb-6">{t("titulo")}</h1>
+            <p className="text-sm opacity-70 max-w-lg mx-auto mb-12">{t("descricao")}</p>
+            <div className="flex gap-4 justify-center">
+              <Link href="/projetos" className="px-6 py-2 rounded-full border transition-all hover:bg-current/10">
+                Ver projetos
+              </Link>
+              <a href="#bio" className="px-6 py-2 rounded-full bg-current/10">
+                Saiba mais
+              </a>
+            </div>
           </div>
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" className="py-20 px-4 bg-current/5" data-cam="-20,25,40|0,10,0">
-          <div className="max-w-2xl mx-auto">
+        <section id="bio" className="py-20 px-4" data-cam="-20,25,40|0,10,0">
+          <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
             <h2 className="font-voice italic text-2xl mb-6">Quem sou</h2>
             <p className="opacity-75 mb-6 text-sm leading-relaxed">
               Engenheiro de software com foco em infraestrutura e confiabilidade. Construo sistemas que precisam escalar,
@@ -125,7 +128,7 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
                 <Link
                   key={no.id}
                   href={`/projetos/${no.id}`}
-                  className="p-6 rounded-lg border border-current/20 hover:border-current/50 transition-all group"
+                  className="mundo-painel p-6 rounded-lg border hover:border-current/50 transition-all group"
                   style={{ borderColor: `hsl(${no.hue}, 60%, 50%)` }}
                 >
                   <h3 className="font-voice italic text-lg mb-2 group-hover:translate-x-1 transition-transform">
@@ -148,8 +151,8 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
         </section>
 
         {/* Como trabalho */}
-        <section className="py-20 px-4 bg-current/5" data-cam="-30,25,30|0,0,10">
-          <div className="max-w-2xl mx-auto">
+        <section className="py-20 px-4" data-cam="-30,25,30|0,0,10">
+          <div className="max-w-2xl mx-auto mundo-painel rounded-3xl p-8 md:p-10">
             <h2 className="font-voice italic text-2xl mb-8">Como trabalho</h2>
             <div className="space-y-6">
               <div>
@@ -188,7 +191,7 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
                     <Link
                       key={post.slug}
                       href={`/escritos/${post.slug}`}
-                      className="block p-6 rounded-lg border border-current/20 hover:border-current/50 hover:bg-current/5 transition-all group"
+                      className="mundo-painel block p-6 rounded-lg border border-current/20 hover:border-current/50 transition-all group"
                     >
                       <h3 className="font-voice italic text-lg mb-2 group-hover:translate-x-1 transition-transform">
                         {post.titulo || post.slug}
@@ -212,34 +215,36 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
 
         {/* Contato */}
         <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center" data-cam="0,40,50|0,20,0">
-          <h2 className="font-voice italic text-3xl mb-6">Vamos conversar</h2>
-          <p className="text-sm opacity-70 max-w-lg mb-8">
-            Tenho interesse em projetos de infraestrutura, arquitetura e troubleshooting. Sempre aberto a conversar
-            sobre sistemas resilientes.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href="mailto:jonatasjr.019@gmail.com"
-              className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
-            >
-              E-mail
-            </a>
-            <a
-              href="https://github.com/jonatasmota404"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/jonatas-jr/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
-            >
-              LinkedIn
-            </a>
+          <div className="mundo-painel rounded-3xl px-8 py-10 md:px-12 md:py-14 max-w-2xl">
+            <h2 className="font-voice italic text-3xl mb-6">Vamos conversar</h2>
+            <p className="text-sm opacity-70 max-w-lg mx-auto mb-8">
+              Tenho interesse em projetos de infraestrutura, arquitetura e troubleshooting. Sempre aberto a conversar
+              sobre sistemas resilientes.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="mailto:jonatasjr.019@gmail.com"
+                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
+              >
+                E-mail
+              </a>
+              <a
+                href="https://github.com/jonatasmota404"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://www.linkedin.com/in/jonatas-jr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-full border hover:bg-current/10 transition-all"
+              >
+                LinkedIn
+              </a>
+            </div>
           </div>
         </section>
       </div>
