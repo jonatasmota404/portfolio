@@ -100,7 +100,9 @@ export function NomeCinetico({ texto }: Props) {
   }, [texto]);
 
   return (
-    <h1 ref={raizRef} className="raizes-nome" aria-label={texto}>
+    <h1 ref={raizRef} className="raizes-h1 raizes-kinetic" aria-label={texto}>
+      {/* Uma linha flex: o nbsp acima preserva a largura do espaço entre as palavras. */}
+      <span className="raizes-kinetic-linha">
       {texto.split("").map((ch, i) => (
         <span
           key={`${ch}-${i}`}
@@ -112,6 +114,7 @@ export function NomeCinetico({ texto }: Props) {
           {ch === " " ? " " : ch}
         </span>
       ))}
+      </span>
     </h1>
   );
 }

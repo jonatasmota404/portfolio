@@ -70,12 +70,10 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
         
         {/* Nível 1: Categorias Principais (Estilo Livro) */}
         <div className="flex flex-wrap gap-6 items-baseline border-b border-current/10 pb-5">
-          <span className="text-[11px] font-mono opacity-50 uppercase tracking-widest mr-2">
-            Domínio:
-          </span>
+          <span className="rotulo mr-2">domínio</span>
           <button
             onClick={() => selecionarCategoria(null)}
-            className={`font-voice italic text-2xl transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+            className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
             style={{ color: categoriaAtiva === null ? "var(--accent)" : "inherit" }}
           >
             Todos
@@ -84,7 +82,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
             <button
               key={cat}
               onClick={() => selecionarCategoria(cat)}
-              className={`font-voice italic text-2xl transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+              className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
               style={{ color: categoriaAtiva === cat ? "var(--accent)" : "inherit" }}
             >
               {formatarNome(cat)}
@@ -95,9 +93,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
         {/* Nível 2: Tecnologias (Estilo Terminal/Pills) */}
         {techsVisiveis.length > 0 && (
           <div className="flex flex-wrap gap-2.5 items-center">
-            <span className="text-[10px] font-mono opacity-40 uppercase tracking-widest mr-2">
-              Tecnologias:
-            </span>
+            <span className="rotulo mr-2">tecnologias</span>
             {techsVisiveis.map((tech) => (
               <button
                 key={tech}
@@ -127,7 +123,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
           const tituloExibicao = formatarNome(repo.name);
 
           return (
-            <div key={repo.name} className="mundo-painel border rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:border-current/30 hover:shadow-md hover:-translate-y-1">
+            <div key={repo.name} className="painel rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:-translate-y-1">
               <Link href={`/projetos/${repo.name}`} className="block shrink-0 focus:outline-none mb-6">
                 <MiniaturaRepo hue={gerarHue(repo.name)} variante="projeto" />
               </Link>
@@ -139,7 +135,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                     <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
                       {formatarNome(repo.categoria)}
                     </span>
-                    <Link href={`/projetos/${repo.name}`} className="font-mono font-semibold text-lg hover:opacity-70 transition-opacity">
+                    <Link href={`/projetos/${repo.name}`} className="heading-3 text-lg hover:opacity-70 transition-opacity">
                       {tituloExibicao}
                     </Link>
                   </div>
@@ -149,7 +145,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                   </span>
                 </div>
                 
-                <p className="font-serif text-[1rem] leading-relaxed opacity-75 mt-2 mb-8 flex-1">
+                <p className="apoio text-[0.95rem] mt-2 mb-8 flex-1">
                   {repo.description}
                 </p>
                 
@@ -167,9 +163,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
       </div>
       
       {reposFiltrados.length === 0 && (
-        <div className="text-center py-12 opacity-50 font-voice italic text-lg">
-          Nenhum artefato encontrado com esta combinação.
-        </div>
+        <div className="rotulo text-center py-12">Nenhum artefato encontrado com esta combinação</div>
       )}
     </div>
   );

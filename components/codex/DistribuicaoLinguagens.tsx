@@ -6,8 +6,8 @@ export function DistribuicaoLinguagens({ dados }: { dados: { nome: string; pct: 
 
   return (
     <div>
-      <p className="font-voice italic text-xl mb-0.5">Distribuição de Linguagens</p>
-      <p className="text-[11px] opacity-60 tracking-wide font-mono">uso registrado em projetos pessoais</p>
+      <p className="heading-3 text-xl mb-1">Distribuição de Linguagens</p>
+      <p className="rotulo">uso registrado em projetos pessoais</p>
       <div className="flex w-full h-[18px] mt-5">
         {dados.map((d, i) => <div key={d.nome} style={{ flex: `${d.pct} 0 0`, background: PALETA[i % PALETA.length] }} />)}
       </div>

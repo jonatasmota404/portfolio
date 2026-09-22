@@ -30,8 +30,8 @@ export function CalendarioContribuicoes({ semanas }: { semanas: Semana[] | null 
         }
       `}</style>
 
-      <p className="text-[10px] uppercase tracking-widest opacity-50 font-mono mb-1.5">atividade recente</p>
-      <p className="font-voice italic text-2xl mb-4">Diário de Contribuições</p>
+      <p className="rotulo mb-1.5">atividade recente</p>
+      <p className="heading-3 text-2xl mb-4">Diário de Contribuições</p>
       
       {/* Container fluído 100% da largura */}
       <div className="w-full overflow-x-auto">

@@ -8,12 +8,12 @@ export default async function Artigo({ params }: { params: Promise<{ locale: str
   const { locale, slug } = await params;
   const artigo = await buscarArtigo(slug, locale);
 
-  if (!artigo) return <p className="py-12">Artigo não encontrado.</p>;
+  if (!artigo) return <p className="conteudo py-12">Artigo não encontrado.</p>;
 
   return (
-    <article className="py-12">
-      <p className="font-mono text-xs opacity-60 mb-2">{artigo.data.data}</p>
-      <h1 className="font-voice italic text-3xl mb-8">{artigo.data.titulo}</h1>
+    <article className="conteudo py-12 max-w-[820px]">
+      <p className="rotulo mb-3">{artigo.data.data}</p>
+      <h1 className="heading-1 mb-10">{artigo.data.titulo}</h1>
       <MDXRemote
         source={artigo.content}
         components={{ ...componentesProsa, CodexPlate, CodexTraco, CodexAnnotation, CodexEsboco }}

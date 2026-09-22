@@ -6,20 +6,17 @@ export default async function Escritos({ params }: { params: Promise<{ locale: s
   const posts = await listarEscritos(locale);
 
   return (
-    <section className="pt-2 pb-12">
-      
-      {/* Cabeçalho alinhado com o padrão do portfólio */}
+    <section className="conteudo pt-10 pb-16">
       <header className="mb-10">
-        <h1 className="font-voice italic text-4xl mb-3">Escritos</h1>
-        <p className="font-serif text-lg opacity-75 max-w-2xl leading-relaxed">
+        <p className="rotulo mb-3">notas</p>
+        <h1 className="heading-1 mb-4">Escritos</h1>
+        <p className="apoio text-lg max-w-2xl">
           Notas e aprendizados sobre infraestrutura, backend e os bastidores de construir software.
         </p>
-        <hr className="border-t border-dashed border-current/20 w-32 mt-8" />
+        <hr className="w-32 mt-8" style={{ borderColor: "var(--line)" }} />
       </header>
 
-      {/* A lista agora vai renderizar um Grid por dentro */}
       <ListaEscritos posts={posts} />
-      
     </section>
   );
 }

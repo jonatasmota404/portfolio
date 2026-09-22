@@ -59,7 +59,7 @@ export function ModalBusca({ aberto, onFechar }: Props) {
       />
 
       {/* Caixa do Modal */}
-      <div className="mundo-painel border rounded-3xl shadow-2xl w-full max-w-2xl relative z-10 flex flex-col overflow-hidden bg-[var(--glass)] backdrop-blur-xl">
+      <div className="painel rounded-3xl shadow-2xl w-full max-w-2xl relative z-10 flex flex-col overflow-hidden backdrop-blur-xl">
         
         {/* Barra de Pesquisa */}
         <div className="flex items-center gap-4 p-5 border-b border-current/10">
@@ -68,7 +68,7 @@ export function ModalBusca({ aberto, onFechar }: Props) {
             ref={inputRef}
             type="text"
             placeholder="Pesquisar nos registros e artefatos..."
-            className="flex-1 bg-transparent outline-none font-voice italic text-2xl placeholder:opacity-40"
+            className="heading-2 flex-1 bg-transparent outline-none text-2xl placeholder:opacity-40 placeholder:font-normal"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -80,13 +80,13 @@ export function ModalBusca({ aberto, onFechar }: Props) {
         {/* Resultados */}
         <div className="max-h-[60vh] overflow-y-auto p-3">
           {query.trim() !== "" && resultados.length === 0 ? (
-            <p className="p-8 text-center opacity-50 font-voice italic text-lg">
-              Nenhuma anotação encontrada para "{query}".
+            <p className="apoio p-8 text-center">
+              Nenhuma anotação encontrada para &quot;{query}&quot;.
             </p>
           ) : query.trim() === "" ? (
             <div className="p-8 text-center opacity-40">
-              <p className="font-mono text-xs uppercase tracking-widest mb-2">Índice do Grimório</p>
-              <p className="font-voice italic">Digite para buscar conhecimentos arquitetados.</p>
+              <p className="rotulo mb-2">índice global</p>
+              <p className="apoio text-sm">Digite para buscar projetos e escritos.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-1">
@@ -107,11 +107,11 @@ export function ModalBusca({ aberto, onFechar }: Props) {
                       <span className="text-[9px] font-mono uppercase tracking-widest border border-current/20 rounded-full px-2 py-0.5 opacity-60">
                         {item.categoria}
                       </span>
-                      <span className="font-voice italic text-lg truncate group-hover:text-[var(--accent)] transition-colors">
+                      <span className="heading-3 text-base truncate group-hover:text-[var(--accent)] transition-colors">
                         {item.titulo}
                       </span>
                     </div>
-                    <p className="text-sm opacity-60 truncate font-serif">
+                    <p className="apoio text-sm truncate">
                       {item.descricao}
                     </p>
                   </div>

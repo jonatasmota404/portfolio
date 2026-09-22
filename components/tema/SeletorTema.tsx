@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { useTema } from "@/context/TemaContext";
 import { PALETAS, type TemaId } from "@/lib/paletas";
 
@@ -15,8 +16,17 @@ export function SeletorTema() {
         setAberto(false);
       }
     }
-    if (aberto) document.addEventListener("mousedown", aoClicarFora);
-    return () => document.removeEventListener("mousedown", aoClicarFora);
+    function aoTeclar(e: KeyboardEvent) {
+      if (e.key === "Escape") setAberto(false);
+    }
+    if (aberto) {
+      document.addEventListener("mousedown", aoClicarFora);
+      document.addEventListener("keydown", aoTeclar);
+    }
+    return () => {
+      document.removeEventListener("mousedown", aoClicarFora);
+      document.removeEventListener("keydown", aoTeclar);
+    };
   }, [aberto]);
 
   const paletaAtiva = PALETAS[tema];
@@ -25,44 +35,44 @@ export function SeletorTema() {
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setAberto((v) => !v)}
-        aria-label="Escolher tema de cores"
+        aria-label="Escolher paleta de cores"
         aria-expanded={aberto}
-        className="w-6 h-6 rounded-full border transition-transform hover:scale-110 focus:outline-none"
+        aria-haspopup="menu"
+        className="tema-gatilho foco-anel"
         style={{
           background: `linear-gradient(90deg, ${paletaAtiva.ui.bg} 50%, ${paletaAtiva.ui.accent} 50%)`,
-          borderColor: "var(--line)",
         }}
       />
 
       {aberto && (
-        <div
-          className="absolute right-0 mt-2 flex flex-col gap-1 p-2 rounded-2xl border shadow-xl z-50 min-w-[160px]"
-          style={{ background: "var(--bg)", borderColor: "var(--line)" }}
-        >
+        <div className="tema-menu" role="menu">
+          <span className="tema-rotulo">paleta</span>
           {(Object.keys(PALETAS) as TemaId[]).map((id) => {
             const p = PALETAS[id];
             const ativo = tema === id;
             return (
               <button
                 key={id}
+                role="menuitemradio"
+                aria-checked={ativo}
+                data-ativo={ativo}
                 onClick={() => {
                   setTema(id);
                   setAberto(false);
                 }}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-full text-xs font-mono whitespace-nowrap transition-colors"
-                style={{
-                  background: ativo ? p.ui.accent : "transparent",
-                  color: ativo ? p.ui.onAccent : "var(--ink)",
-                }}
+                className="tema-item foco-anel"
+                style={
+                  ativo
+                    ? { background: p.ui.accent, color: p.ui.onAccent }
+                    : undefined
+                }
               >
                 <span
-                  className="w-3.5 h-3.5 rounded-full shrink-0"
-                  style={{
-                    background: `linear-gradient(90deg, ${p.ui.bg} 50%, ${p.ui.accent} 50%)`,
-                    border: "1px solid rgba(255,255,255,.35)",
-                  }}
+                  className="tema-swatch"
+                  style={{ background: `linear-gradient(90deg, ${p.ui.bg} 50%, ${p.ui.accent} 50%)` }}
                 />
                 {p.nome}
+                <Check size={14} className="tema-check" strokeWidth={3} />
               </button>
             );
           })}

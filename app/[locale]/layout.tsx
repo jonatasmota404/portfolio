@@ -1,14 +1,15 @@
 import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { EB_Garamond, Cormorant, JetBrains_Mono, Inter_Tight } from "next/font/google";
+import { EB_Garamond, Inter, JetBrains_Mono, Inter_Tight } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { TemaProvider } from "@/context/TemaContext";
 import { Cabecalho } from "@/components/codex/Cabecalho";
 
-const corpo = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
-const titulos = Cormorant({ subsets: ["latin"], style: "italic", variable: "--font-voice" });
+// Inter é a fonte padrão do corpo; a serifada fica reservada ao texto longo dos artigos.
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const serifada = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 const tight = Inter_Tight({ subsets: ["latin"], variable: "--font-tight" });
 
@@ -29,7 +30,13 @@ export default async function LocaleLayout({
     const messages = await getMessages();
 
     return (
-        <html lang={locale} suppressHydrationWarning>
+        // As variáveis de fonte ficam no <html> (e não no <body>) porque a regra base de
+        // font-family também mora lá: no <body> elas não alcançariam o :root e a fonte caía para Times.
+        <html
+            lang={locale}
+            suppressHydrationWarning
+            className={`${sans.variable} ${serifada.variable} ${mono.variable} ${tight.variable}`}
+        >
             <head>
                 <script
                     dangerouslySetInnerHTML={{
@@ -37,7 +44,7 @@ export default async function LocaleLayout({
                     }}
                 />
             </head>
-            <body className={`${corpo.variable} ${titulos.variable} ${mono.variable} ${tight.variable} antialiased`}>
+            <body className="antialiased">
                 <NextIntlClientProvider messages={messages}>
                     <TemaProvider>
                         <Cabecalho />

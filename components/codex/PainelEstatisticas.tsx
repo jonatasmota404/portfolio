@@ -49,9 +49,9 @@ export function PainelEstatisticas({ stats, calendario, linguagens }: Props) {
         {aba === "geral" && (
           <div className="grid grid-cols-2 gap-4">
             {stats.map((s) => (
-              <div key={s.rotulo} className="mundo-painel border rounded-xl p-5 shadow-sm">
-                <p className="font-voice text-3xl">{s.valor}</p>
-                <p className="text-xs opacity-60 font-mono mt-1.5">{s.rotulo}</p>
+              <div key={s.rotulo} className="painel rounded-xl p-5 shadow-sm">
+                <p className="heading-2 text-3xl" style={{ color: "var(--accent)" }}>{s.valor}</p>
+                <p className="rotulo mt-1.5">{s.rotulo}</p>
               </div>
             ))}
           </div>

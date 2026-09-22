@@ -85,14 +85,14 @@ function Secao({
   return (
     <div className="flex flex-col">
       <div className="flex items-baseline gap-2.5 mb-4">
-        <h3 className="font-voice italic text-xl opacity-90" style={{ color: "var(--accent)" }}>
+        <h3 className="heading-3 text-xl" style={{ color: "var(--accent)" }}>
           {titulo}
         </h3>
         <span className="text-[9px] font-mono uppercase tracking-widest opacity-40">{legenda}</span>
       </div>
 
       {lista.length === 0 ? (
-        <p className="text-sm opacity-50 font-voice italic">Nada por aqui ainda.</p>
+        <p className="apoio text-sm">Nada por aqui ainda.</p>
       ) : (
         <div className="flex flex-wrap gap-2.5 items-center">
           {lista.map((hab) => (
@@ -124,11 +124,11 @@ export function PainelDireito({ habilidades, stats, calendario, linguagens }: Pr
   }
 
   return (
-    <div className="mundo-painel border w-full h-full rounded-3xl p-7 lg:p-10 shadow-sm flex flex-col justify-between gap-10">
+    <div className="painel w-full h-full rounded-3xl p-7 lg:p-10 shadow-sm flex flex-col justify-between gap-10">
 
       <div className="flex flex-col gap-8">
         {habilidades.length === 0 ? (
-          <p className="text-sm opacity-60 font-voice italic">Seu inventário está vazio.</p>
+          <p className="apoio text-sm">Seu inventário está vazio.</p>
         ) : (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
@@ -166,7 +166,7 @@ export function PainelDireito({ habilidades, stats, calendario, linguagens }: Pr
                   {detalhe.projetos.length > 0 && (
                     <p className="text-sm leading-relaxed">
                       <span className="text-[10px] font-mono uppercase tracking-widest opacity-40 mr-2">projetos</span>
-                      <span className="opacity-80 font-voice">
+                      <span className="opacity-80">
                         {detalhe.projetos.map((p) => formatarNome(p.nome)).join(" · ")}
                       </span>
                     </p>
@@ -175,18 +175,18 @@ export function PainelDireito({ habilidades, stats, calendario, linguagens }: Pr
                   {detalhe.artigos.length > 0 && (
                     <p className="text-sm leading-relaxed">
                       <span className="text-[10px] font-mono uppercase tracking-widest opacity-40 mr-2">escritos</span>
-                      <span className="opacity-80 font-voice">
+                      <span className="opacity-80">
                         {detalhe.artigos.map((a) => a.titulo).join(" · ")}
                       </span>
                     </p>
                   )}
 
                   {detalhe.projetos.length === 0 && detalhe.artigos.length === 0 && (
-                    <p className="text-sm opacity-50 font-voice italic">Sem usos registrados.</p>
+                    <p className="apoio text-sm">Sem usos registrados.</p>
                   )}
                 </div>
               ) : (
-                <p className="text-sm opacity-40 font-voice italic">
+                <p className="apoio text-sm">
                   Passe o mouse ou toque numa tecnologia para ver onde ela aparece.
                 </p>
               )}

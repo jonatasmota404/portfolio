@@ -5,13 +5,14 @@ export default async function Projetos() {
   const repos = await listarRepositorios();
 
   return (
-    <section className="pt-2 pb-12">
+    <section className="conteudo pt-10 pb-16">
       <header className="mb-10">
-        <h1 className="font-voice italic text-4xl mb-3">Projetos</h1>
-        <p className="font-serif text-lg opacity-75 max-w-2xl leading-relaxed">
+        <p className="rotulo mb-3">repositórios</p>
+        <h1 className="heading-1 mb-4">Projetos</h1>
+        <p className="apoio text-lg max-w-2xl">
           Uma seleção de coisas que venho construindo — de ferramentas do dia a dia a experimentos e arquiteturas de infraestrutura.
         </p>
-        <hr className="border-t border-dashed border-current/20 w-32 mt-8" />
+        <hr className="w-32 mt-8" style={{ borderColor: "var(--line)" }} />
       </header>
 
       {/* Delega a renderização e os filtros para o Client Component */}

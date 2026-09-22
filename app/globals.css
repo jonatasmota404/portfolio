@@ -7,33 +7,80 @@
   --color-ink-light: #D9D2BF;
   --color-verdigris: #5B8770;
   --color-oxide: #C1571F;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif), Georgia, serif;
-  --font-voice: var(--font-voice), Georgia, serif;
+  --font-tight: var(--font-tight), "Inter Tight", sans-serif;
   --font-mono: var(--font-mono), monospace;
-  --font-hand: var(--font-hand), cursive;
-}
-
-:root {
-  --pagina-bg: var(--color-parchment);
-  --pagina-texto: var(--color-ink);
 }
 
 html {
-  background-color: var(--pagina-bg);
-  color: var(--pagina-texto);
-  font-family: var(--font-serif);
-}
-
-html.night {
-  --pagina-bg: var(--color-night);
-  --pagina-texto: var(--color-ink-light);
-}
-
-.mundo-painel {
-  background-color: var(--glass);
   color: var(--ink);
-  border-color: var(--line);
-  transition: color 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+  background-color: var(--bg);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+/* ---- Sistema visual compartilhado (Home 3D + páginas internas) ---- */
+
+/* Container padrão de conteúdo: mesma largura/gutter do cabeçalho */
+.conteudo {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+@media (min-width: 768px) {
+  .conteudo { padding-inline: 40px; }
+}
+
+/* Títulos: Inter Tight bold, sem itálico */
+.heading-1 {
+  font-family: var(--font-tight), sans-serif;
+  font-weight: 800;
+  font-size: clamp(34px, 5.5vw, 58px);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: var(--ink);
+}
+.heading-2,
+.raizes-h2 {
+  font-family: var(--font-tight), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--ink);
+}
+.heading-3 {
+  font-family: var(--font-tight), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+/* Rótulo pequeno em caixa alta: sempre mono */
+.rotulo {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Texto de apoio */
+.apoio {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Painel de vidro reutilizável (cards, modais, listas) */
+.painel {
+  background: var(--glass);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .codex-draw {
@@ -44,7 +91,7 @@ html.night {
   animation: codex-dash 2s ease-out forwards;
 }
 
-
+}
 @keyframes codex-dash {
   to {
     stroke-dashoffset: 0;
@@ -130,32 +177,117 @@ html[data-tema] {
   color: var(--ink);
   transition: background-color .3s ease, color .3s ease;
 }
+@layer components {
 /* ---- Cabeçalho global: sobrevive à cena 3D da Home e às páginas de fundo sólido ---- */
+/* A posição fixa mora no wrapper, não no header: o header tem backdrop-filter e
+   qualquer descendente dele herdaria um backdrop root limitado à sua caixa — foi
+   o que deixava o menu mobile transparente. */
+.site-header-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 60; /* acima do tooltip da cena 3D (z-50), abaixo do modal de busca (z-100) */
+}
 .site-header {
   background: var(--glass);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
   backdrop-filter: blur(14px) saturate(130%);
   border-bottom: 1px solid var(--line);
+}
+.site-marca {
+  font-family: var(--font-tight), sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.site-marca:hover { color: var(--accent); }
+.site-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  opacity: 0.78;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 99px;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+.site-link:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.site-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono), monospace; font-size: 12px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  border: 1px solid var(--line);
+  padding: 6px 12px; border-radius: 99px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.site-badge:hover { border-color: var(--accent); color: var(--ink); }
+.site-badge kbd {
+  font-family: var(--font-mono), monospace; font-size: 10.5px;
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 1px 5px; opacity: 0.8;
+}
+.site-icone {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 99px;
+  color: var(--ink); opacity: 0.65;
+  transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.site-icone:hover {
+  opacity: 1; color: var(--accent);
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.site-idioma {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono), monospace; font-size: 11px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink); opacity: 0.7;
+  padding: 5px 10px; border-radius: 99px;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+.site-idioma:hover { opacity: 1; color: var(--accent); background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.site-idioma:disabled { opacity: 0.3; }
+.site-menu {
+  position: absolute;
+  left: 16px; right: 16px; top: calc(100% + 10px);
+  /* opaco o bastante para o conteúdo da página não vazar por trás */
+  background: color-mix(in srgb, var(--bg) 93%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid var(--line);
+}
+.site-menu a {
+  font-family: var(--font-tight), sans-serif;
+  font-weight: 700; font-size: 20px; letter-spacing: -0.02em;
+  color: var(--ink); text-decoration: none;
+}
+/* Anel de foco consistente em todos os controles do cabeçalho e do seletor */
+.foco-anel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ---- Home 3D: blocos de conteúdo ---- */
 .raizes-panel {
   background: var(--glass);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
   backdrop-filter: blur(16px) saturate(130%);
   border: 1px solid var(--line);
   border-radius: 22px;
 }
-.raizes-h1 {
-  font-family: var(--font-tight), sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.04;
+.raizes-h1, .raizes-kinetic {
+  margin: 0 0 14px;
+  font: 800 clamp(56px, 13.5vw, 190px) / 0.86 var(--font-tight), "Inter Tight", sans-serif;
+  letter-spacing: -0.045em;
+  text-shadow: 0 8px 60px rgba(0,0,0,.55);
 }
-.raizes-h2 {
-  font-family: var(--font-tight), sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.08;
-}
+.raizes-kinetic-linha { display: flex; flex-wrap: nowrap; }
+.raizes-kinetic-linha span { display: inline-block; font-weight: 200; will-change: font-weight; }
 .raizes-tag {
   font-family: var(--font-mono), monospace;
   font-size: 12px;
@@ -181,6 +313,7 @@ html[data-tema] {
 .raizes-btn {
   display: inline-block; border: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 55%, transparent);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-radius: 99px; padding: 12px 22px;
   font-family: var(--font-tight), sans-serif; font-weight: 700; font-size: 15px;
@@ -228,21 +361,8 @@ html[data-tema] {
   .raizes-bento .box.big { grid-column: span 2; grid-row: auto; }
 }
 
-/* Hero: nome em tipografia cinética + apoio */
-.raizes-nome {
-  font-family: var(--font-tight), sans-serif;
-  font-size: clamp(56px, 13.5vw, 190px);
-  letter-spacing: -0.04em;
-  line-height: 0.92;
-  color: var(--ink);
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-.raizes-nome span {
-  display: inline-block;
-  font-weight: 200;
-  font-variation-settings: "wght" 200;
-  transition: font-weight 0.08s linear;
-}
+/* Hero: nome em tipografia cinética + apoio (regras exatas em .raizes-h1/.raizes-kinetic) */
+.raizes-kinetic { color: var(--ink); }
 .raizes-hero-tag {
   font-family: var(--font-mono), monospace;
   font-size: 13px;
@@ -278,6 +398,8 @@ html[data-tema] {
 .raizes-pc small { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--muted); }
 .raizes-pc .go { float: right; color: var(--accent); font-weight: 700; }
 
+}
+
 /* Cursor customizado (só na Home 3D, apenas hover+pointer fino) */
 #cursor-custom {
   position: fixed; left: 0; top: 0; width: 16px; height: 16px;
@@ -290,4 +412,50 @@ body.cursor-custom-on #cursor-custom { display: block; }
 @media (hover: hover) and (pointer: fine) {
   body.cursor-custom-on, body.cursor-custom-on * { cursor: none !important; }
   body.cursor-custom-on input { cursor: text !important; }
+}
+
+@layer components {
+/* ---- Seletor de tema ---- */
+.tema-gatilho {
+  width: 26px; height: 26px; border-radius: 99px;
+  border: 1px solid var(--line);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+.tema-gatilho:hover { transform: scale(1.1); border-color: var(--accent); }
+.tema-menu {
+  position: absolute; right: 0; top: calc(100% + 10px);
+  min-width: 208px; padding: 10px;
+  border-radius: 18px; border: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(18px) saturate(130%);
+  box-shadow: 0 18px 50px rgba(0,0,0,.45);
+  transform-origin: top right;
+  animation: tema-entra 150ms ease-out both;
+}
+@keyframes tema-entra {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.tema-rotulo {
+  display: block;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted);
+  padding: 2px 10px 8px;
+}
+.tema-item {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 10px 12px; border-radius: 12px;
+  font-family: var(--font-mono), monospace; font-size: 12px;
+  color: var(--ink); text-align: left; white-space: nowrap;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+.tema-item:hover { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.tema-swatch {
+  width: 19px; height: 19px; border-radius: 99px; flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,.35);
+}
+.tema-item .tema-check { margin-left: auto; opacity: 0; }
+.tema-item[data-ativo="true"] .tema-check { opacity: 1; }
 }

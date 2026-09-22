@@ -222,13 +222,13 @@ export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
                     <Link
                       key={post.slug}
                       href={`/escritos/${post.slug}`}
-                      className="mundo-painel block p-6 rounded-lg border border-current/20 hover:border-current/50 transition-all group"
+                      className="painel block p-6 rounded-2xl hover:border-[var(--accent)] transition-all group"
                     >
-                      <h3 className="font-voice italic text-lg mb-2 group-hover:translate-x-1 transition-transform">
+                      <h3 className="heading-3 text-lg mb-2 group-hover:translate-x-1 transition-transform">
                         {post.titulo || post.slug}
                       </h3>
-                      <p className="text-sm opacity-70">{post.descricao || ""}</p>
-                      <div className="text-xs opacity-50 mt-4">{post.data || ""}</div>
+                      <p className="apoio text-sm">{post.descricao || ""}</p>
+                      <div className="rotulo mt-4">{post.data || ""}</div>
                     </Link>
                   ))}
                 </div>

@@ -61,7 +61,12 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   ];
 
   return (
-    <article className="w-full flex flex-col gap-6 pt-2">
+    <article className="conteudo w-full flex flex-col gap-8 pt-10 pb-16">
+      <header>
+        <p className="rotulo mb-3">perfil</p>
+        <h1 className="heading-1">Sobre</h1>
+      </header>
+
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
         
         {/* COLUNA ESQUERDA */}
@@ -74,13 +79,13 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
             rotuloContato={t("contato")}
           />
           
-          <div className="mundo-painel border rounded-3xl p-7 shadow-sm flex-1">
-            <p className="text-[11px] uppercase tracking-widest opacity-60 font-mono mb-4">atributos</p>
+          <div className="painel rounded-3xl p-7 shadow-sm flex-1">
+            <p className="rotulo mb-4">atributos</p>
             <div className="flex flex-col gap-3">
               {atributos.map((a) => (
                 <div key={a.label} className="grid grid-cols-[75px_1fr] gap-3 items-baseline">
                   <span className="text-xs font-mono" style={{ color: "var(--accent)" }}>{a.label}</span>
-                  <span className="font-voice text-sm leading-relaxed opacity-90">{a.value}</span>
+                  <span className="text-sm leading-relaxed opacity-90">{a.value}</span>
                 </div>
               ))}
             </div>

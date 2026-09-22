@@ -3,7 +3,9 @@ import type { ComponentProps, ReactNode } from "react";
 export const componentesProsa = {
   // O Wrapper é a magia que permite aplicar a Letra Capitular (Drop Cap) apenas no primeiro parágrafo
   wrapper: ({ children }: { children: ReactNode }) => (
-    <div className="grimorio-artigo">
+    // O corpo do artigo é a única ilha serifada do site — tudo aqui herda a serifada
+    // por padrão; só os títulos saem dela para o Inter Tight do sistema visual.
+    <div className="grimorio-artigo" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
       <style>{`
         /* Estiliza apenas a primeira letra do primeiro parágrafo do artigo */
         .grimorio-artigo > p:first-of-type::first-letter {
@@ -13,8 +15,7 @@ export const componentesProsa = {
           padding-top: 0.25rem;
           padding-right: 0.15rem;
           margin-right: 0.15rem;
-          font-family: var(--font-voice), Georgia, serif;
-          font-style: italic;
+          font-family: var(--font-serif), Georgia, serif;
           color: var(--accent);
           text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
         }
@@ -25,13 +26,13 @@ export const componentesProsa = {
 
   // Títulos com estilo de capítulo de livro
   h1: (props: ComponentProps<"h1">) => (
-    <h1 className="font-voice italic text-3xl md:text-4xl mt-12 mb-6" style={{ color: "var(--accent)" }} {...props} />
+    <h1 className="heading-2 text-3xl md:text-4xl mt-12 mb-6" style={{ color: "var(--accent)" }} {...props} />
   ),
   h2: (props: ComponentProps<"h2">) => (
-    <h2 className="font-voice italic text-2xl md:text-3xl mt-10 mb-4 border-b border-current/10 pb-2" {...props} />
+    <h2 className="heading-2 text-2xl md:text-3xl mt-10 mb-4 border-b border-current/10 pb-2" {...props} />
   ),
   h3: (props: ComponentProps<"h3">) => (
-    <h3 className="font-voice italic text-xl md:text-2xl mt-8 mb-3 opacity-90" {...props} />
+    <h3 className="heading-3 text-xl md:text-2xl mt-8 mb-3 opacity-90" {...props} />
   ),
   
   // Parágrafos agora usam uma fonte serifa elegante, com tamanho maior para facilitar a leitura longa
@@ -47,7 +48,7 @@ export const componentesProsa = {
   strong: (props: ComponentProps<"strong">) => <strong className="font-bold opacity-100" {...props} />,
   
   // O itálico normal ganha a sua fonte principal cursiva para destacar palavras estrangeiras ou ênfases
-  em: (props: ComponentProps<"em">) => <em className="font-voice italic text-[1.1em]" {...props} />,
+  em: (props: ComponentProps<"em">) => <em className="font-serif italic" {...props} />,
   
   // Listas com espaçamento de leitura e marcadores coloridos
   li: (props: ComponentProps<"li">) => (

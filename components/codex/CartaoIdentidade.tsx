@@ -13,11 +13,11 @@ type Props = {
 export function CartaoIdentidade({ nome, cargo, detalhes, avatarUrl, rotuloContato }: Props) {
     return (
         // Troquei rounded-lg por rounded-3xl e adicionei shadow-sm para igualar ao resto
-        <div className="mundo-painel border rounded-3xl shadow-sm p-7 flex flex-col gap-4 relative overflow-hidden">
+        <div className="painel rounded-3xl shadow-sm p-7 flex flex-col gap-4 relative overflow-hidden">
             <RetratoAvatar urlFoto={avatarUrl} />
             <div>
-                <h1 className="font-voice italic text-2xl mb-1">{nome}</h1>
-                {cargo && <p className="text-sm opacity-75">{cargo}</p>}
+                <h2 className="heading-2 text-2xl mb-1">{nome}</h2>
+                {cargo && <p className="rotulo">{cargo}</p>}
                 <div className="mt-3 text-sm leading-relaxed">{detalhes}</div>
             </div>
             <div className="flex gap-3 items-center">

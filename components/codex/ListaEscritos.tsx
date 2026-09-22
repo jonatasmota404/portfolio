@@ -76,12 +76,10 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
         
         {/* Nível 1: Categorias */}
         <div className="flex flex-wrap gap-6 items-baseline border-b border-current/10 pb-5">
-          <span className="text-[11px] font-mono opacity-50 uppercase tracking-widest mr-2">
-            Domínio:
-          </span>
+          <span className="rotulo mr-2">domínio</span>
           <button
             onClick={() => selecionarCategoria(null)}
-            className={`font-voice italic text-2xl transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+            className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
             style={{ color: categoriaAtiva === null ? "var(--accent)" : "inherit" }}
           >
             Todos
@@ -90,7 +88,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
             <button
               key={cat}
               onClick={() => selecionarCategoria(cat)}
-              className={`font-voice italic text-2xl transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+              className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
               style={{ color: categoriaAtiva === cat ? "var(--accent)" : "inherit" }}
             >
               {formatarNome(cat)}
@@ -101,9 +99,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
         {/* Nível 2: Tecnologias */}
         {techsVisiveis.length > 0 && (
           <div className="flex flex-wrap gap-2.5 items-center">
-            <span className="text-[10px] font-mono opacity-40 uppercase tracking-widest mr-2">
-              Tecnologias:
-            </span>
+            <span className="rotulo mr-2">tecnologias</span>
             {techsVisiveis.map((tech) => (
               <button
                 key={tech}
@@ -134,7 +130,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
           const tituloExibicao = title || formatarNome(post.slug);
 
           return (
-            <div key={post.slug} className="mundo-painel border rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:border-current/30 hover:shadow-md hover:-translate-y-1">
+            <div key={post.slug} className="painel rounded-3xl p-6 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:-translate-y-1">
               <Link href={`/escritos/${post.slug}`} className="block shrink-0 focus:outline-none mb-6">
                 <MiniaturaRepo hue={gerarHue(post.slug)} variante="escrito" />
               </Link>
@@ -144,13 +140,13 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
                   <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
                     {formatarNome(post.categoria)}
                   </span>
-                  <Link href={`/escritos/${post.slug}`} className="font-mono font-semibold text-lg hover:opacity-70 transition-opacity">
+                  <Link href={`/escritos/${post.slug}`} className="heading-3 text-lg hover:opacity-70 transition-opacity">
                     {tituloExibicao}
                   </Link>
                   {dataFormatada && <span className="text-xs font-mono opacity-50">{dataFormatada}</span>}
                 </div>
 
-                <p className="font-serif text-[1rem] leading-relaxed opacity-75 mt-2 mb-8 flex-1">
+                <p className="apoio text-[0.95rem] mt-2 mb-8 flex-1">
                   {description}
                 </p>
 
@@ -176,9 +172,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
       </div>
       
       {postsFiltrados.length === 0 && (
-        <div className="text-center py-12 opacity-50 font-voice italic text-lg">
-          Nenhum registo encontrado com esta combinação.
-        </div>
+        <div className="rotulo text-center py-12">Nenhum registo encontrado com esta combinação</div>
       )}
     </div>
   );
