@@ -137,23 +137,3 @@ export function prepararLigacoes(
 
   return ligacoes;
 }
-
-export function prepararCalendario(
-  semanas: { label: string; dias: { contagem: number }[] }[] | null
-): number[] {
-  if (!semanas) return Array(365).fill(0);
-
-  const calendario: number[] = [];
-  for (const semana of semanas) {
-    for (const dia of semana.dias) {
-      calendario.push(dia.contagem);
-    }
-  }
-
-  // Garanta exatamente 365 elementos
-  const resultado = calendario.slice(0, 365);
-  while (resultado.length < 365) {
-    resultado.push(0);
-  }
-  return resultado;
-}

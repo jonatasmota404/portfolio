@@ -13,12 +13,11 @@ const CenaRaizes = dynamic(() => import("./CenaRaizes").then((m) => ({ default: 
 interface Props {
   nos: NoRepo[];
   ligacoes: Array<{ a: string; b: string; forte: boolean }>;
-  calendario: number[];
   posts: any[];
   totalRepos: number;
 }
 
-export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Props) {
+export function HomeRaizes({ nos, ligacoes, posts, totalRepos }: Props) {
   const t = useTranslations("home");
   const cameraRef = useRef<{
     position: { x: number; y: number; z: number };
@@ -70,7 +69,7 @@ export function HomeRaizes({ nos, ligacoes, calendario, posts, totalRepos }: Pro
 
   return (
     <>
-      <CenaRaizes nos={nos} ligacoes={ligacoes} calendario={calendario} camAlvo={cameraRef} />
+      <CenaRaizes nos={nos} ligacoes={ligacoes} camAlvo={cameraRef} />
 
       <div className="relative z-10">
         {/* Hero */}

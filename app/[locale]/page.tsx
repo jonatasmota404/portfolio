@@ -1,5 +1,5 @@
-import { listarRepositorios, listarEscritos, buscarCalendarioContribuicoes, buscarContagemCommits } from "@/lib/github";
-import { prepararNosRaizes, prepararLigacoes, prepararCalendario } from "@/lib/raizes";
+import { listarRepositorios, listarEscritos, buscarContagemCommits } from "@/lib/github";
+import { prepararNosRaizes, prepararLigacoes } from "@/lib/raizes";
 import { HomeRaizes } from "@/components/raizes/HomeRaizes";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -7,7 +7,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   // Buscar dados do GitHub
   const repos = await listarRepositorios();
-  const calendario = await buscarCalendarioContribuicoes();
   const posts = await listarEscritos(locale);
 
   // Buscar contagem de commits dos 5 destaques
@@ -24,7 +23,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Preparar dados para a cena
   const nos = prepararNosRaizes(repos, contagensCommits);
   const ligacoes = prepararLigacoes(nos);
-  const calendarioArray = prepararCalendario(calendario);
 
-  return <HomeRaizes nos={nos} ligacoes={ligacoes} calendario={calendarioArray} posts={posts} totalRepos={repos.length} />;
+  return <HomeRaizes nos={nos} ligacoes={ligacoes} posts={posts} totalRepos={repos.length} />;
 }
