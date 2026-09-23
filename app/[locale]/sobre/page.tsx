@@ -8,8 +8,11 @@ import {
 import { calcularHabilidades } from "@/lib/habilidades";
 import { buscarPerfil, t2 } from "@/lib/perfil";
 import { getTranslations } from "next-intl/server";
-import { PainelDireito } from "@/components/sobre/PainelDireito";
-import { CartaoIdentidade } from "@/components/sobre/CartaoIdentidade";
+import { PainelTecnologias } from "@/components/sobre/PainelTecnologias";
+import { RetratoAvatar } from "@/components/sobre/RetratoAvatar";
+import { CalendarioContribuicoes } from "@/components/sobre/CalendarioContribuicoes";
+import { DistribuicaoLinguagens } from "@/components/sobre/DistribuicaoLinguagens";
+import type { CSSProperties } from "react";
 
 type Semana = { label: string; dias: { contagem: number }[] };
 
@@ -30,10 +33,11 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   const habilidades = calcularHabilidades(repos, posts);
   const { atributos: a } = perfil;
 
-  const atributos = [
-    { label: "stack", value: t2(a.stack, locale) },
-    { label: "foco", value: t2(a.foco, locale) },
-    { label: "formação", value: `${t2(a.formacaoCurso, locale)} (${a.formacaoInstituicao})` },
+  // stack e foco têm texto longo e ocupam blocos largos; formação e base cabem em blocos simples
+  const atributos: { label: string; value: string; apoio?: string; largo?: boolean }[] = [
+    { label: "stack", value: t2(a.stack, locale), largo: true },
+    { label: "foco", value: t2(a.foco, locale), largo: true },
+    { label: "formação", value: t2(a.formacaoCurso, locale), apoio: a.formacaoInstituicao },
     { label: "base", value: t2(a.base, locale) },
   ];
 
@@ -52,6 +56,20 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
     { valor: contribuicoesAno !== null ? String(contribuicoesAno) : "—", rotulo: "contribuições / ano" },
   ];
 
+  // Ordem de entrada escalonada dos blocos (animação em .sobre-bento)
+  let ordem = 0;
+  const entrada = () => ({ "--i": ordem++ }) as CSSProperties;
+
+  const blocoAtributo = (at: (typeof atributos)[number]) => (
+    <div key={at.label} className={at.largo ? "box wide" : "box"} style={entrada()}>
+      <div className="lbl">{at.label}</div>
+      <div>
+        <div className="sobre-valor">{at.value}</div>
+        {at.apoio && <div className="lbl mt-1">{at.apoio}</div>}
+      </div>
+    </div>
+  );
+
   return (
     <article className="conteudo w-full flex flex-col gap-8 pt-[84px] pb-16">
       <header>
@@ -59,41 +77,59 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
         <h1 className="heading-1">Sobre</h1>
       </header>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
-        
-        {/* COLUNA ESQUERDA */}
-        <div className="xl:col-span-4 flex flex-col gap-6 min-w-0 h-full">
-          <CartaoIdentidade
-            nome={perfil.nome}
-            cargo={t2(perfil.cargo, locale)}
-            detalhes={<p>{t2(perfil.bio, locale)}</p>}
-            avatarUrl={`https://github.com/${perfil.contato.github}.png`}
-            rotuloContato={t("contato")}
-          />
-          
-          <div className="painel rounded-3xl p-7 shadow-sm flex-1">
-            <p className="rotulo mb-4">atributos</p>
-            <div className="flex flex-col gap-3">
-              {atributos.map((a) => (
-                <div key={a.label} className="grid grid-cols-[75px_1fr] gap-3 items-baseline">
-                  <span className="text-xs font-mono" style={{ color: "var(--accent)" }}>{a.label}</span>
-                  <span className="text-sm leading-relaxed opacity-90">{a.value}</span>
-                </div>
-              ))}
+      <div className="raizes-bento sobre-bento">
+        <div className="box big gap-6" style={entrada()}>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+            <RetratoAvatar urlFoto={`https://github.com/${perfil.contato.github}.png`} />
+            <div>
+              <h2 className="raizes-bento-titulo mb-2">{perfil.nome}</h2>
+              <p className="lbl">{t2(perfil.cargo, locale)}</p>
             </div>
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+            {t2(perfil.bio, locale)}
+          </p>
+          <div className="flex gap-3 items-center flex-wrap">
+            <a
+              href={`mailto:${perfil.contato.email}`}
+              className="font-mono text-xs px-5 py-2.5 rounded-full font-semibold transition-opacity hover:opacity-90"
+              style={{ background: "var(--accent)", color: "var(--on-accent)" }}
+            >
+              {t("contato")}
+            </a>
+            <a
+              href="/curriculo.pdf"
+              download
+              className="font-mono text-xs px-5 py-2.5 rounded-full transition-colors"
+              style={{ backgroundColor: "color-mix(in srgb, var(--ink) 8%, transparent)", color: "var(--ink)" }}
+            >
+              currículo
+            </a>
           </div>
         </div>
 
-        {/* COLUNA DIREITA: Caixa Única e Consolidada */}
-        <div className="xl:col-span-8 flex flex-col min-w-0 h-full">
-          <PainelDireito 
-            habilidades={habilidades} 
-            stats={stats} 
-            calendario={calendario} 
-            linguagens={linguagens} 
-          />
+        {stats.map((s) => (
+          <div key={s.rotulo} className="box" style={entrada()}>
+            <div className="num">{s.valor}</div>
+            <div className="lbl">{s.rotulo}</div>
+          </div>
+        ))}
+
+        {atributos.filter((at) => at.largo).map(blocoAtributo)}
+
+        <div className="box big" style={entrada()}>
+          <PainelTecnologias habilidades={habilidades} />
         </div>
 
+        <div className="box wide" style={entrada()}>
+          <DistribuicaoLinguagens dados={linguagens} />
+        </div>
+
+        {atributos.filter((at) => !at.largo).map(blocoAtributo)}
+
+        <div className="box full" style={entrada()}>
+          <CalendarioContribuicoes semanas={calendario} />
+        </div>
       </div>
     </article>
   );

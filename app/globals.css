@@ -416,6 +416,7 @@ html[data-tema] {
 }
 .raizes-bento .box.big { grid-column: span 2; grid-row: span 2; }
 .raizes-bento .box.wide { grid-column: span 2; }
+.raizes-bento .box.full { grid-column: 1 / -1; }
 .raizes-bento .num {
   font-family: var(--font-tight), sans-serif; font-weight: 800; font-size: clamp(38px, 5vw, 60px);
   color: var(--accent); letter-spacing: -0.03em;
@@ -443,6 +444,24 @@ html[data-tema] {
   font-family: var(--font-tight), sans-serif; font-weight: 800;
   font-size: clamp(38px, 9vw, 120px); letter-spacing: -0.04em; line-height: 0.95;
   color: var(--ink);
+}
+/* /sobre: mesmo bento da Home, com entrada escalonada (--i vem da página) */
+.sobre-bento > .box {
+  min-width: 0;
+  transition: border-color 0.3s ease;
+  animation: sobre-entrada 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+.sobre-bento > .box:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.sobre-bento .sobre-valor {
+  font-family: var(--font-tight), sans-serif; font-weight: 800; font-size: 15px;
+  line-height: 1.35; color: var(--ink);
+}
+@keyframes sobre-entrada {
+  from { opacity: 0; transform: translateY(14px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sobre-bento > .box { animation: none; }
 }
 @media (max-width: 820px) {
   .raizes-bento { grid-template-columns: repeat(2, 1fr); }
