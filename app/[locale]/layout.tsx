@@ -5,7 +5,7 @@ import { EB_Garamond, Inter, JetBrains_Mono, Inter_Tight } from "next/font/googl
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { TemaProvider } from "@/context/TemaContext";
-import { Cabecalho } from "@/components/codex/Cabecalho";
+import { Cabecalho } from "@/components/layout/Cabecalho";
 
 // Inter é a fonte padrão do corpo; a serifada fica reservada ao texto longo dos artigos.
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });

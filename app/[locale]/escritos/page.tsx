@@ -1,5 +1,5 @@
 import { listarEscritos } from "@/lib/github";
-import { ListaEscritos } from "@/components/codex/ListaEscritos";
+import { ListaEscritos } from "@/components/escritos/ListaEscritos";
 
 export default async function Escritos({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

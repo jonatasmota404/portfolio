@@ -1,5 +1,5 @@
 import { listarRepositorios } from "@/lib/github";
-import { ListaProjetos } from "@/components/codex/ListaProjetos";
+import { ListaProjetos } from "@/components/projetos/ListaProjetos";
 
 export default async function Projetos() {
   const repos = await listarRepositorios();

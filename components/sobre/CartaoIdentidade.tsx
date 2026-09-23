@@ -1,6 +1,6 @@
 "use client";
 
-import { RetratoAvatar } from "@/components/codex/RetratoAvatar";
+import { RetratoAvatar } from "@/components/sobre/RetratoAvatar";
 
 type Props = {
     nome: string;

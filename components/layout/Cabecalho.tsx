@@ -93,16 +93,6 @@ export function Cabecalho() {
     window.location.href = `/${proximoIdioma}${semLocale === "/" ? "" : semLocale}`;
   };
 
-  // Na Home, rola até a seção; em qualquer outra página, deixa o Link navegar para "/#contato"
-  // (o hash é pego pela Home ao montar, com retry até a seção existir no DOM).
-  const aoClicarContato = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    setAberto(false);
-    if (pathname === "/") {
-      e.preventDefault();
-      rolarSuaveAte("contato");
-    }
-  };
-
   const estaAtivo = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   const abrirBusca = () => {
@@ -132,14 +122,6 @@ export function Cabecalho() {
                 {t(item.chave)}
               </Link>
             ))}
-            <Link
-              href="/#contato"
-              scroll={false}
-              onClick={aoClicarContato}
-              className="capsula-nav-link foco-anel"
-            >
-              {t("contato")}
-            </Link>
 
             <span className="capsula-separador" />
 
@@ -188,9 +170,7 @@ export function Cabecalho() {
                   {t(item.chave)}
                 </Link>
               ))}
-              <Link href="/#contato" scroll={false} onClick={aoClicarContato}>
-                {t("contato")}
-              </Link>
+              
               <button onClick={abrirBusca} className="site-menu-busca">
                 <Search size={18} />
                 Buscar

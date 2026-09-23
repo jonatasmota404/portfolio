@@ -1,9 +1,9 @@
-type CodexEsbocoProps = {
+type MolduraSvgProps = {
   tamanho?: number;
   children: React.ReactNode;
 };
 
-export function CodexEsboco({ tamanho = 150, children }: CodexEsbocoProps) {
+export function MolduraSvg({ tamanho = 150, children }: MolduraSvgProps) {
   return (
     <svg
       viewBox="0 0 150 150"

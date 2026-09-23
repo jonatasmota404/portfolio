@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarioContribuicoes } from "@/components/codex/CalendarioContribuicoes";
-import { DistribuicaoLinguagens } from "@/components/codex/DistribuicaoLinguagens";
-import { NotaMetodologia } from "@/components/codex/NotaMetodologia";
+import { CalendarioContribuicoes } from "@/components/sobre/CalendarioContribuicoes";
+import { DistribuicaoLinguagens } from "@/components/sobre/DistribuicaoLinguagens";
+import { NotaMetodologia } from "@/components/sobre/NotaMetodologia";
 
 type Aba = "geral" | "atividade" | "linguagens" | "metodologia";
 const ABAS: { id: Aba; rotulo: string }[] = [

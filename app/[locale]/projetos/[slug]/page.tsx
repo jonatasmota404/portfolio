@@ -1,7 +1,7 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { buscarReadmeLocalizado } from "@/lib/github";
-import { CodexPlate, CodexTraco, CodexAnnotation } from "@/components/codex/CodexPlate";
-import { componentesProsa } from "@/components/codex/prosa";
+import { PlacaSvg, TracoSvg, AnotacaoSvg } from "@/components/prosa/PlacaSvg";
+import { componentesProsa } from "@/components/prosa/prosa";
 
 export default async function Projeto({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -15,7 +15,7 @@ export default async function Projeto({ params }: { params: Promise<{ locale: st
       <h1 className="heading-1 mb-10">{slug}</h1>
       <MDXRemote
         source={readme}
-        components={{ ...componentesProsa, CodexPlate, CodexTraco, CodexAnnotation }}
+        components={{ ...componentesProsa, PlacaSvg, TracoSvg, AnotacaoSvg }}
         options={{ blockJS: false }}
       />
     </article>

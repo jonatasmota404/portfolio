@@ -5,10 +5,10 @@ export const componentesProsa = {
   wrapper: ({ children }: { children: ReactNode }) => (
     // O corpo do artigo é a única ilha serifada do site — tudo aqui herda a serifada
     // por padrão; só os títulos saem dela para o Inter Tight do sistema visual.
-    <div className="grimorio-artigo" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+    <div className="prosa-artigo" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
       <style>{`
         /* Estiliza apenas a primeira letra do primeiro parágrafo do artigo */
-        .grimorio-artigo > p:first-of-type::first-letter {
+        .prosa-artigo > p:first-of-type::first-letter {
           float: left;
           font-size: 4.2rem;
           line-height: 0.8;

@@ -83,16 +83,16 @@ html {
   transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.codex-draw {
+.traco-desenho {
   stroke-dasharray: 900;
   stroke-dashoffset: 900;
 }
-.codex-em-vista .codex-draw {
-  animation: codex-dash 2s ease-out forwards;
+.desenho-em-vista .traco-desenho {
+  animation: traco-dash 2s ease-out forwards;
 }
 
 }
-@keyframes codex-dash {
+@keyframes traco-dash {
   to {
     stroke-dashoffset: 0;
   }

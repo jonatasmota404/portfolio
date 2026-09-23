@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
-import { MiniaturaRepo } from "./MiniaturaRepo";
+import { MiniaturaRepo } from "@/components/projetos/MiniaturaRepo";
 import { gerarHue } from "@/lib/raizes";
 
 type Post = {

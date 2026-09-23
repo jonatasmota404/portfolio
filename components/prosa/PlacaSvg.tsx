@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type CodexPlateProps = {
+type PlacaSvgProps = {
   titulo?: string;
   viewBox: string;
   children: React.ReactNode;
 };
 
-type CodexAnnotationProps = {
+type AnotacaoSvgProps = {
   x: number;
   y: number;
   texto: string;
@@ -16,23 +16,23 @@ type CodexAnnotationProps = {
   ancoraY?: number;
 };
 
-type CodexTracoProps = Omit<React.SVGProps<SVGCircleElement | SVGLineElement | SVGPathElement>, "ref"> & {
+type TracoSvgProps = Omit<React.SVGProps<SVGCircleElement | SVGLineElement | SVGPathElement>, "ref"> & {
   as: "circle" | "line" | "path";
 };
 
-export function CodexTraco({ as: Tag, ...props }: CodexTracoProps) {
+export function TracoSvg({ as: Tag, ...props }: TracoSvgProps) {
   return (
     <Tag
       fill="none"
       stroke="var(--ink)"
       strokeWidth={1}
-      className="codex-draw"
+      className="traco-desenho"
       {...props}
     />
   );
 }
 
-export function CodexPlate({ titulo, viewBox, children }: CodexPlateProps) {
+export function PlacaSvg({ titulo, viewBox, children }: PlacaSvgProps) {
   const ref = useRef<SVGSVGElement>(null);
   const [emVista, setEmVista] = useState(false);
 
@@ -54,14 +54,14 @@ export function CodexPlate({ titulo, viewBox, children }: CodexPlateProps) {
   }, []);
 
   return (
-    <svg ref={ref} viewBox={viewBox} role="img" className={emVista ? "codex-em-vista" : ""}>
+    <svg ref={ref} viewBox={viewBox} role="img" className={emVista ? "desenho-em-vista" : ""}>
       {titulo && <title>{titulo}</title>}
       {children}
     </svg>
   );
 }
 
-export function CodexAnnotation({ x, y, texto, ancoraX, ancoraY }: CodexAnnotationProps) {
+export function AnotacaoSvg({ x, y, texto, ancoraX, ancoraY }: AnotacaoSvgProps) {
   return (
     <g className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 pointer-events-none">
       {ancoraX !== undefined && ancoraY !== undefined && (

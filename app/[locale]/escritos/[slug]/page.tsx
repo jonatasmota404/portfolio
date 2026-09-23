@@ -1,8 +1,8 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { buscarArtigo } from "@/lib/github";
-import { CodexPlate, CodexTraco, CodexAnnotation } from "@/components/codex/CodexPlate";
-import { CodexEsboco } from "@/components/codex/CodexEsboco";
-import { componentesProsa } from "@/components/codex/prosa";
+import { PlacaSvg, TracoSvg, AnotacaoSvg } from "@/components/prosa/PlacaSvg";
+import { MolduraSvg } from "@/components/prosa/MolduraSvg";
+import { componentesProsa } from "@/components/prosa/prosa";
 
 export default async function Artigo({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -16,7 +16,7 @@ export default async function Artigo({ params }: { params: Promise<{ locale: str
       <h1 className="heading-1 mb-10">{artigo.data.titulo}</h1>
       <MDXRemote
         source={artigo.content}
-        components={{ ...componentesProsa, CodexPlate, CodexTraco, CodexAnnotation, CodexEsboco }}
+        components={{ ...componentesProsa, PlacaSvg, TracoSvg, AnotacaoSvg, MolduraSvg }}
         options={{ blockJS: false }}
       />
     </article>

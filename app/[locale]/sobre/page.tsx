@@ -10,9 +10,9 @@ import {
 import { calcularHabilidades } from "@/lib/habilidades";
 import { extrairSecoesReadme, extrairBullets, extrairCargo } from "@/lib/readme-secoes";
 import { getTranslations } from "next-intl/server";
-import { PainelDireito } from "@/components/codex/PainelDireito";
-import { CartaoIdentidade } from "@/components/codex/CartaoIdentidade";
-import { componentesProsa } from "@/components/codex/prosa";
+import { PainelDireito } from "@/components/sobre/PainelDireito";
+import { CartaoIdentidade } from "@/components/sobre/CartaoIdentidade";
+import { componentesProsa } from "@/components/prosa/prosa";
 
 const GITHUB_USER = "jonatasmota404";
 type Semana = { label: string; dias: { contagem: number }[] };
