@@ -76,7 +76,7 @@ function limparMarkdown(conteudo: string): string {
     .replace(/<(img|br|hr)\b([^>]*?)\/?>/gi, "<$1$2 />");
 }
 
-// ---------- Projetos + Sobre (ambos usam README) ----------
+// ---------- Projetos (README) ----------
 // Padrão: inglês (README.md). Português é a tradução opcional (README.pt.md).
 
 export async function buscarReadmeLocalizado(repo: string, locale: string): Promise<string | null> {
@@ -93,10 +93,6 @@ export async function buscarReadmeLocalizado(repo: string, locale: string): Prom
   // Limpa os comentários HTML do README antes de renderizar
   const limpo = limparMarkdown(bruto);
   return reescreverImagens(limpo, repo, "");
-}
-
-export async function buscarSobre(locale: string): Promise<string | null> {
-  return buscarReadmeLocalizado(GITHUB_USER, locale); // repo com o mesmo nome do usuário
 }
 
 // ---------- Escritos (pasta por artigo) ----------

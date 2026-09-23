@@ -2,11 +2,10 @@ import {
   listarRepositorios,
   listarEscritos,
   buscarContagemCommits,
-  buscarSobre,
   buscarCalendarioContribuicoes,
   buscarRepositoriosPinned,
 } from "@/lib/github";
-import { extrairSecoesReadme, extrairBullets } from "@/lib/readme-secoes";
+import { buscarPerfil, t2 } from "@/lib/perfil";
 import { prepararNosRaizes, prepararLigacoes } from "@/lib/raizes";
 import { HomeRaizes } from "@/components/raizes/HomeRaizes";
 
@@ -19,16 +18,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Buscar dados do GitHub
   const repos = await listarRepositorios();
   const posts = await listarEscritos(locale);
-  const [readme, calendario, pinned] = await Promise.all([
-    buscarSobre(locale),
+  const [calendario, pinned] = await Promise.all([
     buscarCalendarioContribuicoes(),
     buscarRepositoriosPinned(),
   ]);
 
-  const { secoes } = readme ? extrairSecoesReadme(readme) : { secoes: [] };
-  const bulletsAbout = extrairBullets(secoes[0]?.corpo ?? "");
-  const formacao = bulletsAbout[2] ?? "";
-  const disponibilidade = bulletsAbout[3] ?? "";
+  const perfil = buscarPerfil();
+  const formacao = {
+    curso: t2(perfil.atributos.formacaoCurso, locale),
+    instituicao: perfil.atributos.formacaoInstituicao.split(" — ")[0],
+  };
+  const disponibilidade = t2(perfil.disponibilidade.local, locale);
 
   const contribuicoesPeriodo = calendario
     ? (calendario as Semana[]).reduce((soma, s) => soma + s.dias.reduce((a, d) => a + d.contagem, 0), 0)

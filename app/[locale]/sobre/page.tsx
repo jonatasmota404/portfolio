@@ -1,6 +1,4 @@
-import { MDXRemote } from "next-mdx-remote/rsc";
 import {
-  buscarSobre,
   listarRepositorios,
   listarEscritos,
   buscarDistribuicaoLinguagens,
@@ -8,22 +6,21 @@ import {
   buscarDadosUsuario,
 } from "@/lib/github";
 import { calcularHabilidades } from "@/lib/habilidades";
-import { extrairSecoesReadme, extrairBullets, extrairCargo } from "@/lib/readme-secoes";
+import { buscarPerfil, t2 } from "@/lib/perfil";
 import { getTranslations } from "next-intl/server";
 import { PainelDireito } from "@/components/sobre/PainelDireito";
 import { CartaoIdentidade } from "@/components/sobre/CartaoIdentidade";
-import { componentesProsa } from "@/components/prosa/prosa";
 
-const GITHUB_USER = "jonatasmota404";
 type Semana = { label: string; dias: { contagem: number }[] };
 
 export default async function Sobre({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations("sobre");
 
-  const [usuario, readme, repos, posts, calendario] = await Promise.all([
+  const perfil = buscarPerfil();
+
+  const [usuario, repos, posts, calendario] = await Promise.all([
     buscarDadosUsuario(),
-    buscarSobre(locale),
     listarRepositorios(),
     listarEscritos(locale),
     buscarCalendarioContribuicoes(),
@@ -31,18 +28,13 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
 
   const linguagens = await buscarDistribuicaoLinguagens(repos);
   const habilidades = calcularHabilidades(repos, posts);
-  const { introducao, secoes } = readme ? extrairSecoesReadme(readme) : { introducao: "", secoes: [] };
-  const { cargo, corpo: corpoIntroducao } = extrairCargo(introducao);
-
-  const bulletsAbout = extrairBullets(secoes[0]?.corpo ?? "");
-  const bulletsAtual = extrairBullets(secoes[1]?.corpo ?? "");
-  const focoBruto = bulletsAtual[0] ?? "";
+  const { atributos: a } = perfil;
 
   const atributos = [
-    { label: "stack", value: bulletsAbout[1] ?? "" },
-    { label: "foco", value: focoBruto.includes(" — ") ? focoBruto.split(" — ")[1] : focoBruto },
-    { label: "formação", value: bulletsAbout[2] ?? "" },
-    { label: "base", value: bulletsAbout[3] ?? "" },
+    { label: "stack", value: t2(a.stack, locale) },
+    { label: "foco", value: t2(a.foco, locale) },
+    { label: "formação", value: `${t2(a.formacaoCurso, locale)} (${a.formacaoInstituicao})` },
+    { label: "base", value: t2(a.base, locale) },
   ];
 
   const anoInicio = usuario?.created_at ? new Date(usuario.created_at).getFullYear() : new Date().getFullYear();
@@ -72,10 +64,10 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
         {/* COLUNA ESQUERDA */}
         <div className="xl:col-span-4 flex flex-col gap-6 min-w-0 h-full">
           <CartaoIdentidade
-            nome="Jônatas Júnior"
-            cargo={cargo}
-            detalhes={corpoIntroducao && <MDXRemote source={corpoIntroducao} components={componentesProsa} />}
-            avatarUrl={`https://github.com/${GITHUB_USER}.png`}
+            nome={perfil.nome}
+            cargo={t2(perfil.cargo, locale)}
+            detalhes={<p>{t2(perfil.bio, locale)}</p>}
+            avatarUrl={`https://github.com/${perfil.contato.github}.png`}
             rotuloContato={t("contato")}
           />
           

@@ -20,26 +20,9 @@ interface Props {
   posts: any[];
   totalRepos: number;
   githubUser: string;
-  formacao: string;
+  formacao: { curso: string; instituicao: string };
   disponibilidade: string;
   contribuicoes: number | null;
-}
-
-// Bullet real do README: "Formado em Ciência da Computação (IFMA — Instituto Federal do Maranhão)."
-// -> ["Ciência da Computação", "IFMA"]. Sem match, cai pra sentença inteira sem sub-linha.
-function partirFormacao(bullet: string): [string, string] {
-  const m = bullet.match(/em (.+?)\s*\(([^—)]+)/);
-  if (m) return [m[1].trim(), m[2].trim()];
-  return [bullet.replace(/\.$/, ""), ""];
-}
-
-// Bullet real do README: "Baseado no Brasil, aberto a oportunidades remotas."
-// O título do bloco ("Aberto a vagas remotas") é fixo/traduzido — só a base
-// (localização) vem do texto real, com a inicial em minúscula (frase corrida).
-function extrairBase(bullet: string): string {
-  const [base] = bullet.replace(/\.$/, "").split(", ");
-  if (!base) return bullet.replace(/\.$/, "");
-  return base.charAt(0).toLowerCase() + base.slice(1);
 }
 
 // Formato lido pelo scroll handler: "px,py,pz|tx,ty,tz".
@@ -134,8 +117,6 @@ export function HomeRaizes({
 
   const destaques = nos.filter((n) => n.destaque);
   const tecnologias = tagsMaisComuns(nos, 8);
-  const [formacaoTitulo, formacaoSub] = partirFormacao(formacao);
-  const dispoSub = extrairBase(disponibilidade);
 
   return (
     <>
@@ -233,9 +214,9 @@ export function HomeRaizes({
               </div>
               <div className="box">
                 <div style={{ fontFamily: "var(--font-tight), sans-serif", fontWeight: 800, fontSize: 15, color: "var(--ink)" }}>
-                  {formacaoTitulo}
+                  {formacao.curso}
                 </div>
-                <div className="lbl">{formacaoSub}</div>
+                <div className="lbl">{formacao.instituicao}</div>
               </div>
               <div className="box">
                 <div
@@ -255,7 +236,7 @@ export function HomeRaizes({
                     fontWeight: 400,
                   }}
                 >
-                  {dispoSub}
+                  {disponibilidade}
                 </div>
               </div>
             </div>

@@ -1,0 +1,31 @@
+{
+  "nome": "Jônatas Júnior",
+  "cargo": { "pt": "Engenheiro Fullstack com foco em Backend", "en": "Backend-leaning Fullstack Engineer" },
+  "bio": {
+    "pt": "Engenheiro Fullstack com foco em backend (Node.js/TypeScript, Go, React), pensando sempre no ciclo completo de desenvolvimento — do design da API ao pipeline que a entrega e à infraestrutura que a mantém no ar.",
+    "en": "Backend-leaning Fullstack Engineer (Node.js/TypeScript, Go, React) who thinks in terms of the whole delivery cycle — from API design to the pipeline that ships it and the infrastructure that keeps it running."
+  },
+  "atributos": {
+    "stack": {
+      "pt": "Node.js/TypeScript (NestJS, Express), Go, React/Next.js, PHP",
+      "en": "Node.js/TypeScript (NestJS, Express), Go, React/Next.js, PHP"
+    },
+    "foco": {
+      "pt": "infraestrutura, pipelines de deploy e observabilidade",
+      "en": "infrastructure, deployment pipelines and observability"
+    },
+    "formacaoCurso": { "pt": "Ciência da Computação", "en": "Computer Science" },
+    "formacaoInstituicao": "IFMA — Instituto Federal do Maranhão",
+    "base": { "pt": "Brasil, aberto a vagas remotas", "en": "Brazil, open to remote roles" }
+  },
+  "disponibilidade": {
+    "titulo": { "pt": "Aberto a vagas remotas", "en": "Open to remote roles" },
+    "local": { "pt": "baseado no Brasil", "en": "based in Brazil" }
+  },
+  "contato": {
+    "email": "jonatasjr.019@gmail.com",
+    "github": "jonatasmota404",
+    "linkedin": "https://www.linkedin.com/in/jonatas-jr/",
+    "site": "https://jonatas.pro"
+  }
+}
