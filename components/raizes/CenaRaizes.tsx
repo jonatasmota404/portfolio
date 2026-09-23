@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useTema } from "@/context/TemaContext";
 import { PALETAS, corThree, type PaletaScene } from "@/lib/paletas";
-import type { NoRepo } from "@/lib/raizes";
+import { gerarPosicoes, rng, rngDosNos, type NoRepo } from "@/lib/raizes";
 
 type CameraAlvo = {
   position: { x: number; y: number; z: number };
@@ -20,15 +20,6 @@ interface Props {
 type TooltipInfo = { nome: string; tags: string[]; commits: number; conecta: string[] } | null;
 
 const MIN_NOS_TOTAL = 74;
-
-function rng(a: number) {
-  return function () {
-    a |= 0; a = (a + 0x6D2B79F5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 const PV = 'attribute float aSize;attribute vec3 aCol;attribute float aA;uniform float uScale;varying vec3 vC;varying float vA;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*mv;float d=max(.1,-mv.z);gl_PointSize=min(90.0,aSize*uScale/d);vC=aCol;vA=aA*exp(-max(0.0,d-10.0)*.018);}';
 const PF = 'varying vec3 vC;varying float vA;void main(){vec2 c=gl_PointCoord-.5;float r=length(c)*2.0;float a=1.0-smoothstep(0.0,1.0,r);a*=a;gl_FragColor=vec4(vC,a*vA);}';
@@ -99,49 +90,6 @@ function taperTube(curve: THREE.Curve<THREE.Vector3>, segs: number, rad: number,
 type NodeInterno = { p: THREE.Vector3; repoIndex: number; edges: number[]; state: "ok" | "half" | "open"; t0: number; born: boolean; birth: number };
 type EdgeInterno = { a: number; b: number; A: number; B: number; curve: THREE.CubicBezierCurve3; len: number; strong: boolean; day0: number; day1: number; dyn: number; hl: number; hv: number; o: number; n: number; tube?: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>; tubeSegs?: number; tubeRad?: number };
 
-function gerarPosicoes(nos: NoRepo[], rr: () => number): THREE.Vector3[] {
-  const out: THREE.Vector3[] = new Array(nos.length);
-  const destaques = nos.map((n, i) => ({ n, i })).filter((x) => x.n.destaque);
-  const outros = nos.map((n, i) => ({ n, i })).filter((x) => !x.n.destaque);
-  const GOLDEN = Math.PI * (3 - Math.sqrt(5));
-  destaques.forEach((d, k) => {
-    const ang = k * GOLDEN;
-    const t = destaques.length > 1 ? k / (destaques.length - 1) : 0.5;
-    // Raio máximo reduzido de 22 para 13 (raio total 6→13): a redução anterior
-    // (22→16) só considerava o aspect ratio ~16:9 do desktop e resolvia o
-    // enquadramento em 1 das 6 câmeras. Recalculando com THREE.Vector3.project()
-    // para as 6 câmeras reais (data-cam de HomeRaizes.tsx) também em aspect
-    // ~9:16 (mobile), o FOV horizontal efetivo em mobile (~29°, bem mais
-    // estreito que em desktop) faz qualquer raio >~10 ficar fora de TODAS as
-    // 6 câmeras em certos ângulos da espiral — inclusive no ângulo do destaque
-    // mais recente hoje (4 repos com topic "portfolio", k=3 de 4). Com raio 13
-    // o desktop fica 100% coberto (todo destaque aparece em >=1 câmera, para
-    // qualquer contagem de destaques de 1 a 5 e qualquer jitter vertical), mas
-    // em mobile alguns ângulos específicos da espiral (ex.: k=3 de 4 — o
-    // destaque mais distante hoje) ainda ficam fora de todas as 6 câmeras.
-    // Decisão consciente: manter a espiral mais espalhada em vez de encolher
-    // para ~7-10 (o que a tornaria visualmente quase um disco). Ver PR/commit
-    // para a tabela completa de enquadramento desktop+mobile.
-    const raio = 6 + t * 7;
-    out[d.i] = new THREE.Vector3(Math.cos(ang) * raio, (rr() - 0.5) * 10, Math.sin(ang) * raio * 0.6);
-  });
-  // Nós sem destaque orbitam um destaque, mas precisam respeitar a mesma
-  // distância mínima (2.4) usada pelos decorativos, senão o deslocamento
-  // aleatório pode cair sobre outro nó real já posicionado.
-  outros.forEach((d, k) => {
-    const base = destaques.length ? out[destaques[k % destaques.length].i] : new THREE.Vector3(0, 0, 0);
-    const ocupados = [...destaques, ...outros.slice(0, k)].map((x) => out[x.i]).filter(Boolean);
-    let tentativa: THREE.Vector3;
-    let tentativas = 0;
-    do {
-      tentativa = base.clone().add(new THREE.Vector3((rr() - 0.5) * 10, (rr() - 0.5) * 6, (rr() - 0.5) * 10));
-      tentativas++;
-    } while (tentativas < 30 && ocupados.some((p) => p.distanceTo(tentativa) < 2.4));
-    out[d.i] = tentativa;
-  });
-  return out;
-}
-
 export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -195,9 +143,8 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     const pl = new THREE.PointLight(0xffffff, 0.8); pl.position.set(30, 50, 30); scene.add(pl);
 
     // ---- construção da rede ----
-    const seedTxt = nos.map((n) => n.id).join("|");
-    let seed = 0; for (let i = 0; i < seedTxt.length; i++) seed = (seed * 31 + seedTxt.charCodeAt(i)) | 0;
-    const rr = rng(seed || 4242);
+    // Mesma semente de calcularCamerasSecoes: as posições batem com as câmeras.
+    const rr = rngDosNos(nos);
 
     const posicoes = gerarPosicoes(nos, rr);
     const nodes: NodeInterno[] = nos.map((n, i) => ({ p: posicoes[i], repoIndex: i, edges: [], state: "ok", t0: 0, born: true, birth: n.nascimento }));
@@ -420,13 +367,15 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     const maxCommits = Math.max(1, ...nos.map((n) => n.commits));
     const rn: NucleoVis[] = nos.map((n, i) => {
       const escala = n.commits / maxCommits;
-      const s = n.destaque ? 0.45 + 0.35 * escala : 0.22 + 0.12 * escala;
+      // Repositórios sem destaque: ponto pequeno do tamanho dos decorativos,
+      // mas mantêm core/shell/halo/hit para continuar com hover e clique.
+      const s = n.destaque ? 0.45 + 0.35 * escala : 0.14;
       const p = nodes[i].p;
       const core = new THREE.Mesh(new THREE.SphereGeometry(s, 20, 16), new THREE.MeshBasicMaterial({ color: 0xfff0c8 })); core.position.copy(p);
       const shell = new THREE.Mesh(new THREE.SphereGeometry(s * 1.75, 24, 18), new THREE.ShaderMaterial({ uniforms: { uCol: { value: new THREE.Color(1, 0.81, 0.4) }, uI: { value: 0.8 } }, vertexShader: SV, fragmentShader: SF, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); shell.position.copy(p);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: 0xffcf66, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.position.copy(p);
       const rings: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>[] = [];
-      for (let q = 0; q < (n.destaque ? 3 : 1); q++) {
+      for (let q = 0; q < (n.destaque ? 3 : 0); q++) {
         const ring = new THREE.Mesh(new THREE.TorusGeometry(s * (2.2 + q * 0.75), 0.018, 6, 64), new THREE.MeshBasicMaterial({ color: 0xe8e4d4, transparent: true, opacity: 0.42 - q * 0.08, blending: THREE.AdditiveBlending, depthWrite: false }));
         ring.position.copy(p); ring.rotation.x = 1.1 + q * 0.4; rings.push(ring); scene.add(ring);
       }
@@ -589,7 +538,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
         const pulse = 1 + 0.07 * Math.sin(now / 600 + i * 2) + (hoverRepo === i ? 0.3 : 0);
         r.core.scale.setScalar(pulse);
         (r.shell.material as THREE.ShaderMaterial).uniforms.uI.value = n.state === "open" ? 0.25 : 0.55 + (hoverRepo === i ? 0.5 : 0);
-        const hs = (n.state === "open" ? 0.5 : n.state === "half" ? 0.75 + Math.sin(now / 120) * 0.12 : 1) * (no.destaque ? 6 : 2.6) * pulse;
+        const hs = (n.state === "open" ? 0.5 : n.state === "half" ? 0.75 + Math.sin(now / 120) * 0.12 : 1) * (no.destaque ? 6 : 1.1) * pulse;
         r.halo.scale.set(hs, hs, 1);
         r.rings.forEach((rg, q) => { rg.rotation.z += dt * (0.4 + i * 0.05 + q * 0.1); rg.rotation.y += dt * 0.2; });
         if (n.state === "open" && now - n.t0 > 4500) { n.state = "half"; n.t0 = now; applyState(i); }

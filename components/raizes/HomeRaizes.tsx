@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import type { NoRepo } from "@/lib/raizes";
+import { calcularCamerasSecoes, type CameraSecao, type NoRepo } from "@/lib/raizes";
 import { rolarSuaveAte, rolarSuaveAteComEspera } from "@/lib/scroll";
 import { NomeCinetico } from "./NomeCinetico";
 import { CursorCustom } from "./CursorCustom";
@@ -42,6 +42,11 @@ function extrairBase(bullet: string): string {
   return base.charAt(0).toLowerCase() + base.slice(1);
 }
 
+// Formato lido pelo scroll handler: "px,py,pz|tx,ty,tz".
+function camAttr(c: CameraSecao): string {
+  return `${c.position.join(",")}|${c.target.join(",")}`;
+}
+
 // Tags mais frequentes entre os nós — alimenta os chips do bento.
 function tagsMaisComuns(nos: NoRepo[], limite: number): string[] {
   const contagem = new Map<string, number>();
@@ -72,6 +77,17 @@ export function HomeRaizes({
   });
 
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Proporção real da tela: em retrato (mobile) o FOV horizontal é bem mais
+  // estreito, então as câmeras precisam recuar para enquadrar os destaques.
+  const [aspect, setAspect] = useState(16 / 9);
+  useEffect(() => {
+    const atualizar = () => setAspect(window.innerWidth / Math.max(1, window.innerHeight));
+    atualizar();
+    window.addEventListener("resize", atualizar);
+    return () => window.removeEventListener("resize", atualizar);
+  }, []);
+  const cameras = useMemo(() => calcularCamerasSecoes(nos, aspect), [nos, aspect]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,7 +123,8 @@ export function HomeRaizes({
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    // Refaz a leitura quando as câmeras são recalculadas (resize), sem esperar o próximo scroll.
+  }, [cameras]);
 
   // Chegou na Home com uma âncora na URL (ex.: navegação vinda de outra página via "/#contato") — rola até a seção assim que ela existir.
   useEffect(() => {
@@ -132,7 +149,7 @@ export function HomeRaizes({
           id="hero"
           className="min-h-screen flex flex-col items-start justify-end px-6 md:px-16"
           style={{ paddingTop: "84px", paddingBottom: "100px" }}
-          data-cam="0,3,19.8|0,0,0"
+          data-cam={camAttr(cameras.hero)}
         >
           <div className="w-full">
             <NomeCinetico texto="Jônatas Mota" />
@@ -170,7 +187,7 @@ export function HomeRaizes({
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" aria-label="Quem sou" className="raizes-secao raizes-secao-centro" data-cam="-12.8,6,7.4|0,2,0">
+        <section id="bio" aria-label="Quem sou" className="raizes-secao raizes-secao-centro" data-cam={camAttr(cameras.bio)}>
           <div className="raizes-bento-wrap">
             <div className="raizes-bento">
               <div className="box big">
@@ -246,7 +263,7 @@ export function HomeRaizes({
         </section>
 
         {/* Destaques */}
-        <section id="projetos" className="raizes-secao raizes-secao-dir" data-cam="10.8,-4,18.7|-4,0,0">
+        <section id="projetos" className="raizes-secao raizes-secao-dir" data-cam={camAttr(cameras.projetos)}>
           <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Projetos em destaque
@@ -283,7 +300,7 @@ export function HomeRaizes({
         </section>
 
         {/* Como trabalho */}
-        <section id="como-trabalho" className="raizes-secao raizes-secao-esq" data-cam="4.3,7,-11.9|0,1,0">
+        <section id="como-trabalho" className="raizes-secao raizes-secao-esq" data-cam={camAttr(cameras["como-trabalho"])}>
           <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Como trabalho
@@ -313,7 +330,7 @@ export function HomeRaizes({
         </section>
 
         {/* Escritos */}
-        <section id="escritos" className="raizes-secao raizes-secao-dir" data-cam="-9,-6,15.6|2,2,0">
+        <section id="escritos" className="raizes-secao raizes-secao-dir" data-cam={camAttr(cameras.escritos)}>
           <div className="raizes-largura-padrao">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               {t("escritosTitulo")}
@@ -351,7 +368,7 @@ export function HomeRaizes({
         <section
           id="contato"
           className="raizes-secao raizes-secao-centro text-center"
-          data-cam="19.4,10,7.1|0,3,0"
+          data-cam={camAttr(cameras.contato)}
         >
           <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
             <h2 className="raizes-contato-h2 mb-6">Vamos conversar</h2>
