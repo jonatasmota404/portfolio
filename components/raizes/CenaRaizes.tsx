@@ -97,7 +97,7 @@ function taperTube(curve: THREE.Curve<THREE.Vector3>, segs: number, rad: number,
 }
 
 type NodeInterno = { p: THREE.Vector3; repoIndex: number; edges: number[]; state: "ok" | "half" | "open"; t0: number; born: boolean; birth: number };
-type EdgeInterno = { a: number; b: number; A: number; B: number; curve: THREE.CubicBezierCurve3; len: number; strong: boolean; day0: number; day1: number; dyn: number; hl: number; hv: number; o: number; n: number; tube?: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial> };
+type EdgeInterno = { a: number; b: number; A: number; B: number; curve: THREE.CubicBezierCurve3; len: number; strong: boolean; day0: number; day1: number; dyn: number; hl: number; hv: number; o: number; n: number; tube?: THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>; tubeSegs?: number; tubeRad?: number };
 
 function gerarPosicoes(nos: NoRepo[], rr: () => number): THREE.Vector3[] {
   const out: THREE.Vector3[] = new Array(nos.length);
@@ -107,12 +107,22 @@ function gerarPosicoes(nos: NoRepo[], rr: () => number): THREE.Vector3[] {
   destaques.forEach((d, k) => {
     const ang = k * GOLDEN;
     const t = destaques.length > 1 ? k / (destaques.length - 1) : 0.5;
-    // Raio máximo reduzido de 22 para 16 (raio total 28→22): com o valor
-    // antigo, o destaque mais distante da espiral (t=1) projetava fora de
-    // [-0.9,0.9] em TODAS as 6 câmeras das seções da Home — nunca aparecia
-    // enquadrado durante a navegação normal. Confirmado via
-    // THREE.Vector3.project() com as 6 câmeras reais (data-cam).
-    const raio = 6 + t * 16;
+    // Raio máximo reduzido de 22 para 13 (raio total 6→13): a redução anterior
+    // (22→16) só considerava o aspect ratio ~16:9 do desktop e resolvia o
+    // enquadramento em 1 das 6 câmeras. Recalculando com THREE.Vector3.project()
+    // para as 6 câmeras reais (data-cam de HomeRaizes.tsx) também em aspect
+    // ~9:16 (mobile), o FOV horizontal efetivo em mobile (~29°, bem mais
+    // estreito que em desktop) faz qualquer raio >~10 ficar fora de TODAS as
+    // 6 câmeras em certos ângulos da espiral — inclusive no ângulo do destaque
+    // mais recente hoje (4 repos com topic "portfolio", k=3 de 4). Com raio 13
+    // o desktop fica 100% coberto (todo destaque aparece em >=1 câmera, para
+    // qualquer contagem de destaques de 1 a 5 e qualquer jitter vertical), mas
+    // em mobile alguns ângulos específicos da espiral (ex.: k=3 de 4 — o
+    // destaque mais distante hoje) ainda ficam fora de todas as 6 câmeras.
+    // Decisão consciente: manter a espiral mais espalhada em vez de encolher
+    // para ~7-10 (o que a tornaria visualmente quase um disco). Ver PR/commit
+    // para a tabela completa de enquadramento desktop+mobile.
+    const raio = 6 + t * 7;
     out[d.i] = new THREE.Vector3(Math.cos(ang) * raio, (rr() - 0.5) * 10, Math.sin(ang) * raio * 0.6);
   });
   outros.forEach((d, k) => {
@@ -327,7 +337,12 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     edges.forEach((e) => {
       if (!e.strong) return;
       e.tube = new THREE.Mesh(taperTube(e.curve, 40, isMob ? 0.05 : 0.06, 6), new THREE.MeshBasicMaterial({ color: 0xe8e4d4, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
-      e.tube.frustumCulled = false; scene.add(e.tube);
+      e.tube.frustumCulled = false;
+      // segs/radial usados na TubeGeometry acima — guardados para o
+      // setDrawRange em tick() reconstruir o número de índices por segmento
+      // transversal sem duplicar os parâmetros geométricos.
+      e.tubeSegs = 40; e.tubeRad = 6;
+      scene.add(e.tube);
     });
 
     const mistSprites: THREE.Sprite[] = [];
@@ -533,11 +548,24 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
           dd = true;
         }
         if (e.tube) {
-          // CORREÇÃO 2: esta opacidade dependia só de `st` (estado ok/half/
-          // open dos nós), que já nasce 1 para qualquer aresta — o tubo
-          // aparecia 100% opaco desde o frame 0, sem nunca passar pelo
-          // crescimento gradual (smoothstep de aDay/uT) que o filamento da
-          // mesma aresta usa. Aplicamos aqui o mesmo smoothstep(day0, day0+10, uT).
+          // Restaura o crescimento por geometria (setDrawRange) que existia no
+          // protótipo original: sem isto, a malha do tubo inteira (do início
+          // ao fim da curva) aparece de uma vez, só com fade de opacidade —
+          // diferente das linhas finas, que crescem vértice a vértice via
+          // aDay no shader LV. TubeGeometry(curve, segs=40, rad, radial=6,
+          // closed=false) gera, por segmento tubular, radial*6 índices (2
+          // triângulos por divisão radial — ver generateIndices em
+          // three/src/geometries/TubeGeometry.js: loop de 1..segs vezes
+          // 1..radial, 2x indices.push de 3 elementos = 6 índices), então o
+          // range vai de 0 (nada visível) a segs*radial*6 (tubo completo).
+          const fr = Math.min(1, Math.max(0, (uT - e.day0) / (e.day1 - e.day0 + 1e-3)));
+          const geo = e.tube.geometry;
+          const segs = e.tubeSegs ?? 40, radial = e.tubeRad ?? 6;
+          const totalIdx = geo.index ? geo.index.count : geo.attributes.position.count;
+          geo.setDrawRange(0, Math.min(totalIdx, Math.floor(fr * segs) * radial * 6));
+          // Mantém o fade de opacidade já corrigido (CORREÇÃO 2), agora
+          // combinado com o crescimento de geometria acima em vez de
+          // substituí-lo.
           const cresc = smoothstepJS(e.day0, e.day0 + 10, uT);
           (e.tube.material as THREE.MeshBasicMaterial).opacity = Math.min(0.95, 0.5 * st * cresc * (1 + e.hv * 0.8 + e.hl * 1.5));
         }
