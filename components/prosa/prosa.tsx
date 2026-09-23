@@ -2,9 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 
 export const componentesProsa = {
   wrapper: ({ children }: { children: ReactNode }) => (
-    // O corpo do artigo é a única ilha serifada do site — tudo aqui herda a serifada
-    // por padrão; só os títulos saem dela para o Inter Tight do sistema visual.
-    <div className="prosa-artigo" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+    <div className="prosa-artigo">
       {children}
     </div>
   ),
@@ -20,9 +18,8 @@ export const componentesProsa = {
     <h3 className="heading-3 text-xl md:text-2xl mt-8 mb-3 opacity-90" {...props} />
   ),
   
-  // Parágrafos agora usam uma fonte serifa elegante, com tamanho maior para facilitar a leitura longa
   p: (props: ComponentProps<"p">) => (
-    <p className="font-serif text-[1.05rem] md:text-[1.1rem] leading-relaxed mb-6 opacity-85" {...props} />
+    <p className="text-[1.05rem] md:text-[1.1rem] leading-[1.75] mb-6 opacity-85" {...props} />
   ),
   
   a: (props: ComponentProps<"a">) => (
@@ -35,7 +32,7 @@ export const componentesProsa = {
   
   // Listas com espaçamento de leitura e marcadores coloridos
   li: (props: ComponentProps<"li">) => (
-    <li className="font-serif text-[1.05rem] leading-relaxed opacity-85 mb-2" {...props} />
+    <li className="text-[1.05rem] leading-[1.75] opacity-85 mb-2" {...props} />
   ),
   ul: (props: ComponentProps<"ul">) => (
     <ul className="list-disc pl-6 mb-6 space-y-2 marker:text-[var(--accent)]" {...props} />
@@ -46,7 +43,7 @@ export const componentesProsa = {
   
   // Blockquote imitando uma anotação/citação importante nas margens
   blockquote: (props: ComponentProps<"blockquote">) => (
-    <blockquote className="border-l-4 pl-5 italic my-8 py-2 pr-4 rounded-r-lg bg-current/[0.02]" style={{ borderColor: "var(--accent)" }} {...props} />
+    <blockquote className="border-l-4 pl-5 my-8 py-2 pr-4 rounded-r-lg bg-current/[0.02] opacity-90" style={{ borderColor: "var(--accent)" }} {...props} />
   ),
   
   code: (props: ComponentProps<"code">) => (
