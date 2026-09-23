@@ -269,6 +269,13 @@ html[data-tema] {
   transition: color 0.2s ease, background-color 0.2s ease;
 }
 .capsula-icone:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+/* Ícones sociais da cápsula de ações: no mobile (<640px) vivem só no menu aberto;
+   de 640 a 859px o espaço não comporta a cápsula completa, então só o GitHub fica;
+   LinkedIn e e-mail entram a partir de 860px. */
+.capsula-social-gh { display: none; }
+.capsula-social-extra { display: none; }
+@media (min-width: 640px) { .capsula-social-gh { display: inline-flex; } }
+@media (min-width: 860px) { .capsula-social-extra { display: inline-flex; } }
 .capsula-idioma {
   display: inline-flex; align-items: center; gap: 2px;
   height: 34px; padding: 0 10px; border-radius: 999px;
@@ -281,6 +288,22 @@ html[data-tema] {
 .capsula-tema {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 34px;
+}
+/* Larguras estreitas: garante que o botão de menu caiba dentro da tela.
+   Medido: marca 164px + ações ~168px (sem GitHub) precisam de ~332px + gap + padding. */
+@media (max-width: 639px) {
+  .site-header { gap: 8px; padding-inline: 12px; }
+  .capsula-separador-acoes { display: none; }
+  .capsula-acoes { gap: 2px; padding: 0 4px; }
+  .capsula-idioma { padding: 0 6px; }
+}
+/* Sem espaço nem para o nome ao lado do logo: abaixo de 360px e no intervalo tablet estreito */
+@media (max-width: 359px), (min-width: 640px) and (max-width: 859px) {
+  .capsula-marca { padding: 0 14px; }
+  .capsula-marca-nome { display: none; }
+}
+@media (min-width: 640px) and (max-width: 859px) {
+  .site-header { gap: 8px; padding-inline: 16px; }
 }
 .site-menu {
   position: fixed;

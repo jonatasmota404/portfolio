@@ -133,11 +133,11 @@ export function Cabecalho() {
 
           {/* Cápsula 3: ações */}
           <div className="capsula capsula-acoes">
-            <LinkGitHub className="capsula-icone foco-anel" />
-            <LinkLinkedIn className="capsula-icone foco-anel hidden sm:inline-flex" />
-            <LinkEmail className="capsula-icone foco-anel hidden sm:inline-flex" />
+            <LinkGitHub className="capsula-icone capsula-social-gh foco-anel" />
+            <LinkLinkedIn className="capsula-icone capsula-social-extra foco-anel" />
+            <LinkEmail className="capsula-icone capsula-social-extra foco-anel" />
 
-            <span className="capsula-separador" />
+            <span className="capsula-separador capsula-separador-acoes" />
 
             <button onClick={alternarIdioma} className="capsula-idioma foco-anel" aria-label="Alternar idioma">
               <span style={{ color: locale === "pt" ? "var(--ink)" : "var(--muted)" }}>PT</span>
