@@ -47,10 +47,13 @@ function diasDesde(data: string | Date): number {
 
 export function prepararNosRaizes(
   repos: RepoGitHub[],
-  contagensCommits: Record<string, number>
+  contagensCommits: Record<string, number>,
+  pinned: string[]
 ): NoRepo[] {
+  const pinnedSet = new Set(pinned);
+  const usarPinned = pinned.length > 0;
   return repos.map((repo, idx) => {
-    const destaque = idx < 5;
+    const destaque = usarPinned ? pinnedSet.has(repo.name) : idx < 5; // fallback: regra antiga se não houver pinned configurado ou a busca falhar
     const diasCriacao = diasDesde(repo.created_at);
 
     // nascimento: se criado há menos de 365 dias, inverte a escala (0-364)

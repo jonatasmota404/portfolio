@@ -189,6 +189,33 @@ export async function buscarCalendarioContribuicoes() {
   });
 }
 
+export async function buscarRepositoriosPinned(): Promise<string[]> {
+  const query = `
+    query($login: String!) {
+      user(login: $login) {
+        pinnedItems(first: 6, types: REPOSITORY) {
+          nodes { ... on Repository { name } }
+        }
+      }
+    }
+  `;
+  try {
+    const resposta = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables: { login: GITHUB_USER } }),
+      next: { revalidate: 3600, tags: ["repositorios-pinned"] },
+    });
+    if (!resposta.ok) return [];
+    const json = await resposta.json();
+    const nodes = json?.data?.user?.pinnedItems?.nodes;
+    if (!Array.isArray(nodes)) return [];
+    return nodes.map((n: any) => n?.name).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 export async function buscarDistribuicaoLinguagens(repos: { name: string }[]) {
   const totais: Record<string, number> = {};
 

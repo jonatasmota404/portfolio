@@ -4,6 +4,7 @@ import {
   buscarContagemCommits,
   buscarSobre,
   buscarCalendarioContribuicoes,
+  buscarRepositoriosPinned,
 } from "@/lib/github";
 import { extrairSecoesReadme, extrairBullets } from "@/lib/readme-secoes";
 import { prepararNosRaizes, prepararLigacoes } from "@/lib/raizes";
@@ -18,7 +19,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Buscar dados do GitHub
   const repos = await listarRepositorios();
   const posts = await listarEscritos(locale);
-  const [readme, calendario] = await Promise.all([buscarSobre(locale), buscarCalendarioContribuicoes()]);
+  const [readme, calendario, pinned] = await Promise.all([
+    buscarSobre(locale),
+    buscarCalendarioContribuicoes(),
+    buscarRepositoriosPinned(),
+  ]);
 
   const { secoes } = readme ? extrairSecoesReadme(readme) : { secoes: [] };
   const bulletsAbout = extrairBullets(secoes[0]?.corpo ?? "");
@@ -29,19 +34,21 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     ? (calendario as Semana[]).reduce((soma, s) => soma + s.dias.reduce((a, d) => a + d.contagem, 0), 0)
     : null;
 
-  // Buscar contagem de commits dos 5 destaques
+  // Buscar contagem de commits dos repositórios em destaque (pinned, ou os 5 mais recentes se não houver pinned)
+  const pinnedSet = new Set(pinned);
+  const reposDestaque = pinned.length > 0 ? repos.filter((r: any) => pinnedSet.has(r.name)) : repos.slice(0, 5);
   const contagensCommits = await Promise.all(
-    repos.slice(0, 5).map((r: any) => buscarContagemCommits(r.name))
+    reposDestaque.map((r: any) => buscarContagemCommits(r.name))
   ).then((contagens) => {
     const record: Record<string, number> = {};
-    repos.slice(0, 5).forEach((r: any, idx: number) => {
+    reposDestaque.forEach((r: any, idx: number) => {
       record[r.name] = contagens[idx];
     });
     return record;
   });
 
   // Preparar dados para a cena
-  const nos = prepararNosRaizes(repos, contagensCommits);
+  const nos = prepararNosRaizes(repos, contagensCommits, pinned);
   const ligacoes = prepararLigacoes(nos);
 
   return (
