@@ -13,7 +13,13 @@ export function BotoesMagneticos() {
         const dx = e.clientX - (r.left + r.width / 2);
         const dy = e.clientY - (r.top + r.height / 2);
         const dist = Math.hypot(dx, dy);
-        b.style.transform = dist < 95 ? `translate(${dx * 0.28}px, ${dy * 0.28}px)` : "";
+        // translateZ(0) fica sempre presente (mesmo em repouso) para manter o botão
+        // numa camada composta própria — sem isso, o toggle transform on/off reintroduz
+        // o artefato de antialiasing no canto arredondado a cada aproximação do mouse.
+        b.style.transform =
+          dist < 95
+            ? `translate3d(${dx * 0.28}px, ${dy * 0.28}px, 0)`
+            : "translateZ(0)";
       });
     }
     window.addEventListener("pointermove", onMove);

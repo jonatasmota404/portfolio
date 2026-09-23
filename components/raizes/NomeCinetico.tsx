@@ -99,22 +99,30 @@ export function NomeCinetico({ texto }: Props) {
     };
   }, [texto]);
 
+  let indiceLetra = 0;
+
   return (
     <h1 ref={raizRef} className="raizes-h1 raizes-kinetic" aria-label={texto}>
-      {/* Uma linha flex: o nbsp acima preserva a largura do espaço entre as palavras. */}
-      <span className="raizes-kinetic-linha">
-      {texto.split("").map((ch, i) => (
-        <span
-          key={`${ch}-${i}`}
-          aria-hidden="true"
-          ref={(el) => {
-            if (el) letrasRef.current[i] = el;
-          }}
-        >
-          {ch === " " ? " " : ch}
+      {/* Uma .raizes-kinetic-linha por palavra: cada span display:flex é block-level,
+          então as palavras empilham verticalmente em vez de quebrar por largura. */}
+      {texto.split(" ").map((palavra, p) => (
+        <span className="raizes-kinetic-linha" key={p}>
+          {palavra.split("").map((ch) => {
+            const i = indiceLetra++;
+            return (
+              <span
+                key={`${ch}-${i}`}
+                aria-hidden="true"
+                ref={(el) => {
+                  if (el) letrasRef.current[i] = el;
+                }}
+              >
+                {ch}
+              </span>
+            );
+          })}
         </span>
       ))}
-      </span>
     </h1>
   );
 }

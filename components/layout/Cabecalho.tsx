@@ -117,7 +117,7 @@ export function Cabecalho() {
                 key={item.href}
                 href={item.href}
                 data-ativo={estaAtivo(item.href)}
-                className="capsula-nav-link foco-anel"
+                className="capsula-nav-link foco-anel capitalize"
               >
                 {t(item.chave)}
               </Link>
@@ -166,7 +166,7 @@ export function Cabecalho() {
           <div className="site-menu sm:hidden flex flex-col gap-5 rounded-3xl p-6 shadow-2xl">
             <nav className="flex flex-col gap-4">
               {ITENS_NAV.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setAberto(false)}>
+                <Link key={item.href} href={item.href} onClick={() => setAberto(false)} className="capitalize">
                   {t(item.chave)}
                 </Link>
               ))}
