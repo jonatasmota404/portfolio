@@ -203,14 +203,10 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       const pa = nodes[A].p, pb = nodes[B].p, d = pa.distanceTo(pb);
       const off = () => new THREE.Vector3(rr() - 0.5, rr() - 0.5, rr() - 0.5).multiplyScalar(d * 0.55);
       const curve = new THREE.CubicBezierCurve3(pa, pa.clone().lerp(pb, 0.33).add(off()), pa.clone().lerp(pb, 0.66).add(off()), pb);
-      // Nós secundários (repoIndex < 0) só recebem um ponto fraco (secP), sem
-      // núcleo brilhante (core/shell/halo). Uma aresta entre dois secundários
-      // nasceria sem nenhum ponto aceso visível em nenhuma ponta — atrasamos
-      // essas arestas para que sempre apareçam depois de algum nó real (com
-      // núcleo) já estar aceso por perto.
-      const ambosSecundarios = nodes[A].repoIndex < 0 && nodes[B].repoIndex < 0;
-      const atraso = ambosSecundarios ? 20 : 0;
-      edges.push({ a, b, A, B, curve, len: curve.getLength(), strong, day0: nodes[A].birth + atraso, day1: Math.min(400, nodes[B].birth + 22 + atraso), dyn: 1, hl: 0, hv: 0, o: 0, n: 0 });
+      // day0/day1 (e a orientação A→B) são provisórios: são recalculados pela
+      // árvore de crescimento causal logo abaixo, depois da escolha do nó de
+      // origem.
+      edges.push({ a, b, A, B, curve, len: curve.getLength(), strong, day0: 0, day1: 0, dyn: 1, hl: 0, hv: 0, o: 0, n: 0 });
       nodes[a].edges.push(edges.length - 1); nodes[b].edges.push(edges.length - 1);
     }
 
@@ -224,14 +220,9 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       for (let k = 0; k < (n.repoIndex >= 0 ? 3 : 2); k++) if (ds[k]) addEdge(i, ds[k][0], false);
     });
 
-    // Ponto de partida forçado e explícito da animação de abertura: em vez de
-    // tentar sincronizar o timing de todas as arestas com o nascimento de
-    // todos os nós (superfície de bugs grande demais), escolhemos UM nó real
-    // e UMA aresta dele para garantir, por override direto, que sempre há um
-    // núcleo aceso com um filamento crescendo a partir dele já no primeiro
-    // frame. Esse nó precisa estar dentro do enquadramento da câmera do Hero
-    // — escolher só pelo nascimento mais antigo (lógica antiga) pode cair
-    // fora de vista, e o filamento "nasceria" fora da tela.
+    // Nó de origem da onda de crescimento: o nó real mais antigo dentro do
+    // enquadramento da câmera do Hero — escolher só pelo nascimento mais
+    // antigo pode cair fora de vista, e a rede "nasceria" fora da tela.
     function lerCameraHero(): THREE.PerspectiveCamera | null {
       const camData = document.getElementById("hero")?.getAttribute("data-cam");
       if (!camData) return null;
@@ -266,18 +257,84 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
         if (nodes[i].repoIndex >= 0 && nodes[i].birth < noOrigemBirth) { noOrigemBirth = nodes[i].birth; noOrigemIdx = i; }
       }
     }
-    const arestaOrigemIdx = (() => {
-      if (noOrigemIdx < 0) return -1;
-      const candidatas = nodes[noOrigemIdx].edges;
-      if (!candidatas.length) return -1;
-      // Entre as arestas do nó de origem, prioriza a que também tem seu
-      // segmento inicial (não só o nó) dentro do enquadramento do Hero.
-      const dentro = candidatas.find((ei) => {
-        const e = edges[ei];
-        return dentroDoEnquadramentoHero(e.curve.getPoint(0)) && dentroDoEnquadramentoHero(e.curve.getPoint(0.15));
-      });
-      return dentro ?? candidatas[0];
-    })();
+    if (noOrigemIdx === -1 && nodes.length) noOrigemIdx = 0;
+
+    // ---- árvore de crescimento causal (onda a partir do nó de origem) ----
+    // Cada nó só se torna visível no instante em que uma aresta partindo de
+    // um nó JÁ visível termina de crescer até ele. Prim sobre a rede: a cada
+    // passo, entre as arestas da fronteira (revelado → não revelado), escolhe
+    // a que leva ao nó com menor nascimento real (created_at) — a idade dos
+    // repositórios define a ORDEM de visita, mas o TEMPO de revelação vem da
+    // profundidade na árvore: revela[filho] = revela[pai] + duração.
+    //
+    // Abordagem escolhida: sobrescrever n.birth com o tempo de revelação
+    // (em vez de criar um campo novo). n.birth já é o campo consumido por
+    // tick() (n.born = uT >= n.birth), então nenhum outro ponto do código
+    // precisa mudar. O nascimento real só é usado aqui, como prioridade.
+    const DURACAO_CRESCIMENTO = 17;
+    const nascReal = nodes.map((n) => n.birth);
+    const revela = new Array<number>(nodes.length).fill(Infinity);
+    const paiAresta = new Array<number>(nodes.length).fill(-1);
+    const profundidade = new Array<number>(nodes.length).fill(0);
+    const outro = (e: EdgeInterno, i: number) => (e.a === i ? e.b : e.a);
+    const fronteira: number[] = [];
+    const revelar = (i: number, prof: number, ei: number) => {
+      profundidade[i] = prof; paiAresta[i] = ei; revela[i] = prof;
+      for (const ej of nodes[i].edges) if (revela[outro(edges[ej], i)] === Infinity) fronteira.push(ej);
+    };
+    if (nodes.length) revelar(noOrigemIdx, 0, -1);
+    for (let restantes = nodes.length - 1; restantes > 0; restantes--) {
+      let melhor = -1, melhorPai = -1, melhorAlvo = -1;
+      for (let k = fronteira.length - 1; k >= 0; k--) {
+        const e = edges[fronteira[k]];
+        const pai = revela[e.a] !== Infinity ? e.a : e.b, alvo = outro(e, pai);
+        if (revela[alvo] !== Infinity) { fronteira.splice(k, 1); continue; }
+        // Menor nascimento real primeiro; empate → pai mais raso (onda mais curta).
+        if (melhor < 0 || nascReal[alvo] < nascReal[melhorAlvo] || (nascReal[alvo] === nascReal[melhorAlvo] && profundidade[pai] < profundidade[melhorPai])) {
+          melhor = fronteira[k]; melhorPai = pai; melhorAlvo = alvo;
+        }
+      }
+      if (melhor >= 0) { revelar(melhorAlvo, profundidade[melhorPai] + 1, melhor); continue; }
+      // Grafo desconexo: os k vizinhos mais próximos não garantem
+      // conectividade (com os dados atuais há 2 ilhas de nós secundários).
+      // Em vez de uma sub-origem acendendo sem linha nenhuma, cria uma
+      // aresta-ponte entre o par (revelado, não revelado) mais próximo e
+      // segue a onda por ela.
+      let pi = -1, pj = -1, pd = Infinity;
+      for (let i = 0; i < nodes.length; i++) {
+        if (revela[i] === Infinity) continue;
+        for (let j = 0; j < nodes.length; j++) {
+          if (revela[j] !== Infinity) continue;
+          const d = nodes[i].p.distanceTo(nodes[j].p);
+          if (d < pd) { pd = d; pi = i; pj = j; }
+        }
+      }
+      addEdge(pi, pj, false);
+      fronteira.push(edges.length - 1);
+      restantes++;
+    }
+    // A profundidade foi medida em "passos"; converte para a escala de uT
+    // (0–400 em ~8s). Se a árvore for profunda demais para caber na abertura
+    // (inclusive as arestas extras, que crescem depois), encurta o passo.
+    const profMaxima = profundidade.reduce((m, p) => Math.max(m, p), 0);
+    const passo = Math.min(DURACAO_CRESCIMENTO, 380 / (profMaxima + 1));
+    nodes.forEach((n, i) => { n.birth = profundidade[i] * passo; });
+
+    edges.forEach((e, ei) => {
+      // Orienta a curva do nó revelado antes para o revelado depois: o
+      // filamento cresce de A (u=0) para B (u=1) no shader, então A precisa
+      // ser o pai na árvore para a linha "sair" de um núcleo já aceso.
+      const novoA = nodes[e.a].birth <= nodes[e.b].birth ? e.a : e.b;
+      if (novoA !== e.A) e.curve = new THREE.CubicBezierCurve3(e.curve.v3, e.curve.v2, e.curve.v1, e.curve.v0);
+      e.A = novoA; e.B = outro(e, novoA);
+      if (paiAresta[e.B] === ei) {
+        // Aresta de revelação: termina de crescer NO instante em que B acende.
+        e.day0 = nodes[e.A].birth; e.day1 = nodes[e.B].birth;
+      } else {
+        // Aresta extra: só cresce depois que as duas pontas já estão acesas.
+        e.day0 = Math.max(nodes[e.A].birth, nodes[e.B].birth); e.day1 = e.day0 + passo;
+      }
+    });
 
     const S = 18;
     const P: number[] = [], DAY: number[] = [], TAP: number[] = [], BR: number[] = [], PH: number[] = [];
@@ -301,19 +358,6 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       const pts = e.curve.getPoints(S); const ph = rr();
       const tap = (u: number) => 0.55 + 0.45 * Math.abs(Math.cos(Math.PI * u));
       for (let k = 0; k < S; k++) { const u0 = k / S, u1 = (k + 1) / S; seg(pts[k], pts[k + 1], e.day0 + (e.day1 - e.day0) * u0, e.day0 + (e.day1 - e.day0) * u1, tap(u0), tap(u1), e.strong ? 0.95 : 0.5, ph); }
-      if (ei === arestaOrigemIdx) {
-        // Segmento inicial da aresta de origem: ignora o day0/day1 calculado
-        // pela fórmula geral e força aDay=0 nos vértices próximos ao nó de
-        // origem, para que smoothstep(aDay, aDay+10, uT) já dê opacidade
-        // visível nos primeiros frames, sem depender de nenhum timing geral.
-        DAY[e.o] = 0; DAY[e.o + 1] = 0;
-        // O tubo afunilado (taperTube, quando a aresta é "forte") não faz
-        // parte do buffer de linhas acima — sua opacidade é recalculada à
-        // parte a partir de e.day0, dentro de tick(). Sem isto, o tubo desta
-        // aresta usaria o day0 original (não zerado) e cresceria mais devagar
-        // que o filamento correspondente.
-        e.day0 = 0;
-      }
       e.n = S * 2;
       const nb = e.strong ? (isMob ? 4 : 8) : (isMob ? 1 : 3);
       for (let b = 0; b < nb; b++) {
@@ -515,15 +559,12 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
 
       rn.forEach((r, i) => {
         const n = nodes[i]; const no = nos[i];
+        // O nó de origem tem birth = 0 pela árvore de crescimento, então já
+        // nasce no frame 0 sem precisar de override separado.
         n.born = uT >= n.birth;
-        // Override incondicional: o nó de origem escolhido acima precisa
-        // estar sempre visível, com pulse normal, desde o frame 0 — nunca
-        // dependente do cálculo geral de born/uT (garante que nunca exista
-        // um filamento crescendo sem nenhum núcleo aceso na origem dele).
-        const visivel = i === noOrigemIdx ? true : n.born;
-        r.core.visible = r.shell.visible = r.halo.visible = visivel;
-        r.rings.forEach((rg) => (rg.visible = visivel));
-        if (!visivel) return;
+        r.core.visible = r.shell.visible = r.halo.visible = n.born;
+        r.rings.forEach((rg) => (rg.visible = n.born));
+        if (!n.born) return;
         const pulse = 1 + 0.07 * Math.sin(now / 600 + i * 2) + (hoverRepo === i ? 0.3 : 0);
         r.core.scale.setScalar(pulse);
         (r.shell.material as THREE.ShaderMaterial).uniforms.uI.value = n.state === "open" ? 0.25 : 0.55 + (hoverRepo === i ? 0.5 : 0);
@@ -599,7 +640,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       dynP.flush();
 
       const secCol = corThree(paleta.secondary);
-      secundarios.forEach((n, i) => { const a = n.born ? 0.7 + 0.3 * Math.sin(now / 1000 + i * 1.7) : 0; secP.set(i, n.p.x, n.p.y, n.p.z, 0.4, secCol.r, secCol.g, secCol.b, a); });
+      secundarios.forEach((n, i) => { n.born = uT >= n.birth; const a = n.born ? 0.7 + 0.3 * Math.sin(now / 1000 + i * 1.7) : 0; secP.set(i, n.p.x, n.p.y, n.p.z, 0.4, secCol.r, secCol.g, secCol.b, a); });
       secP.flush();
 
       amb.forEach((a, i) => {
