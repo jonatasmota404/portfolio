@@ -289,26 +289,26 @@ html[data-tema] {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 34px;
 }
-/* Larguras estreitas: garante que o botão de menu caiba dentro da tela.
-   Medido: marca 164px + ações ~168px (sem GitHub) precisam de ~332px + gap + padding. */
+/* Mobile (<640px): a cápsula de ações vira só o botão de menu; GitHub, idioma e tema
+   ficam dentro do menu aberto para não duplicar controles. */
 @media (max-width: 639px) {
   .site-header { gap: 8px; padding-inline: 12px; }
-  .capsula-separador-acoes { display: none; }
-  .capsula-acoes { gap: 2px; padding: 0 4px; }
-  .capsula-idioma { padding: 0 6px; }
+  .capsula-separador-acoes,
+  .capsula-idioma,
+  .capsula-tema { display: none; }
+  .capsula-acoes { padding: 0 5px; }
 }
-/* Sem espaço nem para o nome ao lado do logo: abaixo de 360px e no intervalo tablet estreito */
-@media (max-width: 359px), (min-width: 640px) and (max-width: 859px) {
+/* Tablet estreito: sem espaço para o nome ao lado do logo */
+@media (min-width: 640px) and (max-width: 859px) {
   .capsula-marca { padding: 0 14px; }
   .capsula-marca-nome { display: none; }
-}
-@media (min-width: 640px) and (max-width: 859px) {
   .site-header { gap: 8px; padding-inline: 16px; }
 }
 .site-menu {
   position: fixed;
   left: 16px; right: 16px; top: 76px;
   z-index: 60;
+  pointer-events: auto; /* o wrapper é pointer-events: none; sem isto o menu inteiro fica intocável */
   /* opaco o bastante para o conteúdo da página não vazar por trás */
   background: color-mix(in srgb, var(--bg) 93%, transparent);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
