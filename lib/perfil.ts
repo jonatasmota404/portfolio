@@ -2,17 +2,27 @@ import { buscarPerfilRemoto } from "@/lib/github";
 
 export type TextoBilingue = { pt: string; en: string };
 
+export type CategoriaTecnologia = "backend" | "frontend" | "infra" | "banco";
+export type NivelTecnologia = "avancado" | "intermediario" | "aprendendo";
+
+export type Tecnologia = {
+  slug: string; // slug do Simple Icons (ícone em cdn.simpleicons.org/<slug>)
+  nome: string;
+  categoria: CategoriaTecnologia;
+  nivel: NivelTecnologia;
+};
+
 export type Perfil = {
   nome: string;
   cargo: TextoBilingue;
   bio: TextoBilingue;
   atributos: {
-    stack: TextoBilingue;
     foco: TextoBilingue;
     formacaoCurso: TextoBilingue;
     formacaoInstituicao: string;
     base: TextoBilingue;
   };
+  tecnologias: Tecnologia[];
   disponibilidade: {
     titulo: TextoBilingue;
     local: TextoBilingue;

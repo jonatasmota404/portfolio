@@ -1,26 +1,117 @@
 {
   "nome": "Jônatas Júnior",
-  "cargo": { "pt": "Engenheiro Fullstack com foco em Backend", "en": "Backend-leaning Fullstack Engineer" },
+  "cargo": {
+    "pt": "Engenheiro Fullstack com foco em Backend",
+    "en": "Backend-leaning Fullstack Engineer"
+  },
   "bio": {
     "pt": "Engenheiro Fullstack com foco em backend (Node.js/TypeScript, Go, React), pensando sempre no ciclo completo de desenvolvimento — do design da API ao pipeline que a entrega e à infraestrutura que a mantém no ar.",
     "en": "Backend-leaning Fullstack Engineer (Node.js/TypeScript, Go, React) who thinks in terms of the whole delivery cycle — from API design to the pipeline that ships it and the infrastructure that keeps it running."
   },
   "atributos": {
-    "stack": {
-      "pt": "Node.js/TypeScript (NestJS, Express), Go, React/Next.js, PHP",
-      "en": "Node.js/TypeScript (NestJS, Express), Go, React/Next.js, PHP"
-    },
     "foco": {
-      "pt": "infraestrutura, pipelines de deploy e observabilidade",
-      "en": "infrastructure, deployment pipelines and observability"
+      "pt": "Backend com visão de ciclo completo — transito bem por frontend e por infraestrutura/DevOps quando o projeto pede.",
+      "en": "Backend with a full-cycle mindset — comfortable moving into frontend and infrastructure/DevOps work when a project calls for it."
     },
-    "formacaoCurso": { "pt": "Ciência da Computação", "en": "Computer Science" },
+    "formacaoCurso": {
+      "pt": "Ciência da Computação",
+      "en": "Computer Science"
+    },
     "formacaoInstituicao": "IFMA — Instituto Federal do Maranhão",
-    "base": { "pt": "Brasil, aberto a vagas remotas", "en": "Brazil, open to remote roles" }
+    "base": {
+      "pt": "Brasil — aberto a atuar remotamente para qualquer lugar do mundo",
+      "en": "Brazil — open to working remotely anywhere in the world"
+    }
   },
+  "tecnologias": [
+    {
+      "slug": "nodedotjs",
+      "nome": "Node.js",
+      "categoria": "backend",
+      "nivel": "avancado"
+    },
+    {
+      "slug": "typescript",
+      "nome": "TypeScript",
+      "categoria": "backend",
+      "nivel": "avancado"
+    },
+    {
+      "slug": "nestjs",
+      "nome": "NestJS",
+      "categoria": "backend",
+      "nivel": "avancado"
+    },
+    {
+      "slug": "php",
+      "nome": "PHP",
+      "categoria": "backend",
+      "nivel": "avancado"
+    },
+    {
+      "slug": "go",
+      "nome": "Go",
+      "categoria": "backend",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "react",
+      "nome": "React",
+      "categoria": "frontend",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "nextdotjs",
+      "nome": "Next.js",
+      "categoria": "frontend",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "docker",
+      "nome": "Docker",
+      "categoria": "infra",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "linux",
+      "nome": "Linux",
+      "categoria": "infra",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "githubactions",
+      "nome": "GitHub Actions",
+      "categoria": "infra",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "amazonaws",
+      "nome": "AWS",
+      "categoria": "infra",
+      "nivel": "aprendendo"
+    },
+    {
+      "slug": "postgresql",
+      "nome": "PostgreSQL",
+      "categoria": "banco",
+      "nivel": "intermediario"
+    },
+    {
+      "slug": "mysql",
+      "nome": "MySQL",
+      "categoria": "banco",
+      "nivel": "intermediario"
+    }
+  ],
   "disponibilidade": {
-    "titulo": { "pt": "Aberto a vagas remotas", "en": "Open to remote roles" },
-    "local": { "pt": "baseado no Brasil", "en": "based in Brazil" }
+    "titulo": {
+      "pt": "Aberto a vagas remotas",
+      "en": "Open to remote roles"
+    },
+    "local": {
+      "pt": "aberto a qualquer lugar do mundo, remoto",
+      "en": "open to anywhere in the world, remote"
+    }
   },
   "contato": {
     "email": "jonatasjr.019@gmail.com",

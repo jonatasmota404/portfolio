@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
             revalidateTag("repo:lista", { expire: 0 });
         }
 
-        // Invalida a árvore e as páginas onde as habilidades e projetos aparecem
+        // Invalida a árvore e as páginas onde estatísticas e projetos aparecem
         revalidateTag("calendario-contribuicoes", { expire: 0 });
         revalidatePath("/[locale]/sobre", "page");
         revalidatePath("/[locale]", "page");

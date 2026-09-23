@@ -5,10 +5,9 @@ import {
   buscarCalendarioContribuicoes,
   buscarDadosUsuario,
 } from "@/lib/github";
-import { calcularHabilidades } from "@/lib/habilidades";
 import { buscarPerfil, t2 } from "@/lib/perfil";
 import { getTranslations } from "next-intl/server";
-import { PainelTecnologias } from "@/components/sobre/PainelTecnologias";
+import { StackTecnologias } from "@/components/sobre/StackTecnologias";
 import { RetratoAvatar } from "@/components/sobre/RetratoAvatar";
 import { CalendarioContribuicoes } from "@/components/sobre/CalendarioContribuicoes";
 import { DistribuicaoLinguagens } from "@/components/sobre/DistribuicaoLinguagens";
@@ -30,12 +29,10 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   ]);
 
   const linguagens = await buscarDistribuicaoLinguagens(repos);
-  const habilidades = calcularHabilidades(repos, posts);
   const { atributos: a } = perfil;
 
-  // stack e foco têm texto longo e ocupam blocos largos; formação e base cabem em blocos simples
+  // foco tem texto longo e ocupa bloco largo; formação e base cabem em blocos simples
   const atributos: { label: string; value: string; apoio?: string; largo?: boolean }[] = [
-    { label: "stack", value: t2(a.stack, locale), largo: true },
     { label: "foco", value: t2(a.foco, locale), largo: true },
     { label: "formação", value: t2(a.formacaoCurso, locale), apoio: a.formacaoInstituicao },
     { label: "base", value: t2(a.base, locale) },
@@ -115,17 +112,16 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
           </div>
         ))}
 
-        {atributos.filter((at) => at.largo).map(blocoAtributo)}
+        {/* foco (largo) + formação + base fecham uma linha; a stack ocupa a linha seguinte inteira */}
+        {atributos.map(blocoAtributo)}
 
-        <div className="box big" style={entrada()}>
-          <PainelTecnologias habilidades={habilidades} />
+        <div className="box full" style={entrada()}>
+          <StackTecnologias tecnologias={perfil.tecnologias ?? []} locale={locale} />
         </div>
 
-        <div className="box wide" style={entrada()}>
+        <div className="box full" style={entrada()}>
           <DistribuicaoLinguagens dados={linguagens} />
         </div>
-
-        {atributos.filter((at) => !at.largo).map(blocoAtributo)}
 
         <div className="box full" style={entrada()}>
           <CalendarioContribuicoes semanas={calendario} />
