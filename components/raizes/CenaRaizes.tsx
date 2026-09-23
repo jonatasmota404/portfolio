@@ -37,6 +37,14 @@ const LF = 'uniform vec3 uCol;varying float vA;void main(){gl_FragColor=vec4(uCo
 const SV = 'varying vec3 vN;varying vec3 vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}';
 const SF = 'uniform vec3 uCol;uniform float uI;varying vec3 vN;varying vec3 vV;void main(){float f=pow(1.0-abs(dot(vN,vV)),2.2);gl_FragColor=vec4(uCol,f*uI);}';
 
+// Réplica em JS do smoothstep(edge0, edge1, x) usado no shader LV (aDay/uT),
+// para que o crescimento do tubo afunilado (mesh à parte, sem shader próprio
+// de aDay) fique sincronizado com o crescimento do filamento correspondente.
+function smoothstepJS(edge0: number, edge1: number, x: number) {
+  const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}
+
 function glowTex(): THREE.CanvasTexture {
   const c = document.createElement("canvas"); c.width = c.height = 128;
   const x = c.getContext("2d")!, g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
@@ -204,14 +212,57 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
     // Ponto de partida forçado e explícito da animação de abertura: em vez de
     // tentar sincronizar o timing de todas as arestas com o nascimento de
     // todos os nós (superfície de bugs grande demais), escolhemos UM nó real
-    // (o de nascimento mais antigo) e UMA aresta dele para garantir, por
-    // override direto, que sempre há um núcleo aceso com um filamento
-    // crescendo a partir dele já no primeiro frame.
+    // e UMA aresta dele para garantir, por override direto, que sempre há um
+    // núcleo aceso com um filamento crescendo a partir dele já no primeiro
+    // frame. Esse nó precisa estar dentro do enquadramento da câmera do Hero
+    // — escolher só pelo nascimento mais antigo (lógica antiga) pode cair
+    // fora de vista, e o filamento "nasceria" fora da tela.
+    function lerCameraHero(): THREE.PerspectiveCamera | null {
+      const camData = document.getElementById("hero")?.getAttribute("data-cam");
+      if (!camData) return null;
+      const [posStr, targetStr] = camData.split("|");
+      const [px, py, pz] = posStr.split(",").map(Number);
+      const [tx, ty, tz] = targetStr.split(",").map(Number);
+      const aspect = (canvas!.clientWidth || window.innerWidth || 1) / (canvas!.clientHeight || window.innerHeight || 1);
+      const cam = new THREE.PerspectiveCamera(50, aspect || 1, 0.1, 300);
+      cam.position.set(px, py, pz); cam.lookAt(tx, ty, tz);
+      cam.updateMatrixWorld(); cam.updateProjectionMatrix();
+      return cam;
+    }
+    const heroCam = lerCameraHero();
+    function dentroDoEnquadramentoHero(v: THREE.Vector3): boolean {
+      if (!heroCam) return false;
+      const p = v.clone().project(heroCam);
+      return p.x >= -0.85 && p.x <= 0.85 && p.y >= -0.85 && p.y <= 0.85 && p.z < 1;
+    }
+
     let noOrigemIdx = -1, noOrigemBirth = Infinity;
     for (let i = 0; i < nos.length; i++) {
-      if (nodes[i].repoIndex >= 0 && nodes[i].birth < noOrigemBirth) { noOrigemBirth = nodes[i].birth; noOrigemIdx = i; }
+      if (nodes[i].repoIndex >= 0 && dentroDoEnquadramentoHero(nodes[i].p) && nodes[i].birth < noOrigemBirth) {
+        noOrigemBirth = nodes[i].birth; noOrigemIdx = i;
+      }
     }
-    const arestaOrigemIdx = noOrigemIdx >= 0 && nodes[noOrigemIdx].edges.length > 0 ? nodes[noOrigemIdx].edges[0] : -1;
+    if (noOrigemIdx === -1) {
+      // Fallback: nenhum nó real caiu dentro do enquadramento do Hero (não
+      // deveria acontecer com os dados atuais) ou a <section id="hero">/seu
+      // data-cam não foram encontrados no DOM — volta à lógica antiga de
+      // escolher só pelo nascimento mais antigo, mesmo que fique fora de vista.
+      for (let i = 0; i < nos.length; i++) {
+        if (nodes[i].repoIndex >= 0 && nodes[i].birth < noOrigemBirth) { noOrigemBirth = nodes[i].birth; noOrigemIdx = i; }
+      }
+    }
+    const arestaOrigemIdx = (() => {
+      if (noOrigemIdx < 0) return -1;
+      const candidatas = nodes[noOrigemIdx].edges;
+      if (!candidatas.length) return -1;
+      // Entre as arestas do nó de origem, prioriza a que também tem seu
+      // segmento inicial (não só o nó) dentro do enquadramento do Hero.
+      const dentro = candidatas.find((ei) => {
+        const e = edges[ei];
+        return dentroDoEnquadramentoHero(e.curve.getPoint(0)) && dentroDoEnquadramentoHero(e.curve.getPoint(0.15));
+      });
+      return dentro ?? candidatas[0];
+    })();
 
     const S = 18;
     const P: number[] = [], DAY: number[] = [], TAP: number[] = [], BR: number[] = [], PH: number[] = [];
@@ -241,6 +292,12 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
         // origem, para que smoothstep(aDay, aDay+10, uT) já dê opacidade
         // visível nos primeiros frames, sem depender de nenhum timing geral.
         DAY[e.o] = 0; DAY[e.o + 1] = 0;
+        // O tubo afunilado (taperTube, quando a aresta é "forte") não faz
+        // parte do buffer de linhas acima — sua opacidade é recalculada à
+        // parte a partir de e.day0, dentro de tick(). Sem isto, o tubo desta
+        // aresta usaria o day0 original (não zerado) e cresceria mais devagar
+        // que o filamento correspondente.
+        e.day0 = 0;
       }
       e.n = S * 2;
       const nb = e.strong ? (isMob ? 4 : 8) : (isMob ? 1 : 3);
@@ -470,7 +527,15 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
           for (let k = 0; k < e.n; k++) DYN[e.o + k] = tgt;
           dd = true;
         }
-        if (e.tube) (e.tube.material as THREE.MeshBasicMaterial).opacity = Math.min(0.95, 0.5 * st * (1 + e.hv * 0.8 + e.hl * 1.5));
+        if (e.tube) {
+          // CORREÇÃO 2: esta opacidade dependia só de `st` (estado ok/half/
+          // open dos nós), que já nasce 1 para qualquer aresta — o tubo
+          // aparecia 100% opaco desde o frame 0, sem nunca passar pelo
+          // crescimento gradual (smoothstep de aDay/uT) que o filamento da
+          // mesma aresta usa. Aplicamos aqui o mesmo smoothstep(day0, day0+10, uT).
+          const cresc = smoothstepJS(e.day0, e.day0 + 10, uT);
+          (e.tube.material as THREE.MeshBasicMaterial).opacity = Math.min(0.95, 0.5 * st * cresc * (1 + e.hv * 0.8 + e.hl * 1.5));
+        }
       }
       if (dd) (lg.attributes.aDyn as THREE.BufferAttribute).needsUpdate = true;
 
