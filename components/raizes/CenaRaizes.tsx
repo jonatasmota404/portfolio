@@ -107,7 +107,12 @@ function gerarPosicoes(nos: NoRepo[], rr: () => number): THREE.Vector3[] {
   destaques.forEach((d, k) => {
     const ang = k * GOLDEN;
     const t = destaques.length > 1 ? k / (destaques.length - 1) : 0.5;
-    const raio = 6 + t * 22;
+    // Raio máximo reduzido de 22 para 16 (raio total 28→22): com o valor
+    // antigo, o destaque mais distante da espiral (t=1) projetava fora de
+    // [-0.9,0.9] em TODAS as 6 câmeras das seções da Home — nunca aparecia
+    // enquadrado durante a navegação normal. Confirmado via
+    // THREE.Vector3.project() com as 6 câmeras reais (data-cam).
+    const raio = 6 + t * 16;
     out[d.i] = new THREE.Vector3(Math.cos(ang) * raio, (rr() - 0.5) * 10, Math.sin(ang) * raio * 0.6);
   });
   outros.forEach((d, k) => {
