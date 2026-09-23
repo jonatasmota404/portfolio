@@ -23,7 +23,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     buscarRepositoriosPinned(),
   ]);
 
-  const perfil = buscarPerfil();
+  const perfil = await buscarPerfil();
   const formacao = {
     curso: t2(perfil.atributos.formacaoCurso, locale),
     instituicao: perfil.atributos.formacaoInstituicao.split(" — ")[0],

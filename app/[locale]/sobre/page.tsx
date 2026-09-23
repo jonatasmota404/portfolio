@@ -17,7 +17,7 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   const t = await getTranslations("sobre");
 
-  const perfil = buscarPerfil();
+  const perfil = await buscarPerfil();
 
   const [usuario, repos, posts, calendario] = await Promise.all([
     buscarDadosUsuario(),

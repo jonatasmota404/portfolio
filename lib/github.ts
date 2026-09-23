@@ -1,4 +1,5 @@
 import matter from "gray-matter";
+import type { Perfil } from "@/lib/perfil";
 
 const GITHUB_USER = "jonatasmota404";
 const REPO_ESCRITOS = "escritos";
@@ -30,7 +31,11 @@ export async function listarRepositorios() {
   return repos.filter((r: any) => r.topics?.includes("portfolio"));
 }
 
-export async function buscarArquivoRaw(repo: string, path: string): Promise<string> {
+export async function buscarArquivoRaw(
+  repo: string,
+  path: string,
+  tagsExtras: string[] = []
+): Promise<string> {
   const branch = branchPara(repo);
 
   const resposta = await fetch(
@@ -40,7 +45,7 @@ export async function buscarArquivoRaw(repo: string, path: string): Promise<stri
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
         Accept: "application/vnd.github.raw+json",
       },
-      next: { revalidate: revalidateTime, tags: [`repo:${repo}`] },
+      next: { revalidate: revalidateTime, tags: [`repo:${repo}`, ...tagsExtras] },
       cache: process.env.NODE_ENV === "development" ? "no-store" : "default",
     }
   );
@@ -74,6 +79,18 @@ function limparMarkdown(conteudo: string): string {
     .replace(/<!--[\s\S]*?-->/g, "")
     // 2. Encontra tags <img ...>, <br> e <hr> (com ou sem barra) e recria fechando corretamente (<img ... />)
     .replace(/<(img|br|hr)\b([^>]*?)\/?>/gi, "<$1$2 />");
+}
+
+// ---------- Perfil (perfil.json no repositório de perfil) ----------
+// Retorna null em qualquer falha (API fora, 404, JSON inválido) — quem chama cai pro fallback local.
+
+export async function buscarPerfilRemoto(): Promise<Perfil | null> {
+  try {
+    const bruto = await buscarArquivoRaw(GITHUB_USER, "perfil.json", [`perfil-${GITHUB_USER}`]);
+    return JSON.parse(bruto) as Perfil;
+  } catch {
+    return null;
+  }
 }
 
 // ---------- Projetos (README) ----------

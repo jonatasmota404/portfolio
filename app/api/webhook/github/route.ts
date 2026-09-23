@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
         // Invalida o cache do repositório específico
         revalidateTag(`repo:${nomeRepo}`, { expire: 0 });
 
-        if (nomeRepo === "escritos") {
+        if (nomeRepo === "jonatasmota404") {
+            // Repositório de perfil: invalida o perfil.json usado na Sobre e na Home
+            revalidateTag("perfil-jonatasmota404", { expire: 0 });
+        } else if (nomeRepo === "escritos") {
             // Invalida a lista de artigos
             revalidateTag("repo:escritos", { expire: 0 });
         } else {
