@@ -1,25 +1,10 @@
 import type { ComponentProps, ReactNode } from "react";
 
 export const componentesProsa = {
-  // O Wrapper é a magia que permite aplicar a Letra Capitular (Drop Cap) apenas no primeiro parágrafo
   wrapper: ({ children }: { children: ReactNode }) => (
     // O corpo do artigo é a única ilha serifada do site — tudo aqui herda a serifada
     // por padrão; só os títulos saem dela para o Inter Tight do sistema visual.
     <div className="prosa-artigo" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-      <style>{`
-        /* Estiliza apenas a primeira letra do primeiro parágrafo do artigo */
-        .prosa-artigo > p:first-of-type::first-letter {
-          float: left;
-          font-size: 4.2rem;
-          line-height: 0.8;
-          padding-top: 0.25rem;
-          padding-right: 0.15rem;
-          margin-right: 0.15rem;
-          font-family: var(--font-serif), Georgia, serif;
-          color: var(--accent);
-          text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
-        }
-      `}</style>
       {children}
     </div>
   ),
@@ -40,15 +25,13 @@ export const componentesProsa = {
     <p className="font-serif text-[1.05rem] md:text-[1.1rem] leading-relaxed mb-6 opacity-85" {...props} />
   ),
   
-  // Links ganham um tom cursivo e a cor de destaque
   a: (props: ComponentProps<"a">) => (
-    <a className="font-serif italic underline decoration-current/30 hover:decoration-current underline-offset-4 transition-colors" style={{ color: "var(--accent)" }} {...props} />
+    <a className="underline decoration-current/30 hover:decoration-current underline-offset-4 transition-colors" style={{ color: "var(--accent)" }} {...props} />
   ),
   
   strong: (props: ComponentProps<"strong">) => <strong className="font-bold opacity-100" {...props} />,
   
-  // O itálico normal ganha a sua fonte principal cursiva para destacar palavras estrangeiras ou ênfases
-  em: (props: ComponentProps<"em">) => <em className="font-serif italic" {...props} />,
+  em: (props: ComponentProps<"em">) => <em className="font-semibold not-italic" {...props} />,
   
   // Listas com espaçamento de leitura e marcadores coloridos
   li: (props: ComponentProps<"li">) => (

@@ -11,10 +11,11 @@ export function MiniaturaRepo({ hue, variante = "projeto" }: Props) {
 
   return (
     <div
+      data-variante={variante}
       className="relative w-full aspect-video rounded-2xl overflow-hidden flex items-center justify-center"
       style={{ background: "var(--glass)", border: "1px solid var(--line)" }}
     >
-      <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full opacity-40">
+      <svg viewBox="0 0 100 60" className="absolute inset-0 w-full h-full opacity-60">
         <defs>
           <radialGradient id={`glow-${hue}`} cx="50%" cy="50%" r="60%">
             <stop offset="0%" stopColor={corClara} stopOpacity="0.5" />
@@ -31,12 +32,6 @@ export function MiniaturaRepo({ hue, variante = "projeto" }: Props) {
         <circle cx="80" cy="45" r="1.5" fill={cor} opacity="0.6" />
         <circle cx="25" cy="48" r="1.5" fill={cor} opacity="0.6" />
       </svg>
-      <span
-        className="relative z-10 text-[9px] font-mono uppercase tracking-widest"
-        style={{ color: "var(--muted)" }}
-      >
-        {variante === "projeto" ? "nó do repositório" : "registo de estudo"}
-      </span>
     </div>
   );
 }

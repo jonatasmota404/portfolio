@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
 import { MiniaturaRepo } from "@/components/projetos/MiniaturaRepo";
+import { FiltroPills } from "@/components/ui/FiltroPills";
 import { gerarHue } from "@/lib/raizes";
 
 type Post = {
@@ -44,6 +45,17 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
     return Array.from(new Set(postsEstruturados.map((p) => p.categoria))).sort();
   }, [postsEstruturados]);
 
+  // "geral" é só um valor interno de agrupamento — só vira botão de filtro
+  // quando é a única categoria existente (senão duplicaria o "Todos").
+  const categoriasExibidas = useMemo(() => {
+    return categorias.length > 1 ? categorias.filter((cat) => cat !== "geral") : categorias;
+  }, [categorias]);
+
+  function formatarCategoria(cat: string) {
+    if (cat === "geral" && categorias.length === 1) return "Sem categoria";
+    return formatarNome(cat);
+  }
+
   const techsVisiveis = useMemo(() => {
     const validos = categoriaAtiva 
       ? postsEstruturados.filter((p) => p.categoria === categoriaAtiva) 
@@ -73,52 +85,23 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
       
       {/* PAINEL DE FILTROS (DOIS NÍVEIS) */}
       <div className="flex flex-col gap-5 mb-4">
-        
-        {/* Nível 1: Categorias */}
-        <div className="flex flex-wrap gap-6 items-baseline border-b border-current/10 pb-5">
-          <span className="rotulo mr-2">domínio</span>
-          <button
-            onClick={() => selecionarCategoria(null)}
-            className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === null ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
-            style={{ color: categoriaAtiva === null ? "var(--accent)" : "inherit" }}
-          >
-            Todos
-          </button>
-          {categorias.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => selecionarCategoria(cat)}
-              className={`font-mono text-sm uppercase tracking-widest transition-all ${categoriaAtiva === cat ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
-              style={{ color: categoriaAtiva === cat ? "var(--accent)" : "inherit" }}
-            >
-              {formatarNome(cat)}
-            </button>
-          ))}
-        </div>
+        <FiltroPills
+          rotulo="domínio"
+          opcoes={categoriasExibidas}
+          ativa={categoriaAtiva}
+          aoSelecionar={selecionarCategoria}
+          formatarRotulo={formatarCategoria}
+          variante="grande"
+        />
 
-        {/* Nível 2: Tecnologias */}
         {techsVisiveis.length > 0 && (
-          <div className="flex flex-wrap gap-2.5 items-center">
-            <span className="rotulo mr-2">tecnologias</span>
-            {techsVisiveis.map((tech) => (
-              <button
-                key={tech}
-                onClick={() => setTechAtiva(tech === techAtiva ? null : tech)}
-                className={`text-[10px] font-mono border rounded-full px-3.5 py-1.5 uppercase tracking-wider transition-all ${
-                  techAtiva === tech
-                    ? "font-bold shadow-sm"
-                    : "border-current/20 opacity-60 hover:opacity-100 hover:border-current/40"
-                }`}
-                style={
-                  techAtiva === tech
-                    ? { background: "var(--accent)", color: "var(--on-accent)", borderColor: "var(--accent)" }
-                    : undefined
-                }
-              >
-                {tech}
-              </button>
-            ))}
-          </div>
+          <FiltroPills
+            rotulo="tecnologias"
+            opcoes={techsVisiveis}
+            ativa={techAtiva}
+            aoSelecionar={setTechAtiva}
+            variante="pequena"
+          />
         )}
       </div>
 
