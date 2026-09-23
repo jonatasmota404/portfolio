@@ -125,9 +125,19 @@ function gerarPosicoes(nos: NoRepo[], rr: () => number): THREE.Vector3[] {
     const raio = 6 + t * 7;
     out[d.i] = new THREE.Vector3(Math.cos(ang) * raio, (rr() - 0.5) * 10, Math.sin(ang) * raio * 0.6);
   });
+  // Nós sem destaque orbitam um destaque, mas precisam respeitar a mesma
+  // distância mínima (2.4) usada pelos decorativos, senão o deslocamento
+  // aleatório pode cair sobre outro nó real já posicionado.
   outros.forEach((d, k) => {
     const base = destaques.length ? out[destaques[k % destaques.length].i] : new THREE.Vector3(0, 0, 0);
-    out[d.i] = base.clone().add(new THREE.Vector3((rr() - 0.5) * 10, (rr() - 0.5) * 6, (rr() - 0.5) * 10));
+    const ocupados = [...destaques, ...outros.slice(0, k)].map((x) => out[x.i]).filter(Boolean);
+    let tentativa: THREE.Vector3;
+    let tentativas = 0;
+    do {
+      tentativa = base.clone().add(new THREE.Vector3((rr() - 0.5) * 10, (rr() - 0.5) * 6, (rr() - 0.5) * 10));
+      tentativas++;
+    } while (tentativas < 30 && ocupados.some((p) => p.distanceTo(tentativa) < 2.4));
+    out[d.i] = tentativa;
   });
   return out;
 }
@@ -158,6 +168,17 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
     }
     window.addEventListener("pointermove", handleMouseDrift);
+
+    // Foco de câmera ao passar o mouse num card da lista de Destaques
+    // (HomeRaizes dispara "raizes:hover-projeto" com o id do repo, ou null).
+    let hoverProjetoId: string | null = null;
+    let focoAtivo = 0;
+    // Último nó focado: mantido após o mouse sair para a volta também ser suave.
+    let idxFoco = -1;
+    function handleHoverProjeto(e: Event) {
+      hoverProjetoId = (e as CustomEvent<{ id: string | null }>).detail?.id ?? null;
+    }
+    window.addEventListener("raizes:hover-projeto", handleHoverProjeto);
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMob, alpha: true });
@@ -656,6 +677,21 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
         const tl = { x: alvo.target.x, y: alvo.target.y, z: alvo.target.z };
         if (!reduce) { tp.x += Math.sin(now / 4200) * 0.7; tp.y += Math.sin(now / 5300) * 0.3; }
         if (fine) { tp.x += mouse.x * 1.4; tp.y += -mouse.y * 0.7; }
+        // Mistura o alvo normal com um enquadramento próximo do nó em hover;
+        // focoAtivo sobe/desce suavemente, então entrada e saída são graduais.
+        const idxHover = hoverProjetoId ? nos.findIndex((n) => n.id === hoverProjetoId) : -1;
+        focoAtivo += ((idxHover >= 0 ? 1 : 0) - focoAtivo) * Math.min(1, dt * 3);
+        if (idxHover >= 0) idxFoco = idxHover;
+        if (focoAtivo > 0.001 && idxFoco >= 0) {
+          const p = nodes[idxFoco].p;
+          const f = focoAtivo * focoAtivo * (3 - 2 * focoAtivo);
+          // O painel de Projetos fica à direita: o olhar mira um ponto à
+          // direita do nó (eixo lateral da câmera) para ele cair na metade livre.
+          const px = p.x + 3, py = p.y + 1.5, pz = p.z + 9;
+          const lat = new THREE.Vector3(p.x - px, 0, p.z - pz).normalize().cross(new THREE.Vector3(0, 1, 0)).multiplyScalar(isMob ? 0 : 5);
+          tp.x += (px - tp.x) * f; tp.y += (py - tp.y) * f; tp.z += (pz - tp.z) * f;
+          tl.x += (p.x + lat.x - tl.x) * f; tl.y += (p.y - tl.y) * f; tl.z += (p.z + lat.z - tl.z) * f;
+        }
         camPos.x += (tp.x - camPos.x) * 0.05; camPos.y += (tp.y - camPos.y) * 0.05; camPos.z += (tp.z - camPos.z) * 0.05;
         camLook.x += (tl.x - camLook.x) * 0.05; camLook.y += (tl.y - camLook.y) * 0.05; camLook.z += (tl.z - camLook.z) * 0.05;
         camera.position.copy(camPos); camera.lookAt(camLook);
@@ -686,6 +722,7 @@ export function CenaRaizes({ nos, ligacoes, camAlvo }: Props) {
       cancelAnimationFrame(frameId);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointermove", handleMouseDrift);
+      window.removeEventListener("raizes:hover-projeto", handleHoverProjeto);
       window.removeEventListener("click", handleClick);
       if (debugAtivo) window.removeEventListener("keydown", handleDebugKey);
       document.body.style.cursor = "";

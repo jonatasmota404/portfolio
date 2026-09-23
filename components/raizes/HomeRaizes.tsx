@@ -170,12 +170,12 @@ export function HomeRaizes({
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" aria-label="Quem sou" className="py-20 px-4" data-cam="-12.8,6,7.4|0,2,0">
-          <div className="max-w-4xl mx-auto">
+        <section id="bio" aria-label="Quem sou" className="raizes-secao raizes-secao-centro" data-cam="-12.8,6,7.4|0,2,0">
+          <div className="raizes-bento-wrap">
             <div className="raizes-bento">
               <div className="box big">
                 <div>
-                  <h2 className="heading-3 mb-3" style={{ fontSize: "clamp(20px, 2.4vw, 28px)" }}>
+                  <h2 className="raizes-bento-titulo mb-3">
                     {t("quemSouTitulo")}
                   </h2>
                   <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
@@ -246,8 +246,8 @@ export function HomeRaizes({
         </section>
 
         {/* Destaques */}
-        <section id="projetos" className="py-20 px-4" data-cam="10.8,-4,18.7|-4,0,0">
-          <div className="max-w-3xl mx-auto raizes-panel p-8 md:p-10">
+        <section id="projetos" className="raizes-secao raizes-secao-dir" data-cam="10.8,-4,18.7|-4,0,0">
+          <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Projetos em destaque
             </h2>
@@ -257,7 +257,17 @@ export function HomeRaizes({
             </p>
             <div className="raizes-pcs">
               {destaques.map((no) => (
-                <Link key={no.id} href={`/projetos/${no.id}`} className="raizes-pc">
+                <Link
+                  key={no.id}
+                  href={`/projetos/${no.id}`}
+                  className="raizes-pc"
+                  onMouseEnter={() =>
+                    window.dispatchEvent(new CustomEvent("raizes:hover-projeto", { detail: { id: no.id } }))
+                  }
+                  onMouseLeave={() =>
+                    window.dispatchEvent(new CustomEvent("raizes:hover-projeto", { detail: { id: null } }))
+                  }
+                >
                   <span className="go">→</span>
                   <b>{no.nome}</b>
                   <small>{no.tags.join(" · ")}</small>
@@ -273,8 +283,8 @@ export function HomeRaizes({
         </section>
 
         {/* Como trabalho */}
-        <section id="como-trabalho" className="py-20 px-4" data-cam="4.3,7,-11.9|0,1,0">
-          <div className="max-w-2xl mx-auto raizes-panel p-8 md:p-10">
+        <section id="como-trabalho" className="raizes-secao raizes-secao-esq" data-cam="4.3,7,-11.9|0,1,0">
+          <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               Como trabalho
             </h2>
@@ -303,8 +313,8 @@ export function HomeRaizes({
         </section>
 
         {/* Escritos */}
-        <section id="escritos" className="py-20 px-4" data-cam="-9,-6,15.6|2,2,0">
-          <div className="max-w-4xl mx-auto">
+        <section id="escritos" className="raizes-secao raizes-secao-dir" data-cam="-9,-6,15.6|2,2,0">
+          <div className="raizes-largura-padrao">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
               {t("escritosTitulo")}
             </h2>
@@ -340,7 +350,7 @@ export function HomeRaizes({
         {/* Contato */}
         <section
           id="contato"
-          className="min-h-screen flex flex-col items-center justify-center px-4 text-center"
+          className="raizes-secao raizes-secao-centro text-center"
           data-cam="19.4,10,7.1|0,3,0"
         >
           <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
