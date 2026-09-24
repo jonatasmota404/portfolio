@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
 import { Search, X, BookOpen, CodeXml } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { obterIndiceBusca, type ItemBusca } from "@/lib/busca";
 
 type Props = {
@@ -16,6 +16,8 @@ export function ModalBusca({ aberto, onFechar }: Props) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const locale = useLocale();
+  const t = useTranslations("busca");
+  const tf = useTranslations("filtros");
 
   // Carrega o índice silenciosamente quando o modal abre
   useEffect(() => {
@@ -67,12 +69,12 @@ export function ModalBusca({ aberto, onFechar }: Props) {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Pesquisar nos registros e artefatos..."
+            placeholder={t("placeholder")}
             className="heading-2 flex-1 bg-transparent outline-none text-2xl placeholder:opacity-40 placeholder:font-normal"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button onClick={onFechar} className="p-1 opacity-50 hover:opacity-100 transition-opacity bg-current/5 rounded-full">
+          <button onClick={onFechar} aria-label={t("fechar")} className="p-1 opacity-50 hover:opacity-100 transition-opacity bg-current/5 rounded-full">
             <X size={20} />
           </button>
         </div>
@@ -81,12 +83,12 @@ export function ModalBusca({ aberto, onFechar }: Props) {
         <div className="max-h-[60vh] overflow-y-auto p-3">
           {query.trim() !== "" && resultados.length === 0 ? (
             <p className="apoio p-8 text-center">
-              Nenhuma anotação encontrada para &quot;{query}&quot;.
+              {t("nenhumResultado", { query })}
             </p>
           ) : query.trim() === "" ? (
             <div className="p-8 text-center opacity-40">
-              <p className="rotulo mb-2">índice global</p>
-              <p className="apoio text-sm">Digite para buscar projetos e escritos.</p>
+              <p className="rotulo mb-2">{t("indiceGlobal")}</p>
+              <p className="apoio text-sm">{t("digiteParaBuscar")}</p>
             </div>
           ) : (
             <div className="flex flex-col gap-1">
@@ -105,7 +107,7 @@ export function ModalBusca({ aberto, onFechar }: Props) {
                   <div className="flex flex-col min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[9px] font-mono uppercase tracking-widest border border-current/20 rounded-full px-2 py-0.5 opacity-60">
-                        {item.categoria}
+                        {item.categoria || tf("geral")}
                       </span>
                       <span className="heading-3 text-base truncate group-hover:text-[var(--accent)] transition-colors">
                         {item.titulo}
@@ -123,8 +125,8 @@ export function ModalBusca({ aberto, onFechar }: Props) {
         
         {/* Rodapé do Modal */}
         <div className="bg-current/[0.02] border-t border-current/10 p-3 flex justify-between items-center text-[10px] font-mono opacity-50">
-          <span className="uppercase tracking-widest">Navegação Global</span>
-          <span>Pressione ESC para fechar</span>
+          <span className="uppercase tracking-widest">{t("navegacaoGlobal")}</span>
+          <span>{t("escParaFechar")}</span>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTema } from "@/context/TemaContext";
 import { PALETAS, type TemaId } from "@/lib/paletas";
 
@@ -27,6 +28,7 @@ function SwatchTema({ bg, accent, tamanho }: { bg: string; accent: string; taman
 
 export function SeletorTema() {
   const { tema, setTema } = useTema();
+  const t = useTranslations("tema");
   const [aberto, setAberto] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +57,7 @@ export function SeletorTema() {
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setAberto((v) => !v)}
-        aria-label="Escolher paleta de cores"
+        aria-label={t("escolher")}
         aria-expanded={aberto}
         aria-haspopup="menu"
         className="tema-gatilho foco-anel"
@@ -65,7 +67,7 @@ export function SeletorTema() {
 
       {aberto && (
         <div className="tema-menu" role="menu">
-          <span className="tema-rotulo">paleta</span>
+          <span className="tema-rotulo">{t("rotulo")}</span>
           {(Object.keys(PALETAS) as TemaId[]).map((id) => {
             const p = PALETAS[id];
             const ativo = tema === id;
@@ -87,7 +89,7 @@ export function SeletorTema() {
                 }
               >
                 <SwatchTema bg={p.ui.bg} accent={p.ui.accent} tamanho={19} />
-                {p.nome}
+                {t(id)}
                 <Check size={14} className="tema-check" strokeWidth={3} />
               </button>
             );

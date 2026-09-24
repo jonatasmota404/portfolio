@@ -3,7 +3,11 @@
     "projetos": "projects",
     "escritos": "writing",
     "sobre": "about",
-    "contato": "contact"
+    "contato": "contact",
+    "buscar": "Search",
+    "abrirBusca": "Open search",
+    "alternarIdioma": "Switch language",
+    "abrirMenu": "Open menu"
   },
   "meta": {
     "titulo": "Jônatas Mota — Fullstack Engineer",
@@ -24,11 +28,92 @@
     "quemSouTitulo": "Backend, frontend, and what runs underneath.",
     "abertoVagas": "Open to remote roles",
     "escritosTitulo": "Latest writing",
-    "verTodos": "see all →"
+    "verTodos": "see all →",
+    "heroLive": "each node is one of my repositories",
+    "verProjetos": "See projects",
+    "lerEscritos": "Read writing",
+    "rolarExplorar": "scroll to explore ↓",
+    "quemSouAria": "About me",
+    "statRepos": "repositories ({destaques} featured)",
+    "statArtigos": "{total, plural, one {article written} other {articles written}}",
+    "statContribuicoes": "contributions in the period shown",
+    "stackDiaADia": "everyday stack",
+    "destaquesTitulo": "Featured projects",
+    "destaquesDescricao": "Featured projects are the large nodes. The other repositories are scattered across the network: hover (or tap) to see their connections and latest commits.",
+    "verTodosProjetos": "See all →",
+    "comoTrabalhoTitulo": "How I work",
+    "habito1Titulo": "Observability first",
+    "habito1Texto": "If I can't measure it, I can't understand it. Logs, metrics and traces are the foundation of every system I build.",
+    "habito2Titulo": "Resilience by design",
+    "habito2Texto": "Failures are inevitable. Isolated components, circuit breakers, retry policies and smart timeouts aren't optional.",
+    "habito3Titulo": "Obsessive automation",
+    "habito3Texto": "Tests, deploys, backups, alerts — any manual process that repeats itself is a bug waiting to happen.",
+    "semEscritos": "No articles yet. Check back soon.",
+    "contatoTitulo": "Let's talk",
+    "contatoDescricao": "I'm interested in infrastructure, architecture and troubleshooting work. Always happy to talk about resilient systems.",
+    "email": "Email"
   },
-    "about": {
+  "sobre": {
     "contatoTitulo": "Let's talk",
     "contato": "Contact",
-    "curriculo": "Download resume"
+    "curriculo": "resume",
+    "rotulo": "profile",
+    "titulo": "About",
+    "foco": "focus",
+    "formacao": "education",
+    "base": "location",
+    "anosProducao": "years in production",
+    "sistemasAtivos": "active systems",
+    "artigosEscritos": "{total, plural, one {article written} other {articles written}}",
+    "contribuicoesAno": "contributions / year",
+    "calendarioErro": "Couldn't load the calendar right now.",
+    "atividadeRecente": "recent activity",
+    "calendarioTitulo": "Contribution Log",
+    "menos": "less",
+    "mais": "more",
+    "linguagensVazio": "Not enough language data yet.",
+    "linguagensRotulo": "languages · usage recorded in personal projects"
+  },
+  "filtros": {
+    "dominio": "domain",
+    "tecnologias": "technologies",
+    "todos": "All",
+    "semCategoria": "Uncategorized",
+    "geral": "General"
+  },
+  "projetos": {
+    "rotulo": "repositories",
+    "titulo": "Projects",
+    "descricao": "A selection of things I've been building — from everyday tools to experiments and infrastructure architectures.",
+    "verNoGithub": "View on GitHub",
+    "nenhumResultado": "No projects match this combination",
+    "rotuloProjeto": "project",
+    "semReadme": "This project has no README."
+  },
+  "escritos": {
+    "rotulo": "notes",
+    "titulo": "Writing",
+    "descricao": "Notes and lessons on infrastructure, backend and the behind-the-scenes of building software.",
+    "lerRegisto": "Read post →",
+    "nenhumResultado": "No posts match this combination",
+    "naoEncontrado": "Article not found."
+  },
+  "busca": {
+    "placeholder": "Search posts and projects...",
+    "nenhumResultado": "Nothing found for \"{query}\".",
+    "indiceGlobal": "global index",
+    "digiteParaBuscar": "Type to search projects and writing.",
+    "navegacaoGlobal": "Global Navigation",
+    "escParaFechar": "Press ESC to close",
+    "fechar": "Close search"
+  },
+  "tema": {
+    "rotulo": "palette",
+    "escolher": "Choose color palette",
+    "ouro": "Forest and gold",
+    "gelo": "Ice and vermilion",
+    "menta": "Mint aurora",
+    "mar": "Deep sea",
+    "brasa": "Copper and ember"
   }
 }

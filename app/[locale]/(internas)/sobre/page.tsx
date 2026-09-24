@@ -15,7 +15,7 @@ import { CalendarioContribuicoes } from "@/components/sobre/CalendarioContribuic
 import { DistribuicaoLinguagens } from "@/components/sobre/DistribuicaoLinguagens";
 import type { CSSProperties } from "react";
 
-type Semana = { label: string; dias: { contagem: number }[] };
+type Semana = { mes: number | null; dias: { contagem: number }[] };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -42,9 +42,9 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
 
   // foco tem texto longo e ocupa bloco largo; formação e base cabem em blocos simples
   const atributos: { label: string; value: string; apoio?: string; largo?: boolean }[] = [
-    { label: "foco", value: t2(a.foco, locale), largo: true },
-    { label: "formação", value: t2(a.formacaoCurso, locale), apoio: a.formacaoInstituicao },
-    { label: "base", value: t2(a.base, locale) },
+    { label: t("foco"), value: t2(a.foco, locale), largo: true },
+    { label: t("formacao"), value: t2(a.formacaoCurso, locale), apoio: a.formacaoInstituicao },
+    { label: t("base"), value: t2(a.base, locale) },
   ];
 
   const anoInicio = usuario?.created_at ? new Date(usuario.created_at).getFullYear() : new Date().getFullYear();
@@ -56,10 +56,10 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
     : null;
 
   const stats = [
-    { valor: anosProducao, rotulo: "anos em produção" },
-    { valor: sistemasAtivos, rotulo: "sistemas ativos" },
-    { valor: String(posts.length), rotulo: "artigos escritos" },
-    { valor: contribuicoesAno !== null ? String(contribuicoesAno) : "—", rotulo: "contribuições / ano" },
+    { valor: anosProducao, rotulo: t("anosProducao") },
+    { valor: sistemasAtivos, rotulo: t("sistemasAtivos") },
+    { valor: String(posts.length), rotulo: t("artigosEscritos", { total: posts.length }) },
+    { valor: contribuicoesAno !== null ? String(contribuicoesAno) : "—", rotulo: t("contribuicoesAno") },
   ];
 
   // Ordem de entrada escalonada dos blocos (animação em .sobre-bento)
@@ -79,8 +79,8 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
   return (
     <article className="conteudo w-full flex flex-col gap-8 pt-[84px] pb-16">
       <header>
-        <p className="rotulo mb-3">perfil</p>
-        <h1 className="heading-1">Sobre</h1>
+        <p className="rotulo mb-3">{t("rotulo")}</p>
+        <h1 className="heading-1">{t("titulo")}</h1>
       </header>
 
       <div className="raizes-bento sobre-bento">
@@ -109,7 +109,7 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
               className="font-mono text-xs px-5 py-2.5 rounded-full transition-colors"
               style={{ backgroundColor: "color-mix(in srgb, var(--ink) 8%, transparent)", color: "var(--ink)" }}
             >
-              currículo
+              {t("curriculo")}
             </a>
           </div>
         </div>

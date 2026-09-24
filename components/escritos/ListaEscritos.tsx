@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { MiniaturaRepo } from "@/components/projetos/MiniaturaRepo";
 import { FiltroPills } from "@/components/ui/FiltroPills";
 import { gerarHue } from "@/lib/raizes";
@@ -27,6 +28,9 @@ function formatarNome(texto: string) {
 }
 
 export function ListaEscritos({ posts }: { posts: Post[] }) {
+  const t = useTranslations("escritos");
+  const tf = useTranslations("filtros");
+  const locale = useLocale();
   const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null);
   const [techAtiva, setTechAtiva] = useState<string | null>(null);
 
@@ -52,7 +56,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
   }, [categorias]);
 
   function formatarCategoria(cat: string) {
-    if (cat === "geral" && categorias.length === 1) return "Sem categoria";
+    if (cat === "geral" && categorias.length === 1) return tf("semCategoria");
     return formatarNome(cat);
   }
 
@@ -86,7 +90,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
       {/* PAINEL DE FILTROS (DOIS NÍVEIS) */}
       <div className="flex flex-col gap-5 mb-4">
         <FiltroPills
-          rotulo="domínio"
+          rotulo={tf("dominio")}
           opcoes={categoriasExibidas}
           ativa={categoriaAtiva}
           aoSelecionar={selecionarCategoria}
@@ -96,7 +100,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
 
         {techsVisiveis.length > 0 && (
           <FiltroPills
-            rotulo="tecnologias"
+            rotulo={tf("tecnologias")}
             opcoes={techsVisiveis}
             ativa={techAtiva}
             aoSelecionar={setTechAtiva}
@@ -109,7 +113,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
         {postsFiltrados.map((post) => {
           const { title, description, date } = post.data;
-          const dataFormatada = date ? new Date(date).toLocaleDateString("pt-BR", { year: 'numeric', month: 'short', day: 'numeric' }) : "";
+          const dataFormatada = date ? new Date(date).toLocaleDateString(locale === "en" ? "en-US" : "pt-BR", { year: 'numeric', month: 'short', day: 'numeric' }) : "";
           const tituloExibicao = title || formatarNome(post.slug);
 
           return (
@@ -121,7 +125,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
               <div className="flex flex-col flex-1 min-w-0">
                 <div className="flex flex-col items-start gap-1 mb-1">
                   <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
-                    {formatarNome(post.categoria)}
+                    {post.categoria === "geral" ? tf("geral") : formatarNome(post.categoria)}
                   </span>
                   <Link href={`/escritos/${post.slug}`} className="heading-3 text-lg hover:opacity-70 transition-opacity">
                     {tituloExibicao}
@@ -144,7 +148,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
                 ) : (
                   <div className="mt-auto pt-2 flex justify-end border-t border-dashed border-current/10">
                     <Link href={`/escritos/${post.slug}`} className="text-[10px] mt-3 font-mono uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "var(--accent)" }}>
-                      Ler registo →
+                      {t("lerRegisto")}
                     </Link>
                   </div>
                 )}
@@ -155,7 +159,7 @@ export function ListaEscritos({ posts }: { posts: Post[] }) {
       </div>
       
       {postsFiltrados.length === 0 && (
-        <div className="rotulo text-center py-12">Nenhum registo encontrado com esta combinação</div>
+        <div className="rotulo text-center py-12">{t("nenhumResultado")}</div>
       )}
     </div>
   );

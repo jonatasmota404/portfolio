@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { MiniaturaRepo } from "./MiniaturaRepo";
 import { FiltroPills } from "@/components/ui/FiltroPills";
 import { gerarHue } from "@/lib/raizes";
@@ -15,6 +16,8 @@ function formatarNome(texto: string) {
 }
 
 export function ListaProjetos({ repos }: { repos: any[] }) {
+  const t = useTranslations("projetos");
+  const tf = useTranslations("filtros");
   const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null);
   const [techAtiva, setTechAtiva] = useState<string | null>(null);
 
@@ -45,7 +48,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
   }, [categorias]);
 
   function formatarCategoria(cat: string) {
-    if (cat === "geral" && categorias.length === 1) return "Sem categoria";
+    if (cat === "geral" && categorias.length === 1) return tf("semCategoria");
     return formatarNome(cat);
   }
 
@@ -80,7 +83,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
       {/* PAINEL DE FILTROS (DOIS NÍVEIS) */}
       <div className="flex flex-col gap-5 mb-4">
         <FiltroPills
-          rotulo="domínio"
+          rotulo={tf("dominio")}
           opcoes={categoriasExibidas}
           ativa={categoriaAtiva}
           aoSelecionar={selecionarCategoria}
@@ -90,7 +93,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
 
         {techsVisiveis.length > 0 && (
           <FiltroPills
-            rotulo="tecnologias"
+            rotulo={tf("tecnologias")}
             opcoes={techsVisiveis}
             ativa={techAtiva}
             aoSelecionar={setTechAtiva}
@@ -116,7 +119,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                   <div className="flex flex-col">
                     {/* Categoria exibida subtilmente acima do título */}
                     <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest mb-1" style={{ color: "var(--accent)" }}>
-                      {formatarNome(repo.categoria)}
+                      {repo.categoria === "geral" ? tf("geral") : formatarNome(repo.categoria)}
                     </span>
                     <Link href={`/projetos/${repo.name}`} className="heading-3 text-lg hover:opacity-70 transition-opacity">
                       {tituloExibicao}
@@ -124,7 +127,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
                   </div>
                   <span className="flex items-center gap-1.5 text-xs font-mono opacity-50 shrink-0 pt-1">
                     {ano}
-                    <a href={repo.html_url} target="_blank" rel="noopener noreferrer" aria-label="Ver no GitHub" className="hover:opacity-100 transition-opacity relative z-10">↗</a>
+                    <a href={repo.html_url} target="_blank" rel="noopener noreferrer" aria-label={t("verNoGithub")} className="hover:opacity-100 transition-opacity relative z-10">↗</a>
                   </span>
                 </div>
                 
@@ -146,7 +149,7 @@ export function ListaProjetos({ repos }: { repos: any[] }) {
       </div>
       
       {reposFiltrados.length === 0 && (
-        <div className="rotulo text-center py-12">Nenhum artefato encontrado com esta combinação</div>
+        <div className="rotulo text-center py-12">{t("nenhumResultado")}</div>
       )}
     </div>
   );

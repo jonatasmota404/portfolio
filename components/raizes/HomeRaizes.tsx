@@ -138,7 +138,7 @@ export function HomeRaizes({
             <div className="mb-9">
               <div className="raizes-live">
                 <i />
-                <span>cada nó é um repositório meu</span>
+                <span>{t("heroLive")}</span>
               </div>
             </div>
             <div className="flex flex-wrap gap-4">
@@ -150,7 +150,7 @@ export function HomeRaizes({
                   rolarSuaveAte("projetos");
                 }}
               >
-                Ver projetos
+                {t("verProjetos")}
               </a>
               <a
                 href="#escritos"
@@ -160,15 +160,15 @@ export function HomeRaizes({
                   rolarSuaveAte("escritos");
                 }}
               >
-                Ler escritos
+                {t("lerEscritos")}
               </a>
             </div>
           </div>
-          <div className="raizes-scrollhint">role para explorar ↓</div>
+          <div className="raizes-scrollhint">{t("rolarExplorar")}</div>
         </section>
 
         {/* Bio + Stats */}
-        <section id="bio" aria-label="Quem sou" className="raizes-secao raizes-secao-centro" data-cam={camAttr(cameras.bio)}>
+        <section id="bio" aria-label={t("quemSouAria")} className="raizes-secao raizes-secao-centro" data-cam={camAttr(cameras.bio)}>
           <div className="raizes-bento-wrap">
             <div className="raizes-bento">
               <div className="box big">
@@ -192,18 +192,18 @@ export function HomeRaizes({
               </div>
               <div className="box">
                 <div className="num">{totalRepos}</div>
-                <div className="lbl">repositórios ({destaques.length} destaques)</div>
+                <div className="lbl">{t("statRepos", { destaques: destaques.length })}</div>
               </div>
               <div className="box">
                 <div className="num">{posts.length}</div>
-                <div className="lbl">artigos escritos</div>
+                <div className="lbl">{t("statArtigos", { total: posts.length })}</div>
               </div>
               <div className="box wide">
                 <div className="num">{contribuicoes ?? "—"}</div>
-                <div className="lbl">contribuições no período mostrado</div>
+                <div className="lbl">{t("statContribuicoes")}</div>
               </div>
               <div className="box wide">
-                <div className="lbl mb-3">stack do dia a dia</div>
+                <div className="lbl mb-3">{t("stackDiaADia")}</div>
                 <div className="flex flex-wrap gap-2">
                   {tecnologias.map((tag) => (
                     <span key={tag} className="raizes-chip">
@@ -247,11 +247,10 @@ export function HomeRaizes({
         <section id="projetos" className="raizes-secao raizes-secao-dir" data-cam={camAttr(cameras.projetos)}>
           <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
-              Projetos em destaque
+              {t("destaquesTitulo")}
             </h2>
             <p className="text-sm mt-4 leading-relaxed" style={{ color: "var(--muted)" }}>
-              Os destaques são os nós grandes. Os outros repositórios ficam espalhados pela rede: passe o mouse (ou
-              toque) para ver as conexões e os últimos commits.
+              {t("destaquesDescricao")}
             </p>
             <div className="raizes-pcs">
               {destaques.map((no) => (
@@ -274,7 +273,7 @@ export function HomeRaizes({
             </div>
             <div className="mt-8">
               <Link href="/projetos" className="raizes-btn mag">
-                Ver todos →
+                {t("verTodosProjetos")}
               </Link>
             </div>
           </div>
@@ -284,27 +283,24 @@ export function HomeRaizes({
         <section id="como-trabalho" className="raizes-secao raizes-secao-esq" data-cam={camAttr(cameras["como-trabalho"])}>
           <div className="raizes-panel raizes-largura-padrao p-8 md:p-10">
             <h2 className="raizes-h2 mb-8" style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}>
-              Como trabalho
+              {t("comoTrabalhoTitulo")}
             </h2>
             <div className="raizes-hab">
-              <b>Observabilidade primeiro</b>
+              <b>{t("habito1Titulo")}</b>
               <span className="text-sm" style={{ opacity: 0.85 }}>
-                Se não consigo medir, não consigo entender. Logs, métricas e traces são o alicerce de qualquer sistema
-                que eu construo.
+                {t("habito1Texto")}
               </span>
             </div>
             <div className="raizes-hab">
-              <b>Resiliência por design</b>
+              <b>{t("habito2Titulo")}</b>
               <span className="text-sm" style={{ opacity: 0.85 }}>
-                Falhas são inevitáveis. Componentes isolados, circuit breakers, retry policies e timeouts inteligentes
-                não são opcionais.
+                {t("habito2Texto")}
               </span>
             </div>
             <div className="raizes-hab" style={{ marginBottom: 0 }}>
-              <b>Automatização obsessiva</b>
+              <b>{t("habito3Titulo")}</b>
               <span className="text-sm" style={{ opacity: 0.85 }}>
-                Testes, deploys, backups, alertas — qualquer processo manual que se repete é um bug esperando
-                acontecer.
+                {t("habito3Texto")}
               </span>
             </div>
           </div>
@@ -340,7 +336,7 @@ export function HomeRaizes({
                 </div>
               </>
             ) : (
-              <p className="text-sm opacity-70">Nenhum artigo ainda. Voltando em breve.</p>
+              <p className="text-sm opacity-70">{t("semEscritos")}</p>
             )}
           </div>
         </section>
@@ -352,14 +348,13 @@ export function HomeRaizes({
           data-cam={camAttr(cameras.contato)}
         >
           <div className="raizes-panel px-8 py-10 md:px-12 md:py-14 max-w-3xl">
-            <h2 className="raizes-contato-h2 mb-6">Vamos conversar</h2>
+            <h2 className="raizes-contato-h2 mb-6">{t("contatoTitulo")}</h2>
             <p className="text-sm max-w-lg mx-auto mb-8" style={{ color: "var(--muted)" }}>
-              Tenho interesse em projetos de infraestrutura, arquitetura e troubleshooting. Sempre aberto a conversar
-              sobre sistemas resilientes.
+              {t("contatoDescricao")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="mailto:jonatasjr.019@gmail.com" className="raizes-btn raizes-btn-pri mag">
-                E-mail
+                {t("email")}
               </a>
               <a
                 href="https://github.com/jonatasmota404"

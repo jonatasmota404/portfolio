@@ -187,16 +187,16 @@ export async function buscarCalendarioContribuicoes() {
   const semanas = json?.data?.user?.contributionsCollection?.contributionCalendar?.weeks;
   if (!semanas) return null;
 
-  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  // O nome do mês é formatado no cliente, conforme o idioma — aqui vai só o índice.
   let ultimoMes = -1;
 
   return semanas.map((semana: any) => {
     const primeiroDia = new Date(semana.contributionDays[0].date);
     const mes = primeiroDia.getMonth();
-    const label = mes !== ultimoMes ? MESES[mes] : "";
+    const inicioMes = mes !== ultimoMes;
     ultimoMes = mes;
     return {
-      label,
+      mes: inicioMes ? mes : null,
       dias: semana.contributionDays.map((d: any) => ({ contagem: d.contributionCount })),
     };
   });

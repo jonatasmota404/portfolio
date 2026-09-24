@@ -2,6 +2,11 @@
 
 import { listarRepositorios, listarEscritos } from "@/lib/github";
 
+// "geral" é o agrupamento padrão: volta vazio para o modal exibir o rótulo traduzido.
+function formatarCategoria(cat: string) {
+  return cat === "geral" ? "" : formatarNome(cat);
+}
+
 function formatarNome(texto: string) {
   if (!texto) return "";
   return texto.split(/[-_]/).map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(" ");
@@ -34,7 +39,7 @@ export async function obterIndiceBusca(locale: string): Promise<ItemBusca[]> {
       tipo: "projeto",
       titulo: formatarNome(repo.name),
       descricao: repo.description || "",
-      categoria: formatarNome(categoria),
+      categoria: formatarCategoria(categoria),
       link: `/projetos/${repo.name}`
     });
   }
@@ -49,7 +54,7 @@ export async function obterIndiceBusca(locale: string): Promise<ItemBusca[]> {
       tipo: "escrito",
       titulo: title || formatarNome(post.slug),
       descricao: description || "",
-      categoria: formatarNome(categoria),
+      categoria: formatarCategoria(categoria),
       link: `/escritos/${post.slug}`
     });
   }

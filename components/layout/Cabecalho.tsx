@@ -125,7 +125,7 @@ export function Cabecalho() {
 
             <span className="capsula-separador" />
 
-            <button onClick={() => setBuscaAberta(true)} className="capsula-busca foco-anel" aria-label="Abrir busca">
+            <button onClick={() => setBuscaAberta(true)} className="capsula-busca foco-anel" aria-label={t("abrirBusca")}>
               <Search size={14} />
               <kbd className="hidden lg:inline">⌘K</kbd>
             </button>
@@ -139,7 +139,7 @@ export function Cabecalho() {
 
             <span className="capsula-separador capsula-separador-acoes" />
 
-            <button onClick={alternarIdioma} className="capsula-idioma foco-anel" aria-label="Alternar idioma">
+            <button onClick={alternarIdioma} className="capsula-idioma foco-anel" aria-label={t("alternarIdioma")}>
               <span style={{ color: locale === "pt" ? "var(--ink)" : "var(--muted)" }}>PT</span>
               <span style={{ color: "var(--muted)" }}>/</span>
               <span style={{ color: locale === "en" ? "var(--ink)" : "var(--muted)" }}>EN</span>
@@ -153,7 +153,7 @@ export function Cabecalho() {
             <button
               className="capsula-icone foco-anel sm:hidden"
               onClick={() => setAberto((v) => !v)}
-              aria-label="Abrir menu"
+              aria-label={t("abrirMenu")}
               aria-expanded={aberto}
             >
               {aberto ? <X size={18} /> : <Menu size={18} />}
@@ -173,7 +173,7 @@ export function Cabecalho() {
               
               <button onClick={abrirBusca} className="site-menu-busca">
                 <Search size={18} />
-                Buscar
+                {t("buscar")}
               </button>
             </nav>
             <div className="flex items-center justify-between">
@@ -182,7 +182,7 @@ export function Cabecalho() {
                 <LinkLinkedIn className="capsula-icone foco-anel" />
                 <LinkEmail className="capsula-icone foco-anel" />
               </div>
-              <button onClick={alternarIdioma} className="site-menu-idioma foco-anel" aria-label="Alternar idioma">
+              <button onClick={alternarIdioma} className="site-menu-idioma foco-anel" aria-label={t("alternarIdioma")}>
                 <span style={{ color: locale === "pt" ? "var(--ink)" : "var(--muted)" }}>PT</span>
                 {" / "}
                 <span style={{ color: locale === "en" ? "var(--ink)" : "var(--muted)" }}>EN</span>

@@ -3,7 +3,11 @@
     "projetos": "projetos",
     "escritos": "escritos",
     "sobre": "sobre",
-    "contato": "contato"
+    "contato": "contato",
+    "buscar": "Buscar",
+    "abrirBusca": "Abrir busca",
+    "alternarIdioma": "Alternar idioma",
+    "abrirMenu": "Abrir menu"
   },
   "meta": {
     "titulo": "Jônatas Mota — Engenheiro Fullstack",
@@ -24,11 +28,92 @@
     "quemSouTitulo": "Backend, frontend e o que roda por baixo.",
     "abertoVagas": "Aberto a vagas remotas",
     "escritosTitulo": "Últimos escritos",
-    "verTodos": "ver todos →"
+    "verTodos": "ver todos →",
+    "heroLive": "cada nó é um repositório meu",
+    "verProjetos": "Ver projetos",
+    "lerEscritos": "Ler escritos",
+    "rolarExplorar": "role para explorar ↓",
+    "quemSouAria": "Quem sou",
+    "statRepos": "repositórios ({destaques, plural, one {# destaque} other {# destaques}})",
+    "statArtigos": "{total, plural, one {artigo escrito} other {artigos escritos}}",
+    "statContribuicoes": "contribuições no período mostrado",
+    "stackDiaADia": "stack do dia a dia",
+    "destaquesTitulo": "Projetos em destaque",
+    "destaquesDescricao": "Os destaques são os nós grandes. Os outros repositórios ficam espalhados pela rede: passe o mouse (ou toque) para ver as conexões e os últimos commits.",
+    "verTodosProjetos": "Ver todos →",
+    "comoTrabalhoTitulo": "Como trabalho",
+    "habito1Titulo": "Observabilidade primeiro",
+    "habito1Texto": "Se não consigo medir, não consigo entender. Logs, métricas e traces são o alicerce de qualquer sistema que eu construo.",
+    "habito2Titulo": "Resiliência por design",
+    "habito2Texto": "Falhas são inevitáveis. Componentes isolados, circuit breakers, retry policies e timeouts inteligentes não são opcionais.",
+    "habito3Titulo": "Automatização obsessiva",
+    "habito3Texto": "Testes, deploys, backups, alertas — qualquer processo manual que se repete é um bug esperando acontecer.",
+    "semEscritos": "Nenhum artigo ainda. Voltando em breve.",
+    "contatoTitulo": "Vamos conversar",
+    "contatoDescricao": "Tenho interesse em projetos de infraestrutura, arquitetura e troubleshooting. Sempre aberto a conversar sobre sistemas resilientes.",
+    "email": "E-mail"
   },
-    "sobre": {
+  "sobre": {
     "contatoTitulo": "Vamos conversar",
     "contato": "Contato",
-    "curriculo": "Baixar currículo"
+    "curriculo": "currículo",
+    "rotulo": "perfil",
+    "titulo": "Sobre",
+    "foco": "foco",
+    "formacao": "formação",
+    "base": "base",
+    "anosProducao": "anos em produção",
+    "sistemasAtivos": "sistemas ativos",
+    "artigosEscritos": "{total, plural, one {artigo escrito} other {artigos escritos}}",
+    "contribuicoesAno": "contribuições / ano",
+    "calendarioErro": "Não foi possível carregar o calendário agora.",
+    "atividadeRecente": "atividade recente",
+    "calendarioTitulo": "Diário de Contribuições",
+    "menos": "menos",
+    "mais": "mais",
+    "linguagensVazio": "Sem dado de linguagem suficiente ainda.",
+    "linguagensRotulo": "linguagens · uso registrado em projetos pessoais"
+  },
+  "filtros": {
+    "dominio": "domínio",
+    "tecnologias": "tecnologias",
+    "todos": "Todos",
+    "semCategoria": "Sem categoria",
+    "geral": "Geral"
+  },
+  "projetos": {
+    "rotulo": "repositórios",
+    "titulo": "Projetos",
+    "descricao": "Uma seleção de coisas que venho construindo — de ferramentas do dia a dia a experimentos e arquiteturas de infraestrutura.",
+    "verNoGithub": "Ver no GitHub",
+    "nenhumResultado": "Nenhum artefato encontrado com esta combinação",
+    "rotuloProjeto": "projeto",
+    "semReadme": "Este projeto não tem README."
+  },
+  "escritos": {
+    "rotulo": "notas",
+    "titulo": "Escritos",
+    "descricao": "Notas e aprendizados sobre infraestrutura, backend e os bastidores de construir software.",
+    "lerRegisto": "Ler registo →",
+    "nenhumResultado": "Nenhum registo encontrado com esta combinação",
+    "naoEncontrado": "Artigo não encontrado."
+  },
+  "busca": {
+    "placeholder": "Pesquisar nos registros e artefatos...",
+    "nenhumResultado": "Nenhuma anotação encontrada para \"{query}\".",
+    "indiceGlobal": "índice global",
+    "digiteParaBuscar": "Digite para buscar projetos e escritos.",
+    "navegacaoGlobal": "Navegação Global",
+    "escParaFechar": "Pressione ESC para fechar",
+    "fechar": "Fechar busca"
+  },
+  "tema": {
+    "rotulo": "paleta",
+    "escolher": "Escolher paleta de cores",
+    "ouro": "Floresta e ouro",
+    "gelo": "Gelo e vermelhão",
+    "menta": "Aurora menta",
+    "mar": "Mar profundo",
+    "brasa": "Cobre e brasa"
   }
 }

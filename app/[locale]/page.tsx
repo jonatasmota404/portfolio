@@ -10,7 +10,7 @@ import { prepararNosRaizes, prepararLigacoes } from "@/lib/raizes";
 import { HomeRaizes } from "@/components/raizes/HomeRaizes";
 
 const GITHUB_USER = "jonatasmota404";
-type Semana = { label: string; dias: { contagem: number }[] };
+type Semana = { mes: number | null; dias: { contagem: number }[] };
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

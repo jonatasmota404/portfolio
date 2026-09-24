@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 type Props = {
   rotulo: string;
   opcoes: string[];
@@ -10,6 +12,7 @@ type Props = {
 };
 
 export function FiltroPills({ rotulo, opcoes, ativa, aoSelecionar, formatarRotulo, variante = "grande" }: Props) {
+  const t = useTranslations("filtros");
   const formatar = formatarRotulo ?? ((v: string) => v);
 
   if (variante === "grande") {
@@ -21,7 +24,7 @@ export function FiltroPills({ rotulo, opcoes, ativa, aoSelecionar, formatarRotul
           className={`font-mono text-sm uppercase tracking-widest transition-all ${ativa === null ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
           style={{ color: ativa === null ? "var(--accent)" : "inherit" }}
         >
-          Todos
+          {t("todos")}
         </button>
         {opcoes.map((op) => (
           <button

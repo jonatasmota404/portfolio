@@ -25,9 +25,9 @@ export async function generateMetadata({
 
 export default async function Artigo({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
-  const artigo = await buscarArtigo(slug, locale);
+  const [artigo, t] = await Promise.all([buscarArtigo(slug, locale), getTranslations("escritos")]);
 
-  if (!artigo) return <p className="conteudo pt-[84px] pb-12">Artigo não encontrado.</p>;
+  if (!artigo) return <p className="conteudo pt-[84px] pb-12">{t("naoEncontrado")}</p>;
 
   return (
     <article className="conteudo pt-[84px] pb-12 max-w-[820px]">

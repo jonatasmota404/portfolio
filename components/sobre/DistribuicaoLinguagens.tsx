@@ -1,15 +1,17 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { PALETA_UI as PALETA } from "@/lib/paletaUi";
 
 export function DistribuicaoLinguagens({ dados }: { dados: { nome: string; pct: number }[] }) {
-  if (dados.length === 0) return <p className="text-sm opacity-60">Sem dado de linguagem suficiente ainda.</p>;
+  const t = useTranslations("sobre");
+  if (dados.length === 0) return <p className="text-sm opacity-60">{t("linguagensVazio")}</p>;
 
   const [principal] = dados;
 
   return (
     <div className="flex flex-col justify-between gap-6 h-full">
       <div>
-        <p className="lbl">linguagens · uso registrado em projetos pessoais</p>
+        <p className="lbl">{t("linguagensRotulo")}</p>
         <div className="flex items-baseline gap-3 mt-3 flex-wrap">
           <span className="num">{principal.pct}%</span>
           <span className="heading-3 text-xl">{principal.nome}</span>
