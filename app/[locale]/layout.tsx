@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { TemaProvider } from "@/context/TemaContext";
 import { Cabecalho } from "@/components/layout/Cabecalho";
+import { AnalyticsScript } from "@/components/layout/AnalyticsScript";
 import { SITE_URL, NOME_SITE, caminhoLocalizado } from "@/lib/seo";
 
 // Inter é a fonte padrão do corpo; a serifada fica reservada ao texto longo dos artigos.
@@ -79,6 +80,7 @@ export default async function LocaleLayout({
                         {children}
                     </TemaProvider>
                 </NextIntlClientProvider>
+                <AnalyticsScript />
             </body>
         </html>
     );
