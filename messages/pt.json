@@ -5,6 +5,17 @@
     "sobre": "sobre",
     "contato": "contato"
   },
+  "meta": {
+    "titulo": "Jônatas Mota — Engenheiro Fullstack",
+    "descricao": "Engenheiro Fullstack com foco em backend e infraestrutura (Node.js/TypeScript, Go, React). Projetos, notas técnicas e o que aprendo construindo sistemas de verdade.",
+    "tagline": "Engenheiro Fullstack · Backend & Infraestrutura",
+    "projetosTitulo": "Projetos",
+    "projetosDescricao": "Repositórios públicos que venho construindo — ferramentas do dia a dia, experimentos e arquiteturas de backend e infraestrutura, com README e stack de cada um.",
+    "projetoDescricaoFallback": "Detalhes do projeto {nome}: README, stack e decisões de arquitetura.",
+    "escritosTitulo": "Escritos",
+    "escritosDescricao": "Artigos e notas sobre infraestrutura, backend e os bastidores de construir software — aprendizados tirados de projetos reais.",
+    "sobreTitulo": "Sobre"
+  },
   "home": {
     "tagline": "backend · frontend · infra",
     "titulo": "Um engenheiro construindo confiabilidade do código à infraestrutura",

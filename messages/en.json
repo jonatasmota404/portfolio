@@ -5,6 +5,17 @@
     "sobre": "about",
     "contato": "contact"
   },
+  "meta": {
+    "titulo": "Jônatas Mota — Fullstack Engineer",
+    "descricao": "Fullstack engineer focused on backend and infrastructure (Node.js/TypeScript, Go, React). Projects, technical notes and what I learn building real systems.",
+    "tagline": "Fullstack Engineer · Backend & Infrastructure",
+    "projetosTitulo": "Projects",
+    "projetosDescricao": "Public repositories I've been building — everyday tools, experiments and backend and infrastructure architectures, each with its README and stack.",
+    "projetoDescricaoFallback": "Details of the {nome} project: README, stack and architecture decisions.",
+    "escritosTitulo": "Writing",
+    "escritosDescricao": "Articles and notes on infrastructure, backend and the behind-the-scenes of building software — lessons taken from real projects.",
+    "sobreTitulo": "About"
+  },
   "home": {
     "tagline": "backend · frontend · infra",
     "titulo": "An engineer building reliability from code to infrastructure",

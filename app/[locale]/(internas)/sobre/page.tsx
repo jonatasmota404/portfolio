@@ -7,6 +7,8 @@ import {
 } from "@/lib/github";
 import { buscarPerfil, t2 } from "@/lib/perfil";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { metadataPagina, truncar } from "@/lib/seo";
 import { StackTecnologias } from "@/components/sobre/StackTecnologias";
 import { RetratoAvatar } from "@/components/sobre/RetratoAvatar";
 import { CalendarioContribuicoes } from "@/components/sobre/CalendarioContribuicoes";
@@ -14,6 +16,13 @@ import { DistribuicaoLinguagens } from "@/components/sobre/DistribuicaoLinguagen
 import type { CSSProperties } from "react";
 
 type Semana = { label: string; dias: { contagem: number }[] };
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const perfil = await buscarPerfil();
+  return metadataPagina({ locale, caminho: "/sobre", titulo: t("sobreTitulo"), descricao: truncar(t2(perfil.bio, locale)) });
+}
 
 export default async function Sobre({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

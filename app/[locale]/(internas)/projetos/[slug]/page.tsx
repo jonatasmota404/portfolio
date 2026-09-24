@@ -1,7 +1,25 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { buscarReadmeLocalizado } from "@/lib/github";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { metadataPagina } from "@/lib/seo";
+import { buscarReadmeLocalizado, listarRepositorios } from "@/lib/github";
+import { truncar } from "@/lib/seo";
 import { PlacaSvg, TracoSvg, AnotacaoSvg } from "@/components/prosa/PlacaSvg";
 import { componentesProsa } from "@/components/prosa/prosa";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  // Mesma lista (cacheada) da página de Projetos — daqui sai a description real do repositório.
+  const repo = (await listarRepositorios().catch(() => [])).find((r: any) => r.name === slug);
+  const nome: string = repo?.name ?? slug;
+  const descricao = repo?.description ? truncar(repo.description) : t("projetoDescricaoFallback", { nome });
+  return metadataPagina({ locale, caminho: `/projetos/${slug}`, titulo: nome, descricao });
+}
 
 export default async function Projeto({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
