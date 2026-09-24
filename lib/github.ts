@@ -1,7 +1,7 @@
 import matter from "gray-matter";
 import type { Perfil } from "@/lib/perfil";
 
-const GITHUB_USER = "jonatasmota404";
+export const GITHUB_USER = "jonatasmota404";
 const REPO_ESCRITOS = "escritos";
 const revalidateTime = process.env.NODE_ENV === "development" ? 0 : 3600;
 

@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# currículos baixados em tempo de execução (só os -fallback são versionados)
+public/curriculo/pt-br.pdf
+public/curriculo/en.pdf

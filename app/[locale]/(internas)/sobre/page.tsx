@@ -6,6 +6,7 @@ import {
   buscarDadosUsuario,
 } from "@/lib/github";
 import { buscarPerfil, t2 } from "@/lib/perfil";
+import { caminhoCurriculo } from "@/lib/curriculo";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { metadataPagina, truncar } from "@/lib/seo";
@@ -104,7 +105,7 @@ export default async function Sobre({ params }: { params: Promise<{ locale: stri
               {t("contato")}
             </a>
             <a
-              href="/curriculo.pdf"
+              href={caminhoCurriculo(locale)}
               download
               className="font-mono text-xs px-5 py-2.5 rounded-full transition-colors"
               style={{ backgroundColor: "color-mix(in srgb, var(--ink) 8%, transparent)", color: "var(--ink)" }}

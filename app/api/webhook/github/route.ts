@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag, revalidatePath } from "next/cache";
 import crypto from "crypto";
+import { atualizarCurriculos } from "@/lib/curriculo";
 
 function assinaturaValida(corpo: string, assinaturaRecebida: string | null): boolean {
     if (!assinaturaRecebida) return false;
@@ -28,6 +29,8 @@ export async function POST(req: NextRequest) {
         if (nomeRepo === "jonatasmota404") {
             // Repositório de perfil: invalida o perfil.json usado na Sobre e na Home
             revalidateTag("perfil-jonatasmota404", { expire: 0 });
+            // E baixa de novo os currículos (pt-br/en) para o disco
+            await atualizarCurriculos();
         } else if (nomeRepo === "escritos") {
             // Invalida a lista de artigos
             revalidateTag("repo:escritos", { expire: 0 });
