@@ -95,8 +95,7 @@
     "titulo": "Writing",
     "descricao": "Notes and lessons on infrastructure, backend and the behind-the-scenes of building software.",
     "lerRegisto": "Read post →",
-    "nenhumResultado": "No posts match this combination",
-    "naoEncontrado": "Article not found."
+    "nenhumResultado": "No posts match this combination"
   },
   "busca": {
     "placeholder": "Search posts and projects...",
@@ -106,6 +105,12 @@
     "navegacaoGlobal": "Global Navigation",
     "escParaFechar": "Press ESC to close",
     "fechar": "Close search"
+  },
+  "erro404": {
+    "rotulo": "error 404",
+    "titulo": "This node isn't on the network",
+    "descricao": "The page you're looking for could not be found. It may have been moved, renamed, or never existed.",
+    "voltar": "Back to home"
   },
   "tema": {
     "rotulo": "palette",

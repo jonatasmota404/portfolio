@@ -1,5 +1,6 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { metadataPagina } from "@/lib/seo";
 import { buscarArtigo } from "@/lib/github";
@@ -25,9 +26,9 @@ export async function generateMetadata({
 
 export default async function Artigo({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
-  const [artigo, t] = await Promise.all([buscarArtigo(slug, locale), getTranslations("escritos")]);
+  const artigo = await buscarArtigo(slug, locale);
 
-  if (!artigo) return <p className="conteudo pt-[84px] pb-12">{t("naoEncontrado")}</p>;
+  if (!artigo) notFound();
 
   return (
     <article className="conteudo pt-[84px] pb-12 max-w-[820px]">

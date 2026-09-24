@@ -1,5 +1,6 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { metadataPagina } from "@/lib/seo";
 import { buscarReadmeLocalizado, listarRepositorios } from "@/lib/github";
@@ -23,7 +24,14 @@ export async function generateMetadata({
 
 export default async function Projeto({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
-  const [readme, t] = await Promise.all([buscarReadmeLocalizado(slug, locale), getTranslations("projetos")]);
+  const [readme, repos, t] = await Promise.all([
+    buscarReadmeLocalizado(slug, locale),
+    listarRepositorios().catch(() => null),
+    getTranslations("projetos"),
+  ]);
+
+  // Slug que não é um repositório conhecido é 404; repositório sem README continua com o aviso.
+  if (!readme && repos && !repos.some((r: any) => r.name === slug)) notFound();
 
   if (!readme) return <p className="conteudo pt-[84px] pb-12">{t("semReadme")}</p>;
 

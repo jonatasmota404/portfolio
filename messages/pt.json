@@ -95,8 +95,7 @@
     "titulo": "Escritos",
     "descricao": "Notas e aprendizados sobre infraestrutura, backend e os bastidores de construir software.",
     "lerRegisto": "Ler registo →",
-    "nenhumResultado": "Nenhum registo encontrado com esta combinação",
-    "naoEncontrado": "Artigo não encontrado."
+    "nenhumResultado": "Nenhum registo encontrado com esta combinação"
   },
   "busca": {
     "placeholder": "Pesquisar nos registros e artefatos...",
@@ -106,6 +105,12 @@
     "navegacaoGlobal": "Navegação Global",
     "escParaFechar": "Pressione ESC para fechar",
     "fechar": "Fechar busca"
+  },
+  "erro404": {
+    "rotulo": "erro 404",
+    "titulo": "Esse nó não existe na rede",
+    "descricao": "A página que você procura não foi encontrada. Ela pode ter sido movida, renomeada ou nunca ter existido.",
+    "voltar": "Voltar para o início"
   },
   "tema": {
     "rotulo": "paleta",
